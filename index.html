@@ -1,175 +1,592 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>تصور شاشات سيستم الكابتن أحمد</title>
+<title>الكابتن أحمد إيهاب · ملف مرجعي لكل الشاشات</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--pg:#EEF1F5;--tx:#0F1B2D;--mu:#5B6B7C;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--pg:#0B1220;--tx:#E8EEF5;--mu:#93A3B5}}
-:root[data-theme=dark]{--pg:#0B1220;--tx:#E8EEF5;--mu:#93A3B5}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--pg);color:var(--tx);font-family:'IBM Plex Sans Arabic',Tahoma,sans-serif;font-variant-numeric:tabular-nums;padding:28px 16px 60px}
-h1,h2,h3,.cai{font-family:Cairo,'IBM Plex Sans Arabic',sans-serif}
-.intro{max-width:760px;margin:0 auto 30px;text-align:center}
-.intro h1{font-size:28px;font-weight:800}
-.intro p{color:var(--mu);margin-top:6px}
-.pal{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap}
-.pal i{width:30px;height:30px;border-radius:9px;display:block;border:1px solid rgba(128,128,128,.3)}
-.grid{display:flex;flex-wrap:wrap;gap:34px 26px;justify-content:center;max-width:1240px;margin:0 auto}
-.fig{width:min(100%,344px)}
-.fig figcaption{text-align:center;margin-top:12px;font-weight:600}
-.fig figcaption small{display:block;color:var(--mu);font-weight:400;font-size:13px}
+/* ===== TOKENS ===== */
+:root,[data-theme="light"]{
+--bg:#F5F7FA;--surface:#FFFFFF;--surface-2:#FFFFFF;--border:#E3E8EE;--text:#0F1B2D;--text-muted:#5B6B7C;
+--accent:#FF6A13;--accent-hover:#E55200;--accent-soft:#FFF0E6;--accent-text:#C24A00;--on-accent:#0F1B2D;--focus:#FF6A13;
+--sidebar-bg:#0F1B2D;--sidebar-text:#C9D5E2;--sidebar-active-bg:rgba(255,106,19,.16);--sidebar-active-text:#FF9A5C;
+--total-bg:#0F1B2D;--total-text:#FFFFFF;--total-muted:#9FB0C3;--track:#E7ECF0;--overlay:rgba(15,27,45,.5);--skeleton:#E7ECF0;
+--macro-p:#7C5CFF;--macro-p-text:#5B3FE0;--macro-c:#14B8A6;--macro-c-text:#0B7F73;--macro-f:#3B82F6;--macro-f-text:#1D4ED8;
+--ok-text:#166534;--ok-bg:#DCFCE7;--warn-text:#92400E;--warn-bg:#FEF3C7;--danger:#DC2626;--danger-text:#991B1B;--danger-bg:#FEE2E2;--info-text:#1E40AF;--info-bg:#DBEAFE;
+--pdf-main:#0F1B2D;--pdf-soft:#E8EDF3;
+--font-display:"Cairo","IBM Plex Sans Arabic",Tahoma,sans-serif;--font-ui:"IBM Plex Sans Arabic","IBM Plex Sans",Tahoma,sans-serif;
+--r-sm:8px;--r-md:12px;--r-lg:16px;--r-xl:24px;--r-full:999px;
+--shadow-1:0 1px 2px rgba(15,27,45,.06);--shadow-2:0 8px 24px rgba(15,27,45,.10);--shadow-fab:0 6px 16px rgba(255,106,19,.40);
+--ease:cubic-bezier(.2,.8,.2,1);
+--s-1:4px;--s-2:8px;--s-3:12px;--s-4:16px;--s-5:20px;--s-6:24px;--s-8:32px;--s-10:40px;--s-12:48px;
+}
+[data-theme="dark"]{
+--bg:#0B1220;--surface:#131C2E;--surface-2:#1A2540;--border:#223048;--text:#E8EEF5;--text-muted:#93A3B5;
+--accent-hover:#FF8540;--accent-soft:#2A1A10;--accent-text:#FF8540;--focus:#FF8540;
+--sidebar-bg:#070D18;--total-bg:#1A2540;--track:#26364C;--overlay:rgba(0,0,0,.65);--skeleton:#1F2B42;
+--macro-p:#9B85FF;--macro-p-text:#9B85FF;--macro-c:#2DD4BF;--macro-c-text:#2DD4BF;--macro-f:#60A5FA;--macro-f-text:#60A5FA;
+--ok-text:#4ADE80;--ok-bg:rgba(34,197,94,.15);--warn-text:#FBBF24;--warn-bg:rgba(245,158,11,.15);
+--danger:#F87171;--danger-text:#F87171;--danger-bg:rgba(220,38,38,.18);--info-text:#93C5FD;--info-bg:rgba(59,130,246,.15);
+--shadow-1:none;--shadow-2:none;
+}
+/* ===== BASE ===== */
+*{box-sizing:border-box;margin:0}
+body{font-family:var(--font-ui);background:var(--bg);color:var(--text);font-variant-numeric:tabular-nums;line-height:1.65;font-size:15px}
+h1,h2,.display{font-family:var(--font-display)}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+button,input{font:inherit;color:inherit}
+.ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.muted{color:var(--text-muted)}.grow{flex:1}.num{direction:ltr;display:inline-block}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* ===== PAGE HEADER ===== */
+.top{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--border);padding:var(--s-3) var(--s-4);display:flex;flex-wrap:wrap;gap:var(--s-3);align-items:center}
+.top h1{font-size:18px;font-weight:800}
+.seg{display:flex;border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden}
+.seg button{background:var(--surface);border:0;padding:var(--s-2) var(--s-4);min-height:44px;cursor:pointer;font-weight:500}
+.seg button[aria-pressed=true]{background:var(--text);color:var(--bg)}
+.toc{display:flex;gap:var(--s-2);overflow-x:auto;width:100%;padding-bottom:2px}
+.toc a{white-space:nowrap;font-size:13px;padding:var(--s-2) var(--s-3);border:1px solid var(--border);border-radius:var(--r-full);color:var(--text);text-decoration:none;min-height:36px;display:inline-flex;align-items:center}
+.toc a.soon{color:var(--text-muted);border-style:dashed}
+main{max-width:1280px;margin:0 auto;padding:var(--s-6) var(--s-4)}
+.sec{margin-bottom:var(--s-12);scroll-margin-top:120px}
+.sec>h2{font-size:24px;font-weight:800;margin-bottom:var(--s-1)}
+.sec>.muted{margin-bottom:var(--s-6)}
+.screen{margin-bottom:var(--s-10)}
+.cap{margin-top:var(--s-3);font-size:13px;color:var(--text-muted)}.cap b{color:var(--text);font-family:var(--font-display);margin-inline-end:var(--s-2)}
+/* ===== DEVICE FRAMES ===== */
+body[data-device=m] .dw,body[data-device=d] .mw{display:none}
+.hs{overflow-x:auto;padding-bottom:var(--s-2)}
+.frame{background:var(--bg);border:1px solid var(--border);overflow:hidden;display:flex;box-shadow:var(--shadow-2);--fs-display:36px;--fs-h1:24px;--fs-h2:18px;--fs-h3:16px;--fs-body:16px;--fs-small:13px;--fs-min:12px}
+.frame.m{width:360px;height:740px;flex-direction:column;border-radius:var(--r-xl);margin-inline:auto 0;font-size:var(--fs-body)}
+.frame.d{width:1200px;height:760px;border-radius:var(--r-lg);--fs-display:40px;--fs-h1:30px;--fs-h2:20px;--fs-h3:17px;--fs-body:15px;font-size:var(--fs-body)}
+.mtop{height:56px;display:flex;align-items:center;gap:var(--s-3);padding-inline:var(--s-2) var(--s-4);background:var(--surface);border-bottom:1px solid var(--border);flex:none}
+.back{display:flex;align-items:center;gap:var(--s-1);background:none;border:0;color:var(--accent-text);font-weight:600;min-height:44px;min-width:44px;padding-inline:var(--s-2)}
+.body{flex:1;overflow:auto;padding:var(--s-4)}
+.sb{width:240px;background:var(--sidebar-bg);color:var(--sidebar-text);padding:var(--s-4);display:flex;flex-direction:column;gap:var(--s-1);flex:none}
+.sb .logo{font-family:var(--font-display);font-weight:800;color:var(--total-text);padding:var(--s-2) var(--s-3) var(--s-4)}
+.sb a{display:flex;gap:var(--s-3);align-items:center;padding:var(--s-3);border-radius:var(--r-md);min-height:44px}
+.sb a.on{background:var(--sidebar-active-bg);color:var(--sidebar-active-text);font-weight:600}
+.dm{flex:1;display:flex;flex-direction:column;min-width:0}
+.dtop{height:56px;display:flex;align-items:center;gap:var(--s-4);padding-inline:var(--s-6);background:var(--surface);border-bottom:1px solid var(--border);flex:none}
+.srch{display:flex;gap:var(--s-2);align-items:center;border:1px solid var(--border);border-radius:var(--r-md);padding:var(--s-2) var(--s-4);color:var(--text-muted);min-width:220px}
+.frame.d .body{padding:var(--s-6)}
+/* ===== COMPONENTS ===== */
+.h{font-family:var(--font-display);font-size:var(--fs-h2);font-weight:700;margin:var(--s-6) 0 var(--s-3);line-height:1.3}.h:first-child{margin-top:0}
+.row{display:flex;flex-wrap:wrap;gap:var(--s-3);align-items:center}
+.btn{min-height:48px;min-width:44px;padding:0 var(--s-5);border-radius:var(--r-md);border:1px solid transparent;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:var(--s-2);transition:background .12s var(--ease)}
+.frame.d .btn,.frame.d .inp{min-height:40px}
+.pri{background:var(--accent);color:var(--on-accent)}.pri:hover{background:var(--accent-hover)}
+.pri:disabled{opacity:.45;cursor:not-allowed}
+.sec-b{background:var(--surface);border-color:var(--border);color:var(--text)}
+.lnk{background:none;color:var(--accent-text)}
+.dng{background:none;border-color:var(--danger);color:var(--danger)}
+.fld{display:flex;flex-direction:column;gap:var(--s-1);margin-bottom:var(--s-3)}
+.fld label{font-size:var(--fs-small);font-weight:500}
+.inp{min-height:48px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:0 var(--s-3);width:100%}
+.inp.foc{border:2px solid var(--focus)}.inp.err{border-color:var(--danger)}.inp:disabled{opacity:.45}
+.msg{font-size:var(--fs-small);color:var(--danger-text);display:flex;gap:var(--s-1);align-items:center}
+.chip{min-height:44px;padding:0 var(--s-4);border-radius:var(--r-full);border:1px solid var(--border);background:var(--surface);display:inline-flex;align-items:center;font-weight:500}
+.chip.on{background:var(--text);color:var(--bg);border-color:var(--text)}
+.bdg{display:inline-flex;align-items:center;gap:var(--s-1);padding:2px var(--s-3);border-radius:var(--r-full);font-size:12px;font-weight:600}
+.ok{background:var(--ok-bg);color:var(--ok-text)}.warn{background:var(--warn-bg);color:var(--warn-text)}.dn{background:var(--danger-bg);color:var(--danger-text)}.inf{background:var(--info-bg);color:var(--info-text)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:var(--s-4);box-shadow:var(--shadow-1)}
+.li{display:flex;align-items:center;gap:var(--s-3);min-height:56px;padding:var(--s-2) 0;border-bottom:1px solid var(--border)}
+.li:last-child{border:0}
+.av{width:40px;height:40px;border-radius:50%;background:var(--accent-soft);color:var(--accent-text);display:inline-flex;align-items:center;justify-content:center;font-weight:700;flex:none}
+.bar{display:flex;height:8px;border-radius:var(--r-full);overflow:hidden;background:var(--track);margin-top:var(--s-3)}
+.tabs{display:flex;border-bottom:1px solid var(--border)}
+.tabs span{padding:var(--s-3) var(--s-4);color:var(--text-muted);min-height:44px}
+.tabs .on{color:var(--accent-text);font-weight:600;border-bottom:3px solid var(--accent)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:var(--s-4)}
+.ph{display:flex;align-items:center;justify-content:center;min-height:96px;border:1px dashed var(--border);border-radius:var(--r-md);background:var(--track);color:var(--text-muted);font-size:var(--fs-small)}
+/* swatches + type */
+.pan{background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:var(--r-lg);padding:var(--s-4)}
+.sw{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:var(--s-2)}
+.sw div{font-size:var(--fs-min);font-weight:500}.sw i{display:block;height:40px;border-radius:var(--r-sm);border:1px solid var(--border);margin-bottom:2px}
+.ts{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--border);padding:var(--s-2) 0;gap:var(--s-3)}
+.ts small{font-size:var(--fs-min);color:var(--text-muted);white-space:nowrap}
+.frame.m{position:relative}.sm{font-size:var(--fs-small)}.kv{font-family:var(--font-display);font-size:var(--fs-h1);font-weight:800;line-height:1.3}
+.tab{height:64px;display:flex;background:var(--surface);border-top:1px solid var(--border);flex:none}
+.tab a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:12px;font-weight:500;color:var(--text-muted)}
+.tab a.on{color:var(--accent-text);font-weight:600;box-shadow:inset 0 3px 0 var(--accent)}
+.tab~.fab{inset-block-end:80px}.fab{position:absolute;inset-block-end:16px;inset-inline-start:16px;width:56px;height:56px;border-radius:var(--r-full);background:var(--accent);color:var(--on-accent);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-fab);border:0;z-index:30}
+.body:has(.aw){display:flex}.aw{margin:auto;width:100%;max-width:420px}
+.otp{display:flex;gap:var(--s-2);direction:ltr;justify-content:center}.otp i{width:44px;height:52px;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface);display:flex;align-items:center;justify-content:center;font:800 20px var(--font-display);font-style:normal}.otp .cur{border:2px solid var(--focus)}
+.stp{display:flex;gap:var(--s-1)}.stp i{flex:1;height:4px;border-radius:var(--r-full);background:var(--track)}.stp .on{background:var(--text)}
+.dot{width:44px;height:44px;border-radius:var(--r-full);display:block}
+.tbl{width:100%;border-collapse:collapse}.tbl th{text-align:start;font-size:13px;font-weight:500;color:var(--text-muted);padding:var(--s-3);border-bottom:1px solid var(--border)}.tbl td{padding:var(--s-3);border-bottom:1px solid var(--border)}
+.sel{background:var(--accent-soft)}
+.tot{background:var(--total-bg);color:var(--total-text);border-radius:var(--r-lg);padding:var(--s-4);position:sticky;top:0;z-index:20;margin-bottom:var(--s-3)}.tot .m{color:var(--total-muted)}.kd{font-family:var(--font-display);font-size:var(--fs-display);font-weight:800;line-height:1.1}
+.tot .bar{background:var(--track)}.lg{display:flex;gap:var(--s-3);flex-wrap:wrap;font-size:var(--fs-small);margin-top:var(--s-3)}.lg i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-inline-end:6px}
+.fd{display:flex;align-items:center;gap:var(--s-1);min-height:56px;border-bottom:1px solid var(--border)}
+.pm{width:44px;height:44px;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface);display:inline-flex;align-items:center;justify-content:center;color:var(--text);flex:none}
+.two{display:grid;grid-template-columns:1fr 360px;gap:var(--s-6)}.side{position:sticky;top:0;align-self:start}
+.tabs{overflow-x:auto}.tabs span{white-space:nowrap}.paper{--pp:#5B3FE0;--pc:#0B7F73;--pf:#1D4ED8;max-width:595px;margin:0 auto var(--s-3);background:#FFFFFF;color:#1B2430;border:1px solid #E4E9E6;border-radius:var(--r-sm);padding:var(--s-4);font-size:13px}
+.ck{width:24px;height:24px;border:2px solid var(--border);border-radius:var(--r-sm);flex:none}.ck.on{background:var(--text);border-color:var(--text)}
+.al{display:flex;gap:var(--s-3);padding:var(--s-3) var(--s-4);border-radius:var(--r-md)}
+.act{display:flex;gap:var(--s-3);align-items:center;min-height:56px;border-bottom:1px solid var(--border)}
+.ph2{background:var(--pdf-main);color:#FFFFFF;padding:var(--s-3) var(--s-4);border-bottom:3px solid var(--accent);margin:calc(var(--s-4)*-1) calc(var(--s-4)*-1) var(--s-3)}.ph2 b{font-family:var(--font-display);font-size:16px}
+.pg{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-2);margin-bottom:var(--s-3);text-align:center}.pg div{background:var(--pdf-soft);border-radius:var(--r-sm);padding:var(--s-2)}
+.pr{display:flex;flex-direction:column;padding:var(--s-2) 0;border-bottom:1px solid #E4E9E6}.pr span{color:#1B2430}
+.tg{width:44px;height:26px;border-radius:var(--r-full);background:var(--track);position:relative;flex:none}.tg::after{content:"";position:absolute;top:3px;inset-inline-start:3px;width:20px;height:20px;border-radius:50%;background:var(--surface);border:1px solid var(--border)}.tg.on{background:var(--text)}.tg.on::after{inset-inline-start:21px;background:var(--bg)}
+.ni{width:40px;height:40px;border-radius:50%;background:var(--track);display:flex;align-items:center;justify-content:center;flex:none}.ud{width:8px;height:8px;border-radius:50%;background:var(--info-text);flex:none}
+.bb{max-width:80%;width:fit-content;padding:var(--s-2) var(--s-3);border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--border);margin-bottom:var(--s-2)}.bb.me{margin-inline-start:auto;background:var(--track);border-color:var(--track)}
+.cmp{position:sticky;bottom:0;display:flex;gap:var(--s-2);background:var(--bg);padding-top:var(--s-2);margin-top:var(--s-4)}
+.two2{display:grid;grid-template-columns:260px 1fr;gap:var(--s-6)}
+/* patterns */
+.toast{background:var(--text);color:var(--bg);border-radius:var(--r-md);padding:var(--s-3) var(--s-4);display:flex;gap:var(--s-3);align-items:center;margin-bottom:var(--s-2)}
+.dlg{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-lg);padding:var(--s-5);box-shadow:var(--shadow-2)}
+.stage{position:relative;height:220px;border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;background:var(--surface)}
+.stage .ov{position:absolute;inset:0;background:var(--overlay);opacity:0;pointer-events:none;transition:opacity .2s var(--ease)}
+.stage .sheet{position:absolute;inset-inline:0;bottom:0;background:var(--surface-2);border-top:1px solid var(--border);border-radius:var(--r-xl) var(--r-xl) 0 0;padding:var(--s-3) var(--s-4) var(--s-4);transform:translateY(100%);transition:transform .3s var(--ease)}
+.stage.open .ov{opacity:1}.stage.open .sheet{transform:none}
+.grab{width:36px;height:4px;border-radius:var(--r-full);background:var(--border);margin:0 auto var(--s-3)}
+.sk{height:14px;border-radius:var(--r-sm);background:var(--skeleton);margin-bottom:var(--s-2);animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.5}}
+.empty{text-align:center;padding:var(--s-6) var(--s-4)}.empty .ic{width:40px;height:40px;color:var(--text-muted);margin-bottom:var(--s-2)}
+.off{display:flex;gap:var(--s-2);align-items:center;background:var(--warn-bg);color:var(--warn-text);padding:var(--s-3) var(--s-4);border-radius:var(--r-md);font-weight:500}
+.save{display:inline-flex;gap:var(--s-1);align-items:center;font-size:var(--fs-small);color:var(--ok-text);font-weight:500}
+</style>
+</head>
+<body data-device="m">
+<svg width="0" height="0" style="position:absolute"><defs>
+<symbol id="i-right" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+<symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.5-4 3-6 6.5-6s6 2 6.5 6M16 4.5a3.5 3.5 0 010 7M18 14c2 .6 3.3 2.5 3.5 6"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2zM4 19V5M9 7h6"/></symbol>
+<symbol id="i-layout" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 9v12"/></symbol>
+<symbol id="i-card" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
+<symbol id="i-msg" viewBox="0 0 24 24"><path d="M21 12a8 8 0 01-11.6 7.1L3 21l1.9-6.4A8 8 0 1121 12z"/></symbol>
+<symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0112 0c0 7 3 8 3 8H3s3-1 3-8zM10 20a2 2 0 004 0"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3l10 18H2zM12 10v5M12 18h.01"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
+<symbol id="i-wifi" viewBox="0 0 24 24"><path d="M2 8.5a15 15 0 0120 0M5 12a10 10 0 0114 0M8.5 15.5a5 5 0 017 0M12 19h.01M3 3l18 18"/></symbol>
+<symbol id="i-inbox" viewBox="0 0 24 24"><path d="M3 13l3-8h12l3 8v6H3zM3 13h5l1 3h6l1-3h5"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol><symbol id="i-dots" viewBox="0 0 24 24"><path d="M5 12h.01M12 12h.01M19 12h.01"/></symbol><symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol><symbol id="i-edit" viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></symbol><symbol id="i-copy" viewBox="0 0 24 24"><path d="M9 9h11v11H9zM5 15V4h11"/></symbol><symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></symbol><symbol id="i-swap" viewBox="0 0 24 24"><path d="M7 4L3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/></symbol></defs></svg>
 
-/* phone: always light, it's the product design */
-.ph{--bg:#F5F7FA;--card:#fff;--ink:#0F1B2D;--mut:#5B6B7C;--ln:#E3E8EE;--ac:#FF6A13;--acl:#FFF0E6;--pr:#7C5CFF;--cb:#14B8A6;--ft:#3B82F6;--ok:#16A34A;--wn:#F59E0B;
- width:100%;height:700px;background:var(--bg);color:var(--ink);border:8px solid #0F1B2D;border-radius:38px;overflow:hidden;display:flex;flex-direction:column;position:relative;font-size:14px}
-.top{background:#fff;padding:12px 16px 10px;border-bottom:1px solid var(--ln);display:flex;align-items:center;gap:8px;min-height:52px}
-.top .bk{color:var(--ac);font-weight:600;display:flex;align-items:center;gap:2px;font-size:15px}
-.top .bk b{font-size:24px;line-height:1;font-weight:400}
-.top h2{font-size:17px;font-weight:700;margin-inline-start:auto;margin-inline-end:auto}
-.top .sp{width:60px}
-.body{flex:1;overflow:hidden;padding:14px 14px 0;position:relative}
-.tabs{display:grid;grid-template-columns:repeat(5,1fr);background:#fff;border-top:1px solid var(--ln);padding:8px 4px 12px}
-.tabs div{text-align:center;font-size:10.5px;color:var(--mut);display:flex;flex-direction:column;gap:3px;align-items:center}
-.tabs div.on{color:var(--ac);font-weight:700}
-.tabs span{width:22px;height:22px;border-radius:7px;background:currentColor;opacity:.25}
-.tabs .on span{opacity:1}
-h3{font-size:22px;font-weight:800}
-.sub{color:var(--mut);font-size:13px}
-.search{background:#fff;border:1px solid var(--ln);border-radius:12px;padding:11px 14px;color:var(--mut);margin:12px 0 10px}
-.chips{display:flex;gap:6px;margin-bottom:10px}
-.chip{padding:5px 13px;border-radius:99px;background:#fff;border:1px solid var(--ln);font-size:12.5px;font-weight:500}
-.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-.row{background:#fff;border-radius:14px;padding:11px 12px;display:flex;align-items:center;gap:11px;margin-bottom:8px;border:1px solid var(--ln)}
-.av{width:40px;height:40px;border-radius:50%;background:var(--acl);color:#C24A00;display:grid;place-items:center;font-weight:700;font-family:Cairo}
-.row b{display:block;font-size:14.5px}.row small{color:var(--mut);font-size:12px}
-.st{margin-inline-start:auto;font-size:11px;font-weight:600;padding:3px 9px;border-radius:99px}
-.st.a{background:#DCFCE7;color:#166534}.st.w{background:#FEF3C7;color:#92400E}.st.e{background:#FEE2E2;color:#991B1B}
-.fab{position:absolute;bottom:14px;left:14px;width:54px;height:54px;border-radius:18px;background:var(--ac);color:var(--ink);font-size:30px;font-weight:700;display:grid;place-items:center;box-shadow:0 6px 16px rgba(255,106,19,.4)}
-.btn{background:var(--ac);color:var(--ink);font-weight:700;text-align:center;padding:13px;border-radius:13px;font-size:15px}
-.btn.o{background:#fff;border:1px solid var(--ln);color:var(--ink)}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
-.stats div{background:#fff;border:1px solid var(--ln);border-radius:12px;padding:9px;text-align:center}
-.stats b{display:block;font-family:Cairo;font-size:19px;font-weight:800}.stats small{font-size:11px;color:var(--mut)}
-.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
-.tile{background:#fff;border:1px solid var(--ln);border-radius:16px;padding:14px;border-top:4px solid var(--ac);min-height:112px;display:flex;flex-direction:column}
-.tile h4{font-family:Cairo;font-size:18px;font-weight:800}.tile small{color:var(--mut);font-size:12px;margin-bottom:auto}.tile span{color:var(--ac);font-weight:700;font-size:13px;margin-top:8px}
-.lbl{font-weight:700;margin:6px 0 8px}
-.hist{background:#fff;border:1px solid var(--ln);border-radius:12px;padding:10px 12px;display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px}
-.hist em{font-style:normal;color:var(--ac);font-weight:600}
-.tot{background:var(--ink);color:#fff;border-radius:18px;padding:14px 16px;margin-bottom:12px}
-.tot .big{font-family:Cairo;font-size:34px;font-weight:800;line-height:1.1}
-.tot .big small{font-size:13px;color:#9FB0C3;font-weight:400;margin-inline-start:6px}
-.tot .lf{float:left;background:rgba(255,106,19,.18);color:#FFB27F;padding:2px 10px;border-radius:99px;font-size:12px;font-weight:600;margin-top:8px}
-.bar{height:10px;background:#26364C;border-radius:9px;margin:12px 0 9px;overflow:hidden;display:flex}
-.bar i{display:block;height:100%}
-.mc{display:flex;justify-content:space-between;font-size:12px;color:#C9D5E2}.mc b{color:#fff}.mc i{display:inline-block;width:8px;height:8px;border-radius:3px;margin-inline-end:5px}
-.meal{background:#fff;border:1px solid var(--ln);border-radius:16px;padding:10px 12px;margin-bottom:10px}
-.meal h4{font-family:Cairo;font-size:16px;display:flex;justify-content:space-between}.meal h4 small{font-family:'IBM Plex Sans Arabic';font-weight:500;color:var(--mut);font-size:12px}
-.it{display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--ln);font-size:13.5px}
-.it .n{flex:1;font-weight:500}.it .n small{display:block;color:var(--mut);font-size:11px;font-weight:400}
-.stp{display:flex;align-items:center;border:1px solid var(--ln);border-radius:9px;font-weight:600;font-size:13px}
-.stp u{text-decoration:none;width:26px;text-align:center;color:var(--ac);font-size:17px}.stp span{min-width:34px;text-align:center}
-.it .k{width:40px;text-align:end;font-weight:600}
-.add{color:var(--ac);font-weight:700;font-size:13px;padding-top:8px;border-top:1px solid var(--ln)}
-.dock{position:absolute;bottom:0;left:0;right:0;padding:10px 14px 12px;background:linear-gradient(transparent,var(--bg) 30%)}
-.days{display:flex;gap:6px;margin-bottom:12px;overflow:hidden}
-.ex{background:#fff;border:1px solid var(--ln);border-radius:15px;padding:12px;margin-bottom:9px}
-.ex b{font-size:15px}.ex small{color:var(--mut);margin-inline-start:6px;font-size:12px}
-.ex .pl{display:flex;gap:6px;margin-top:9px}.ex .pl span{background:var(--bg);border-radius:9px;padding:5px 11px;font-size:12.5px;font-weight:600}.ex .pl span small{display:block;margin:0;font-weight:400;font-size:10.5px}
-.sw{display:flex;gap:8px;align-items:center;margin-bottom:10px;font-size:12.5px;color:var(--mut)}.sw i{width:24px;height:24px;border-radius:8px;display:block}.sw i.on{outline:2px solid var(--ink);outline-offset:2px}
-.sheet{background:#fff;border:1px solid var(--ln);border-radius:8px;overflow:hidden;font-size:10.5px;box-shadow:0 8px 22px rgba(15,27,45,.12)}
-.sh{background:var(--ink);color:#fff;padding:12px 12px;display:flex;align-items:center;gap:8px;border-bottom:4px solid var(--ac)}
-.sh .m{width:30px;height:30px;border-radius:50%;background:var(--ac);color:var(--ink);display:grid;place-items:center;font-family:Cairo;font-weight:800;font-size:16px}
-.sh b{font-family:Cairo;font-size:13px;display:block;line-height:1.2}.sh small{opacity:.75;font-size:9.5px}.sh .c{margin-inline-start:auto;text-align:end}
-.sm{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding:9px}
-.sm div{background:#F5F7FA;border-top:3px solid var(--ac);border-radius:6px;padding:5px;text-align:center}.sm b{font-family:Cairo;font-size:13px;display:block}
-.tb{padding:0 9px 9px}.tb h5{background:#FFF0E6;padding:4px 8px;border-radius:6px 6px 0 0;display:flex;justify-content:space-between;font-size:11px}
-.tb div{display:flex;padding:4px 8px;border-bottom:1px solid #EEF1F5}.tb div span:first-child{flex:1}.tb div span{width:30px;text-align:center}.tb div span:first-child{text-align:start}
-.rd{position:absolute;opacity:0}.tg{display:flex;justify-content:center;gap:6px;margin-bottom:26px}
-.tg label{padding:9px 24px;border-radius:99px;border:1px solid var(--mu);cursor:pointer;font-weight:600}
-#vm:checked~.tg [for=vm],#vd:checked~.tg [for=vd]{background:#FF6A13;color:#0F1B2D;border-color:#FF6A13}
-#vm:focus-visible~.tg [for=vm],#vd:focus-visible~.tg [for=vd]{outline:2px solid #FF6A13;outline-offset:2px}
-.mob,.desk{display:none}#vm:checked~.mob{display:flex}#vd:checked~.desk{display:flex}
-.fig.w{width:min(100%,1100px);overflow-x:auto}
-.ph.dk{flex-direction:row;height:610px;width:1060px;border-radius:18px;font-size:13.5px}
-.sb{width:176px;background:#0F1B2D;color:#C9D5E2;padding:16px 10px;display:flex;flex-direction:column;gap:3px;flex-shrink:0}
-.sb .mk{display:flex;align-items:center;gap:8px;color:#fff;font-family:Cairo;font-weight:800;margin-bottom:14px;padding:0 6px}.sb .mk i{width:28px;height:28px;border-radius:9px;background:var(--ac);color:#0F1B2D;display:grid;place-items:center;font-style:normal}
-.sb div.n{padding:9px 12px;border-radius:10px}.sb div.on{background:rgba(255,106,19,.16);color:#FF9A5C;font-weight:700}
-.mn{flex:1;padding:20px 24px;overflow:hidden;min-width:0}
-.hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.hd .btn{padding:9px 18px}
-.c4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}.c4>div{background:#fff;border:1px solid var(--ln);border-radius:14px;padding:12px}.c4 b{font-family:Cairo;font-size:24px;font-weight:800;display:block}.c4 small{color:var(--mut)}
-.tbl{background:#fff;border:1px solid var(--ln);border-radius:14px;overflow:hidden}
-.tr{display:grid;grid-template-columns:2fr 1.2fr 1.2fr 1fr .8fr;align-items:center;padding:10px 16px;border-bottom:1px solid var(--ln);gap:8px}.tr:last-child{border-bottom:0}.tr.h{background:#F5F7FA;color:var(--mut);font-size:12px}
-.tr .av{width:30px;height:30px;font-size:13px;display:inline-grid;margin-inline-end:8px;vertical-align:middle}.tr em{font-style:normal;color:var(--ac);font-weight:700}
-.two{display:grid;grid-template-columns:1fr 330px;gap:16px;align-items:start}
-.cr{color:var(--mut);font-size:12.5px;margin-bottom:6px}
-</style></head><body>
-<header class="intro"><h1>تصور شاشات سيستم الكابتن أحمد</h1>
-<p>كل صفحات السيستم بالشكل المستقبلي، موبايل وديسكتوب. شاشات ثابتة بداتا تجريبية.</p>
-<div class="pal"><i style="background:#FF6A13" title="أكسنت"></i><i style="background:#0F1B2D"></i><i style="background:#F5F7FA"></i><i style="background:#7C5CFF"></i><i style="background:#14B8A6"></i><i style="background:#3B82F6"></i></div></header>
-<input class="rd" type="radio" name="v" id="vm" checked><input class="rd" type="radio" name="v" id="vd"><div class="tg"><label for="vm">موبايل</label><label for="vd">ديسكتوب</label></div>
-<main class="grid mob">
+<header class="top">
+  <h1>الكابتن أحمد إيهاب · ملف الشاشات</h1><span class="grow"></span>
+  <div class="seg" role="group" aria-label="الجهاز" id="devSeg"><button data-d="m" aria-pressed="true">موبايل</button><button data-d="d" aria-pressed="false">ديسكتوب</button></div>
+  <div class="seg" role="group" aria-label="المظهر" id="thSeg"><button data-t="light" aria-pressed="true">فاتح</button><button data-t="dark" aria-pressed="false">داكن</button><button data-t="auto" aria-pressed="false">تلقائي</button></div>
+  <nav class="toc" aria-label="الفهرس">
+    <a href="#A">أ · الدخول</a><a href="#B">ب · الرئيسية</a><a href="#C">ج · العملاء</a><a href="#D">د · التغذية</a><a href="#E">هـ · التمرين</a><a href="#F">و · التصدير</a><a href="#G">ز · المكتبة</a><a href="#H">ح · القوالب</a><a href="#I">ط · الاشتراكات</a><a href="#J">ي · التقارير</a><a href="#K">ك · الرسائل</a><a href="#L">ل · الإعدادات</a><a href="#M">م · المكونات</a>
+  </nav>
+</header>
 
-<figure class="fig"><div class="ph"><div class="top"><h2 style="margin:0">العملاء</h2></div><div class="body">
-<h3>العملاء</h3><div class="sub">24 متدرب · 3 بينتهي اشتراكهم قريب</div>
-<div class="search">🔍 دوّر على متدرب بالاسم</div>
-<div class="chips"><span class="chip on">الكل</span><span class="chip">فعّال</span><span class="chip">ينتهي قريب</span><span class="chip">منتهي</span></div>
-<div class="row"><div class="av">س</div><div><b>سارة محمود</b><small>تخسيس · 1,900 سعرة</small></div><span class="st w">بعد 5 أيام</span></div>
-<div class="row"><div class="av">م</div><div><b>محمد عادل</b><small>تضخيم · 2,800 سعرة</small></div><span class="st a">فعّال</span></div>
-<div class="row"><div class="av">ه</div><div><b>هبة سمير</b><small>تنشيف · 1,700 سعرة</small></div><span class="st a">فعّال</span></div>
-<div class="row"><div class="av">ك</div><div><b>كريم ياسر</b><small>لياقة عامة · 2,300 سعرة</small></div><span class="st a">فعّال</span></div>
-<div class="row"><div class="av">ن</div><div><b>نورا حسن</b><small>تخسيس · 1,600 سعرة</small></div><span class="st e">منتهي</span></div>
-<div class="fab">+</div></div>
-<div class="tabs"><div class=""><span></span>الرئيسية</div><div class="on"><span></span>العملاء</div><div class=""><span></span>المكتبة</div><div class=""><span></span>القوالب</div><div class=""><span></span>المزيد</div></div></div>
-<figcaption>1. العملاء<small>كل متدرب في سطر، وزرار + عائم لعميل جديد</small></figcaption></figure>
+<main>
+<section class="sec" id="A">
+  <h2>أ) الدخول والبداية</h2>
+  <p class="muted">4 شاشات</p>
+  <div class="screen" data-id="A1" data-title="تسجيل الدخول" data-t="a1" data-k="au" data-cap="دخول بإيميل أو موبايل وكلمة سر، ورابط نسيت كلمة السر تحت الحقول."></div>
+  <div class="screen" data-id="A2" data-title="نسيت كلمة السر" data-t="a2" data-k="au" data-cap="حقل واحد بس: الإيميل. وبعدها كود على طول." data-b="تسجيل الدخول"></div>
+  <div class="screen" data-id="A3" data-title="كود التحقق وإعادة التعيين" data-t="a3" data-k="au" data-cap="6 خانات للكود وعداد إعادة الإرسال، وتحتهم كلمة السر الجديدة." data-b="نسيت كلمة السر"></div>
+  <div class="screen" data-id="A4" data-title="إعداد أولي للكابتن" data-t="a4" data-k="au" data-cap="3 خطوات بشريط تقدم، وزرار تخطي واضح في كل خطوة." data-b="رجوع"></div>
+</section>
 
-<figure class="fig"><div class="ph"><div class="top"><div class="bk"><b>›</b>العملاء</div><h2>سارة محمود</h2><div class="sp"></div></div><div class="body">
-<div class="row" style="border:0;background:none;padding:0"><div class="av" style="width:52px;height:52px;font-size:22px">س</div><div><h3 style="font-size:20px">سارة محمود</h3><small class="sub">تخسيس · 28 سنة · اشتراك 3 شهور</small></div></div>
-<div class="stats"><div><b>74.5</b><small>الوزن الحالي</small></div><div><b>70</b><small>الهدف</small></div><div><b>5</b><small>أيام للتجديد</small></div></div>
-<div class="tiles"><div class="tile"><h4>التغذية</h4><small>4 وجبات · 1,890 سعرة</small><span>افتح البرنامج</span></div><div class="tile" style="border-top-color:#0F1B2D"><h4>التمرين</h4><small>4 أيام · 23 تمرين</small><span>افتح البرنامج</span></div></div>
-<div class="lbl">البرامج السابقة</div>
-<div class="hist"><span>نسخة 3 سبتمبر</span><em>استرجاع</em></div><div class="hist"><span>نسخة 4 أغسطس</span><em>استرجاع</em></div>
-<div class="btn o" style="margin-top:10px">PDF للبرنامج كله</div><div class="btn" style="margin-top:8px">نشر صفحة للمتدرب</div></div>
-<div class="tabs"><div class=""><span></span>الرئيسية</div><div class="on"><span></span>العملاء</div><div class=""><span></span>المكتبة</div><div class=""><span></span>القوالب</div><div class=""><span></span>المزيد</div></div></div>
-<figcaption>2. ملف العميل<small>اختيارين كبار بس: تغذية أو تمرين</small></figcaption></figure>
+<section class="sec" id="B">
+  <h2>ب) الرئيسية</h2>
+  <p class="muted">2 شاشات</p>
+  <div class="screen" data-id="B1" data-title="الرئيسية" data-t="b1" data-k="mn" data-cap="4 أرقام وقايمة محتاج متابعة. الزرار البرتقالي بيضيف متدرب." data-n="0" data-fab="إضافة متدرب" data-cr="الرئيسية"></div>
+  <div class="screen" data-id="B2" data-title="الرئيسية فاضية" data-t="b2" data-k="mn" data-cap="أول مرة بدون متدربين: جملة واضحة وزرار واحد." data-n="0" data-cr="الرئيسية"></div>
+</section>
 
-<figure class="fig"><div class="ph"><div class="top"><div class="bk"><b>›</b>سارة</div><h2>برنامج التغذية</h2><div class="sp"></div></div><div class="body">
-<div class="tot"><div class="big">1,890<small>من 1,900 سعرة</small></div><span class="lf">باقي 10</span>
-<div class="bar"><i style="width:26%;background:var(--pr)"></i><i style="width:38%;background:var(--cb)"></i><i style="width:36%;background:var(--ft)"></i></div>
-<div class="mc"><span><i style="background:var(--pr)"></i>بروتين <b>118</b></span><span><i style="background:var(--cb)"></i>كارب <b>180</b></span><span><i style="background:var(--ft)"></i>دهون <b>64</b></span></div></div>
-<div class="meal"><h4>الفطار<small>505 سعرة</small></h4>
-<div class="it"><div class="n">بيض مسلوق<small>اضغط للتبديل</small></div><div class="stp"><u>−</u><span>150</span><u>+</u></div><span class="k">232</span></div>
-<div class="it"><div class="n">توست أسمر</div><div class="stp"><u>−</u><span>70</span><u>+</u></div><span class="k">175</span></div>
-<div class="it"><div class="n">جبنة قريش</div><div class="stp"><u>−</u><span>100</span><u>+</u></div><span class="k">98</span></div>
-<div class="add">+ صنف · وجبة جاهزة</div></div>
-<div class="meal"><h4>الغداء<small>690 سعرة</small></h4>
-<div class="it"><div class="n">صدور فراخ مشوية</div><div class="stp"><u>−</u><span>200</span><u>+</u></div><span class="k">330</span></div>
-<div class="it"><div class="n">أرز أبيض مسلوق</div><div class="stp"><u>−</u><span>180</span><u>+</u></div><span class="k">234</span></div></div>
-<div class="dock"><div class="btn">معاينة PDF</div></div></div></div>
-<figcaption>3. بناء التغذية<small>الإجمالي ثابت فوق، وكل تعديل بيتحسب فورًا</small></figcaption></figure>
+<section class="sec" id="C">
+  <h2>ج) العملاء</h2>
+  <p class="muted">12 شاشات</p>
+  <div class="screen" data-id="C1" data-title="قايمة العملاء" data-t="c1" data-k="mn" data-cap="بحث وفلاتر وعدد النتايج. على الديسكتوب بتتحول لجدول." data-n="1" data-fab="عميل جديد" data-cr="العملاء"></div>
+  <div class="screen" data-id="C2" data-title="نتايج البحث والتحميل" data-t="c2" data-k="mn" data-cap="حالتين: مفيش نتايج بحث، وهيكل تحميل (Skeleton)." data-n="1" data-cr="العملاء"></div>
+  <div class="screen" data-id="C3" data-title="إضافة عميل جديد" data-t="c3" data-k="in" data-cap="نموذج بخيارات سريعة بالضغط بدل الكتابة." data-n="1" data-b="العملاء" data-cr="العملاء › عميل جديد"></div>
+  <div class="screen" data-id="C4" data-title="البيانات الصحية" data-t="c4" data-k="in" data-cap="إصابات وحساسية وأصناف مش بيحبها، وحفظ تلقائي." data-n="1" data-b="إضافة عميل" data-cr="العملاء › نورا حسن › البيانات الصحية"></div>
+  <div class="screen" data-id="C5" data-title="تعديل عميل" data-t="c5" data-k="in" data-cap="نفس النموذج ببيانات، والحذف بعيد عن الحفظ وبنافذة تأكيد." data-n="1" data-b="ملف العميل" data-cr="العملاء › سارة محمود › تعديل"></div>
+  <div class="screen" data-id="C6" data-title="ملف العميل: نظرة" data-t="c6" data-k="in" data-cap="بلاطتين كبار للتغذية والتمرين وتحتهم آخر Check-in والاشتراك." data-n="1" data-b="العملاء" data-cr="العملاء › سارة محمود"></div>
+  <div class="screen" data-id="C7" data-title="ملف العميل: التقدم" data-t="c7" data-k="in" data-cap="رسم الوزن بخط الهدف، والقياسات والالتزام وصور قبل وبعد." data-n="1" data-b="العملاء" data-cr="العملاء › سارة محمود › التقدم"></div>
+  <div class="screen" data-id="C8" data-title="ملف العميل: Check-in" data-t="c8" data-k="in" data-cap="قايمة Check-ins السابقة بالوزن ونسبة الالتزام." data-n="1" data-b="العملاء" data-cr="العملاء › سارة محمود › Check-in"></div>
+  <div class="screen" data-id="C9" data-title="تفاصيل Check-in" data-t="c9" data-k="in" data-cap="كل اللي بعته المتدرب، وردك، وزرار عدّل البرنامج." data-n="1" data-b="Check-in" data-cr="العملاء › سارة محمود › Check-in › أسبوع 8"></div>
+  <div class="screen" data-id="C10" data-title="ملف العميل: الاشتراك والدفع" data-t="c10" data-k="in" data-cap="الباقة والتواريخ وسجل الدفعات وزرار التجديد." data-n="1" data-b="العملاء" data-cr="العملاء › سارة محمود › الاشتراك"></div>
+  <div class="screen" data-id="C11" data-title="سجل البرامج" data-t="c11" data-k="in" data-cap="النسخ السابقة، ومقارنة بسيطة، واسترجاع بضغطة." data-n="1" data-b="سارة محمود" data-cr="العملاء › سارة محمود › سجل البرامج"></div>
+  <div class="screen" data-id="C12" data-title="اختيار عميل" data-t="c12" data-k="in" data-cap="Sheet بيظهر وقت تطبيق قالب أو نسخ برنامج." data-n="3" data-b="القوالب" data-cr="القوالب › تطبيق قالب"></div>
+</section>
 
-<figure class="fig"><div class="ph"><div class="top"><div class="bk"><b>›</b>سارة</div><h2>برنامج التمرين</h2><div class="sp"></div></div><div class="body">
-<div class="days"><span class="chip on">صدر وتراي</span><span class="chip">ضهر وباي</span><span class="chip">رجل</span><span class="chip">أكتاف</span></div>
-<div class="ex"><b>بنش بريس بار</b><small>صدر</small><div class="pl"><span><small>مجموعات</small>4</span><span><small>تكرار</small>8-10</span><span><small>راحة</small>90 ث</span></div></div>
-<div class="ex"><b>بنش مائل دمبل</b><small>صدر</small><div class="pl"><span><small>مجموعات</small>3</span><span><small>تكرار</small>10-12</span><span><small>راحة</small>75 ث</span></div></div>
-<div class="ex"><b>فلاي كابل</b><small>صدر</small><div class="pl"><span><small>مجموعات</small>3</span><span><small>تكرار</small>12-15</span><span><small>راحة</small>60 ث</span></div></div>
-<div class="ex"><b>تراي كابل</b><small>ذراع</small><div class="pl"><span><small>مجموعات</small>3</span><span><small>تكرار</small>12</span><span><small>راحة</small>60 ث</span></div></div>
-<div class="dock"><div class="btn o" style="margin-bottom:8px">+ تمرين من المكتبة</div><div class="btn">معاينة PDF</div></div></div></div>
-<figcaption>4. بناء التمرين<small>أيام وتمارين من المكتبة، وتعديل سريع</small></figcaption></figure>
+<!-- BATCH 1 done -->  <section class="sec" id="D">
+  <h2>د) بناء التغذية</h2>
+  <p class="muted">8 شاشات</p>
+  <div class="screen" data-id="D1" data-title="بناء التغذية" data-t="d1" data-cap="شريط الإجمالي ثابت فوق، والجرامات بـ + و −، وزرار التبديل جنب كل صنف. على الديسكتوب اللوحة الجانبية فيها معاينة لايف." data-n="1" data-b="ملف العميل" data-fab="وجبة جديدة" data-cr="العملاء › سارة محمود › التغذية"></div>
+  <div class="screen" data-id="D2" data-title="اختيار وتبديل صنف" data-t="d2" data-cap="Sheet بالبحث والتصنيفات، وماكروز كل صنف بنفس الكمية." data-n="1" data-b="بناء التغذية" data-cr="العملاء › سارة محمود › التغذية › تبديل صنف"></div>
+  <div class="screen" data-id="D3" data-title="إضافة وجبة جاهزة" data-t="d3" data-cap="اختار وجبة وشوف محتواها قبل ما تضيفها." data-n="1" data-b="بناء التغذية" data-cr="العملاء › سارة محمود › التغذية › وجبة جاهزة"></div>
+  <div class="screen" data-id="D4" data-title="إجراءات الوجبة" data-t="d4" data-cap="وجبة جديدة، إعادة تسمية، نسخ. الحذف بعيد في آخر القايمة." data-n="1" data-b="بناء التغذية" data-cr="العملاء › سارة محمود › التغذية"></div>
+  <div class="screen" data-id="D5" data-title="حاسبة السعرات" data-t="d5" data-cap="مدخلات بسيطة ونتيجة مقترحة، وزرار طبّق كهدف." data-n="1" data-b="بناء التغذية" data-cr="العملاء › سارة محمود › التغذية › الحاسبة"></div>
+  <div class="screen" data-id="D6" data-title="ضبط الهدف والماكروز" data-t="d6" data-cap="بالنسبة أو بالجرام لكل كجم، ومؤشر إن المجموع 100%." data-n="1" data-b="بناء التغذية" data-cr="العملاء › سارة محمود › التغذية › الهدف"></div>
+  <div class="screen" data-id="D7" data-title="قايمة المشتريات" data-t="d7" data-cap="مستخرجة من البرنامج ومقسّمة بالنوع، وتتبعت واتساب." data-n="1" data-b="بناء التغذية" data-cr="العملاء › سارة محمود › التغذية › المشتريات"></div>
+  <div class="screen" data-id="D8" data-title="تحذيرات وتأكيدات" data-t="d8" data-cap="تحذير زيادة السعرات، تأكيد حذف وجبة، وحفظ كقالب." data-n="1" data-b="بناء التغذية" data-cr="العملاء › سارة محمود › التغذية"></div>
+</section>
 
-<figure class="fig"><div class="ph"><div class="top"><div class="bk"><b>›</b>رجوع</div><h2>معاينة PDF</h2><div class="sp"></div></div><div class="body">
-<div class="sw">لون القالب <i class="on" style="background:#0F1B2D"></i><i style="background:#FF6A13"></i><i style="background:#243B6B"></i></div>
-<div class="sheet"><div class="sh"><div class="m">أ</div><div><b>كابتن أحمد إيهاب</b><small>أونلاين كوتشنج</small></div><div class="c"><small>برنامج</small><b>سارة محمود</b></div></div>
-<div class="sm"><div><b>1,890</b>سعرة</div><div><b>118</b>بروتين</div><div><b>180</b>كارب</div><div><b>64</b>دهون</div></div>
-<div class="tb"><h5><b>الفطار</b><span>505 سعرة</span></h5><div><span>بيض مسلوق</span><span>150</span><span>232</span></div><div><span>توست أسمر</span><span>70</span><span>175</span></div><div><span>جبنة قريش</span><span>100</span><span>98</span></div></div>
-<div class="tb"><h5><b>الغداء</b><span>690 سعرة</span></h5><div><span>صدور فراخ</span><span>200</span><span>330</span></div><div><span>أرز أبيض</span><span>180</span><span>234</span></div></div></div>
-<div class="dock"><div class="btn">تحميل PDF</div></div></div></div>
-<figcaption>5. معاينة الـ PDF<small>شكل احترافي بلوجو الكابتن، وتحميل بضغطة</small></figcaption></figure>
+<!-- BATCH 2 done -->  <section class="sec" id="E">
+  <h2>هـ) بناء التمرين</h2>
+  <p class="muted">5 شاشات</p>
+  <div class="screen" data-id="E1" data-title="بناء التمرين" data-t="e1" data-cap="تابات الأيام، وكارت لكل تمرين بالمجموعات والتكرار والراحة وملحوظة، وحفظ تلقائي." data-b="ملف العميل" data-fab="إضافة تمرين" data-cr="العملاء › سارة محمود › التمرين" data-n="1"></div>
+  <div class="screen" data-id="E2" data-title="اختيار تمرين" data-t="e2" data-cap="بحث وفلتر عضلات، وفيديو صغير جنب كل تمرين." data-b="بناء التمرين" data-cr="العملاء › سارة محمود › التمرين › اختيار تمرين" data-n="1"></div>
+  <div class="screen" data-id="E3" data-title="تفاصيل تمرين" data-t="e3" data-cap="الفيديو والعضلة والشرح والنصايح، وزرار إضافة لليوم." data-b="اختيار تمرين" data-cr="العملاء › سارة محمود › التمرين › بنش برس" data-n="1"></div>
+  <div class="screen" data-id="E4" data-title="إدارة الأيام" data-t="e4" data-cap="إضافة يوم، إعادة تسمية، نسخ. الحذف بعيد عن زرار الإضافة." data-b="بناء التمرين" data-cr="العملاء › سارة محمود › التمرين › الأيام" data-n="1"></div>
+  <div class="screen" data-id="E5" data-title="حالات التمرين" data-t="e5" data-cap="يوم فاضي، تأكيد حذف يوم، وحفظ كقالب." data-b="بناء التمرين" data-cr="العملاء › سارة محمود › التمرين" data-n="1"></div>
+</section>
 
+<section class="sec" id="F">
+  <h2>و) التصدير والنشر والمتدرب</h2>
+  <p class="muted">9 شاشات</p>
+  <div class="screen" data-id="F1" data-title="معاينة وتصدير PDF" data-t="f1" data-cap="الورقة لايف وجنبها خيارات المحتوى واللون والملحوظة، وزرار التحميل." data-b="ملف العميل" data-cr="العملاء › سارة محمود › التصدير" data-n="1"></div>
+  <div class="screen" data-id="F2" data-title="ورقة الـ PDF كاملة" data-t="f2" data-cap="صفحة التغذية وصفحة التمرين بالتصميم النهائي، فاتحة دايمًا." data-b="معاينة PDF" data-cr="العملاء › سارة محمود › التصدير › الورقة" data-n="1"></div>
+  <div class="screen" data-id="F3" data-title="نشر صفحة المتدرب" data-t="f3" data-cap="الرابط وQR والنسخ والواتساب، وإيقاف النشر بعيد وبلون خطر." data-b="ملف العميل" data-cr="العملاء › سارة محمود › التصدير › نشر" data-n="1"></div>
+  <div class="screen" data-id="F4" data-title="المتدرب: اليوم" data-t="f4" data-cap="تمرين النهارده وأكل النهارده في شاشة واحدة." data-k="tr" data-n="0"></div>
+  <div class="screen" data-id="F5" data-title="المتدرب: التغذية" data-t="f5" data-cap="الوجبات والكميات وسعرات كل وجبة." data-k="tr" data-n="1"></div>
+  <div class="screen" data-id="F6" data-title="المتدرب: التمرين" data-t="f6" data-cap="تابات الأيام وتحتها التمارين بالمجموعات والراحة." data-k="tr" data-n="2"></div>
+  <div class="screen" data-id="F7" data-title="المتدرب: إرسال Check-in" data-t="f7" data-cap="وزن وصور والتزام وكلام، وزرار إرسال واحد." data-k="tr" data-n="3"></div>
+  <div class="screen" data-id="F8" data-title="المتدرب: الاشتراك منتهي" data-t="f8" data-cap="رسالة واضحة وزرار تجديد وطريق للكابتن." data-k="tr" data-n="-1"></div>
+  <div class="screen" data-id="F9" data-title="المتدرب: الرابط غير متاح" data-t="f9" data-cap="شرح بسيط وطريق للكابتن عشان يبعت رابط جديد." data-k="tr" data-n="-1"></div>
+</section>
 
-<figure class="fig"><div class="ph"><div class="top"><h2 style="margin:0">الرئيسية</h2></div><div class="body"><h3>صباح الخير يا كابتن</h3><div class="sub">الإتنين 5 أكتوبر</div><div class="stats"><div><b>24</b><small>متدرب فعّال</small></div><div><b>3</b><small>تجديدات الأسبوع</small></div><div><b>18.4k</b><small>دخل الشهر ج</small></div></div><div class="lbl">محتاج متابعة</div><div class="row"><div class="av">س</div><div><b>سارة محمود</b><small>الاشتراك بينتهي بعد 5 أيام</small></div><span class="st w">جدّد</span></div><div class="row"><div class="av">ه</div><div><b>هبة سمير</b><small>Check-in متأخر 4 أيام</small></div><span class="st e">ذكّر</span></div><div class="row"><div class="av">ك</div><div><b>كريم ياسر</b><small>دفعة 800 ج معلّقة</small></div><span class="st w">طالب</span></div><div class="btn" style="margin-top:6px">+ عميل جديد</div><div class="btn o" style="margin-top:8px">برنامج من قالب</div></div><div class="tabs"><div class="on"><span></span>الرئيسية</div><div class=""><span></span>العملاء</div><div class=""><span></span>المكتبة</div><div class=""><span></span>القوالب</div><div class=""><span></span>المزيد</div></div></div><figcaption>6. الرئيسية<small>أرقامك واللي محتاج تتحرك فيه النهارده</small></figcaption></figure><figure class="fig"><div class="ph"><div class="top"><div class="bk"><b>›</b>سارة</div><h2>التقدم</h2><div class="sp"></div></div><div class="body"><div class="chips"><span class="chip">نظرة</span><span class="chip on">التقدم</span><span class="chip">Check-in</span><span class="chip">الاشتراك</span></div><div class="meal"><h4>الوزن (كجم)<small>آخر 6 أسابيع</small></h4><svg viewBox="0 0 300 110" width="100%"><line x1="0" y1="95" x2="300" y2="95" stroke="#14B8A6" stroke-dasharray="5 4"/><polyline points="10,18 60,26 110,40 160,52 210,66 260,80" fill="none" stroke="#FF6A13" stroke-width="3" stroke-linejoin="round"/><circle cx="260" cy="80" r="6" fill="#FF6A13"/></svg><small class="sub">78 ← 74.5 · الهدف 70</small></div><div class="stats"><div><b>-3.5</b><small>كجم نزل</small></div><div><b>92%</b><small>الالتزام</small></div><div><b>4</b><small>Check-ins</small></div></div><div class="lbl">صور قبل / بعد</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div class="hist" style="height:120px;margin:0;align-items:flex-end">قبل</div><div class="hist" style="height:120px;margin:0;align-items:flex-end">بعد</div></div></div></div><figcaption>7. تقدم العميل<small>وزن وقياسات وصور برسم واضح</small></figcaption></figure><figure class="fig"><div class="ph"><div class="top"><div class="bk"><b>›</b>سارة</div><h2>Check-in</h2><div class="sp"></div></div><div class="body"><div class="meal"><h4>أسبوع 4<small>أمس 9:40 م</small></h4><div class="stats" style="margin:8px 0 0"><div><b>74.5</b><small>الوزن</small></div><div><b>90%</b><small>التزام أكل</small></div><div><b>3/4</b><small>تمرين</small></div></div></div><div class="meal"><small class="sub">كلام المتدرب</small><div style="margin-top:4px">تعبت شوية في تمرين الرجل، والجوع بالليل زاد.</div></div><div class="hist" style="height:90px;align-items:flex-end;margin-bottom:10px">صور الأسبوع (3)</div><div class="search" style="margin:0 0 8px">اكتب ردك للمتدرب...</div><div class="btn">إرسال الرد</div><div class="btn o" style="margin-top:8px">عدّل البرنامج</div></div></div><figcaption>8. Check-in أسبوعي<small>تراجع التقدم وتحط ردك وتعدّل في مكان واحد</small></figcaption></figure><figure class="fig"><div class="ph"><div class="top"><h2 style="margin:0">المكتبة</h2></div><div class="body"><div class="chips"><span class="chip on">أطعمة</span><span class="chip">تمارين</span><span class="chip">وجبات</span></div><div class="search" style="margin-top:0">🔍 دوّر في الأطعمة</div><div class="row"><div><b>صدور فراخ مشوية</b><small>لكل 100 جم · 165 سعرة</small></div><small style="margin-inline-start:auto;font-weight:600"><span style="color:#7C5CFF">31</span> · <span style="color:#14B8A6">0</span> · <span style="color:#3B82F6">3.6</span></small></div><div class="row"><div><b>أرز أبيض مسلوق</b><small>لكل 100 جم · 130 سعرة</small></div><small style="margin-inline-start:auto;font-weight:600"><span style="color:#7C5CFF">2.7</span> · <span style="color:#14B8A6">28</span> · <span style="color:#3B82F6">0.3</span></small></div><div class="row"><div><b>بيض مسلوق</b><small>لكل 100 جم · 155 سعرة</small></div><small style="margin-inline-start:auto;font-weight:600"><span style="color:#7C5CFF">13</span> · <span style="color:#14B8A6">1.1</span> · <span style="color:#3B82F6">11</span></small></div><div class="row"><div><b>زبادي يوناني</b><small>لكل 100 جم · 59 سعرة</small></div><small style="margin-inline-start:auto;font-weight:600"><span style="color:#7C5CFF">10</span> · <span style="color:#14B8A6">3.6</span> · <span style="color:#3B82F6">0.4</span></small></div><div class="row"><div><b>عيش بلدي</b><small>لكل 100 جم · 270 سعرة</small></div><small style="margin-inline-start:auto;font-weight:600"><span style="color:#7C5CFF">9</span> · <span style="color:#14B8A6">55</span> · <span style="color:#3B82F6">1.5</span></small></div><div class="fab">+</div></div><div class="tabs"><div class=""><span></span>الرئيسية</div><div class=""><span></span>العملاء</div><div class="on"><span></span>المكتبة</div><div class=""><span></span>القوالب</div><div class=""><span></span>المزيد</div></div></div><figcaption>9. المكتبة<small>أطعمة وتمارين ووجبات في مكان واحد</small></figcaption></figure><figure class="fig"><div class="ph"><div class="top"><h2 style="margin:0">القوالب</h2></div><div class="body"><div class="chips"><span class="chip on">تغذية</span><span class="chip">تمرين</span></div><div class="meal"><h4>تخسيس 1,500 سعرة</h4><small class="sub">4 وجبات · استُخدم 12 مرة</small><div class="btn o" style="margin-top:8px;padding:9px">طبّق على عميل</div></div><div class="meal"><h4>تضخيم نظيف 2,800</h4><small class="sub">5 وجبات · استُخدم 7 مرات</small><div class="btn o" style="margin-top:8px;padding:9px">طبّق على عميل</div></div><div class="meal"><h4>تنشيف عالي البروتين</h4><small class="sub">4 وجبات · استُخدم 5 مرات</small><div class="btn o" style="margin-top:8px;padding:9px">طبّق على عميل</div></div><div class="fab">+</div></div><div class="tabs"><div class=""><span></span>الرئيسية</div><div class=""><span></span>العملاء</div><div class=""><span></span>المكتبة</div><div class="on"><span></span>القوالب</div><div class=""><span></span>المزيد</div></div></div><figcaption>10. القوالب<small>برامج جاهزة تتطبق على أي متدرب</small></figcaption></figure><figure class="fig"><div class="ph"><div class="top"><div class="bk"><b>›</b>المزيد</div><h2>الاشتراكات</h2><div class="sp"></div></div><div class="body"><div class="stats" style="grid-template-columns:1fr 1fr"><div><b>18,400</b><small>محصّل الشهر ج</small></div><div><b>2,600</b><small>معلّق ج</small></div></div><div class="chips"><span class="chip on">الكل</span><span class="chip">معلّق</span><span class="chip">بينتهي</span></div><div class="row"><div class="av">ك</div><div><b>كريم ياسر</b><small>شهري · 800 ج</small></div><span class="st w">معلّق</span></div><div class="row"><div class="av">س</div><div><b>سارة محمود</b><small>3 شهور · 2,400 ج</small></div><span class="st w">بينتهي</span></div><div class="row"><div class="av">م</div><div><b>محمد عادل</b><small>6 شهور · 3,500 ج</small></div><span class="st a">مدفوع</span></div><div class="row"><div class="av">ه</div><div><b>هبة سمير</b><small>شهري · 900 ج</small></div><span class="st a">مدفوع</span></div></div><div class="tabs"><div class=""><span></span>الرئيسية</div><div class=""><span></span>العملاء</div><div class=""><span></span>المكتبة</div><div class=""><span></span>القوالب</div><div class="on"><span></span>المزيد</div></div></div><figcaption>11. الاشتراكات والدفع<small>باقات ومدفوعات ومين محتاج تجديد</small></figcaption></figure><figure class="fig"><div class="ph"><div class="top"><h2 style="margin:0">المزيد</h2></div><div class="body"><div class="row"><div class="av">أ</div><div><b>كابتن أحمد إيهاب</b><small>أونلاين كوتشنج</small></div></div><div class="hist"><span>بيانات الكابتن واللوجو</span><small></small></div><div class="hist"><span>قوالب الـ PDF</span><small>3 ألوان</small></div><div class="hist"><span>الباقات والأسعار</span><small></small></div><div class="hist"><span>الاشتراكات والدفع</span><small></small></div><div class="hist"><span>نسخ احتياطي واستيراد</span><small></small></div><div class="hist"><span>المظهر</span><small>فاتح / داكن</small></div><div class="hist"><span>اللغة</span><small>عربي</small></div><div class="btn o" style="margin-top:8px;color:#DC2626">تسجيل خروج</div></div><div class="tabs"><div class=""><span></span>الرئيسية</div><div class=""><span></span>العملاء</div><div class=""><span></span>المكتبة</div><div class=""><span></span>القوالب</div><div class="on"><span></span>المزيد</div></div></div><figcaption>12. المزيد والإعدادات<small>هوية الكابتن وكل إعدادات السيستم</small></figcaption></figure><figure class="fig"><div class="ph"><div class="top"><div class="av" style="width:30px;height:30px;font-size:15px;background:#FF6A13;color:#0F1B2D">أ</div><h2 style="margin-inline-start:8px;margin-inline-end:auto">كابتن أحمد</h2></div><div class="body"><h3>أهلًا سارة 👋</h3><div class="sub">اليوم الأول: صدر وتراي</div><div class="meal" style="margin-top:12px;border-top:4px solid #FF6A13"><h4>تمرين النهارده<small>5 تمارين</small></h4><div class="it"><div class="n">بنش بريس بار</div><b>4×8-10</b></div><div class="it"><div class="n">بنش مائل دمبل</div><b>3×10-12</b></div><div class="it"><div class="n">فلاي كابل</div><b>3×12-15</b></div></div><div class="meal"><h4>أكل النهارده<small>1,890 سعرة</small></h4><div class="it"><div class="n">الفطار</div><b>505</b></div><div class="it"><div class="n">الغداء</div><b>690</b></div></div><div class="btn">تحميل PDF</div><div class="btn o" style="margin-top:8px">ابعت Check-in</div></div></div><figcaption>13. صفحة المتدرب<small>اللي المتدرب بيشوفه بالرابط، بتتحدث تلقائي</small></figcaption></figure></main>
-<main class="grid desk">
-<figure class="fig w"><div class="ph dk"><div class="sb"><div class="mk"><i>أ</i>كابتن أحمد</div><div class="n">الرئيسية</div><div class="n on">العملاء</div><div class="n">المكتبة</div><div class="n">القوالب</div><div class="n">الاشتراكات</div><div class="n">الإعدادات</div></div><div class="mn"><div class="hd"><div><h3>صباح الخير يا كابتن</h3><div class="sub">الإتنين 5 أكتوبر</div></div><div class="btn">+ عميل جديد</div></div><div class="c4"><div><b>24</b><small>متدرب فعّال</small></div><div><b>3</b><small>تجديدات الأسبوع</small></div><div><b>18.4k</b><small>دخل الشهر ج</small></div><div><b>5</b><small>Check-ins جديدة</small></div></div><div class="tbl"><div class="tr h"><span>المتدرب</span><span>الهدف</span><span>آخر تعديل</span><span>الحالة</span><span></span></div><div class="tr"><span><span class="av">س</span><b>سارة محمود</b></span><span>تخسيس · 1,900</span><span>النهارده</span><span><span class="st w">بعد 5 أيام</span></span><em>فتح</em></div><div class="tr"><span><span class="av">م</span><b>محمد عادل</b></span><span>تضخيم · 2,800</span><span>من 3 أيام</span><span><span class="st a">فعّال</span></span><em>فتح</em></div><div class="tr"><span><span class="av">ه</span><b>هبة سمير</b></span><span>تنشيف · 1,700</span><span>من أسبوع</span><span><span class="st a">فعّال</span></span><em>فتح</em></div><div class="tr"><span><span class="av">ك</span><b>كريم ياسر</b></span><span>لياقة · 2,300</span><span>من أسبوعين</span><span><span class="st w">معلّق دفع</span></span><em>فتح</em></div><div class="tr"><span><span class="av">ن</span><b>نورا حسن</b></span><span>تخسيس · 1,600</span><span>من 3 أسابيع</span><span><span class="st e">منتهي</span></span><em>جدّد</em></div></div></div></div><figcaption>D1. الرئيسية والعملاء<small>جدول واضح مع بحث وفلاتر وأرقام الشهر</small></figcaption></figure><figure class="fig w"><div class="ph dk"><div class="sb"><div class="mk"><i>أ</i>كابتن أحمد</div><div class="n">الرئيسية</div><div class="n on">العملاء</div><div class="n">المكتبة</div><div class="n">القوالب</div><div class="n">الاشتراكات</div><div class="n">الإعدادات</div></div><div class="mn"><div class="cr">العملاء › سارة محمود › التغذية</div><div class="hd"><h3>برنامج التغذية</h3><div style="display:flex;gap:8px"><div class="btn o" style="padding:9px 16px">حفظ كقالب</div><div class="btn">تحميل PDF</div></div></div><div class="two"><div><div class="meal"><h4>الفطار<small>505 سعرة</small></h4><div class="it"><div class="n">بيض مسلوق</div><div class="stp"><u>−</u><span>150</span><u>+</u></div><span class="k">232</span></div><div class="it"><div class="n">توست أسمر</div><div class="stp"><u>−</u><span>70</span><u>+</u></div><span class="k">175</span></div><div class="it"><div class="n">جبنة قريش</div><div class="stp"><u>−</u><span>100</span><u>+</u></div><span class="k">98</span></div><div class="add">+ صنف · وجبة جاهزة</div></div><div class="meal"><h4>الغداء<small>690 سعرة</small></h4><div class="it"><div class="n">صدور فراخ مشوية</div><div class="stp"><u>−</u><span>200</span><u>+</u></div><span class="k">330</span></div><div class="it"><div class="n">أرز أبيض مسلوق</div><div class="stp"><u>−</u><span>180</span><u>+</u></div><span class="k">234</span></div><div class="it"><div class="n">سلطة خضار</div><div class="stp"><u>−</u><span>150</span><u>+</u></div><span class="k">37</span></div><div class="add">+ صنف · وجبة جاهزة</div></div></div><div><div class="tot"><div class="big">1,890<small>من 1,900</small></div><span class="lf">باقي 10</span><div class="bar"><i style="width:26%;background:var(--pr)"></i><i style="width:38%;background:var(--cb)"></i><i style="width:36%;background:var(--ft)"></i></div><div class="mc"><span><i style="background:var(--pr)"></i>بروتين <b>118</b></span><span><i style="background:var(--cb)"></i>كارب <b>180</b></span><span><i style="background:var(--ft)"></i>دهون <b>64</b></span></div></div><div class="sheet"><div class="sh"><div class="m">أ</div><div><b>كابتن أحمد إيهاب</b><small>معاينة الـ PDF</small></div><div class="c"><b>سارة محمود</b></div></div><div class="tb" style="padding-top:8px"><h5><b>الفطار</b><span>505 سعرة</span></h5><div><span>بيض مسلوق</span><span>150</span><span>232</span></div><div><span>توست أسمر</span><span>70</span><span>175</span></div></div></div></div></div></div></div><figcaption>D2. بناء التغذية<small>البناء على الشمال والإجمالي ومعاينة الـ PDF لايف على اليمين</small></figcaption></figure><figure class="fig w"><div class="ph dk"><div class="sb"><div class="mk"><i>أ</i>كابتن أحمد</div><div class="n">الرئيسية</div><div class="n on">العملاء</div><div class="n">المكتبة</div><div class="n">القوالب</div><div class="n">الاشتراكات</div><div class="n">الإعدادات</div></div><div class="mn"><div class="cr">العملاء › سارة محمود</div><div class="hd"><div class="row" style="border:0;background:none;padding:0"><div class="av" style="width:52px;height:52px;font-size:22px">س</div><div><h3 style="font-size:20px">سارة محمود</h3><small class="sub">تخسيس · 28 سنة · اشتراك 3 شهور</small></div></div><div style="display:flex;gap:8px"><div class="btn o" style="padding:9px 16px">PDF</div><div class="btn">نشر صفحة المتدرب</div></div></div><div class="chips"><span class="chip on">نظرة</span><span class="chip">التقدم</span><span class="chip">Check-in</span><span class="chip">الاشتراك</span></div><div class="two"><div><div class="tiles"><div class="tile"><h4>التغذية</h4><small>4 وجبات · 1,890 سعرة</small><span>افتح البرنامج</span></div><div class="tile" style="border-top-color:#0F1B2D"><h4>التمرين</h4><small>4 أيام · 23 تمرين</small><span>افتح البرنامج</span></div></div><div class="meal"><h4>الوزن (كجم)<small>78 ← 74.5 · الهدف 70</small></h4><svg viewBox="0 0 300 80" width="100%"><polyline points="10,10 60,18 110,30 160,40 210,52 260,62" fill="none" stroke="#FF6A13" stroke-width="3"/></svg></div></div><div><div class="meal"><h4>آخر Check-in<small>أمس</small></h4><div class="sub" style="margin:6px 0">تعبت شوية في تمرين الرجل، والجوع بالليل زاد.</div><div class="btn" style="padding:9px">رد وعدّل البرنامج</div></div><div class="meal"><h4>الاشتراك<small>3 شهور</small></h4><div class="sub">بينتهي بعد 5 أيام · مدفوع 2,400 ج</div><div class="btn o" style="padding:9px;margin-top:8px">جدّد</div></div><div class="meal"><h4>النسخ السابقة</h4><div class="hist"><span>3 سبتمبر</span><em>استرجاع</em></div></div></div></div></div></div><figcaption>D3. ملف العميل<small>تقدم وCheck-in واشتراك وبرامج في شاشة واحدة</small></figcaption></figure></main>
-</body></html>
+<!-- BATCH 3 done -->  <section class="sec" id="G">
+  <h2>ز) المكتبة</h2>
+  <p class="muted">8 شاشات</p>
+  <div class="screen" data-id="G1" data-title="المكتبة: الأطعمة" data-t="g1" data-cap="بحث وتصنيفات والماكروز لكل 100 جم. على الديسكتوب جدول." data-k="mn" data-n="2" data-fab="صنف جديد" data-cr="المكتبة › الأطعمة"></div>
+  <div class="screen" data-id="G2" data-title="إضافة وتعديل صنف" data-t="g2" data-cap="الاسم والتصنيف والقيم لكل 100 جم والوحدات (جرام، ملعقة، حبة)." data-n="2" data-b="المكتبة" data-cr="المكتبة › الأطعمة › فول مدمس"></div>
+  <div class="screen" data-id="G3" data-title="المكتبة: التمارين" data-t="g3" data-cap="بحث وفلتر عضلات، وفيديو صغير جنب كل تمرين." data-k="mn" data-n="2" data-fab="تمرين جديد" data-cr="المكتبة › التمارين"></div>
+  <div class="screen" data-id="G4" data-title="إضافة وتعديل تمرين" data-t="g4" data-cap="الاسم والعضلة والمعدات والفيديو والشرح." data-n="2" data-b="المكتبة" data-cr="المكتبة › التمارين › بنش برس"></div>
+  <div class="screen" data-id="G5" data-title="المكتبة: الوجبات الجاهزة" data-t="g5" data-cap="قايمة بالسعرات والماكروز لكل وجبة." data-k="mn" data-n="2" data-fab="وجبة جديدة" data-cr="المكتبة › الوجبات الجاهزة"></div>
+  <div class="screen" data-id="G6" data-title="إنشاء وتعديل وجبة جاهزة" data-t="g6" data-cap="الاسم والتصنيف وأصنافها بالجرامات وإجمالي الوجبة." data-n="2" data-b="المكتبة" data-cr="المكتبة › الوجبات الجاهزة › فطار فول وبيض"></div>
+  <div class="screen" data-id="G7" data-title="استيراد أطعمة من CSV" data-t="g7" data-cap="معاينة قبل التأكيد، والصفوف الناقصة بتتعلّم وبتتخطى." data-n="2" data-b="المكتبة" data-cr="المكتبة › الأطعمة › استيراد"></div>
+  <div class="screen" data-id="G8" data-title="حالات المكتبة" data-t="g8" data-cap="مفيش نتيجة بحث، وتأكيد حذف صنف مستخدم في برامج." data-n="2" data-b="المكتبة" data-cr="المكتبة › الأطعمة"></div>
+</section>
+
+<section class="sec" id="H">
+  <h2>ح) القوالب</h2>
+  <p class="muted">3 شاشات</p>
+  <div class="screen" data-id="H1" data-title="القوالب" data-t="h1" data-cap="تاب تغذية وتاب تمرين، وكارت لكل قالب بملخصه وعدد مرات استخدامه." data-k="mn" data-n="3" data-fab="قالب جديد" data-cr="القوالب"></div>
+  <div class="screen" data-id="H2" data-title="تفاصيل قالب" data-t="h2" data-cap="معاينة القالب، والتطبيق هو الإجراء الأساسي. الحذف بعيد." data-n="3" data-b="القوالب" data-cr="القوالب › تخسيس 1,850 سعرة"></div>
+  <div class="screen" data-id="H3" data-title="تطبيق قالب على عميل" data-t="h3" data-cap="اختيار العميل وتحذير واضح إن البرنامج الحالي هيتبدل." data-n="3" data-b="تفاصيل القالب" data-cr="القوالب › تخسيس 1,850 سعرة › تطبيق"></div>
+</section>
+
+<!-- BATCH 4 done -->  <section class="sec" id="I">
+  <h2>ط) الاشتراكات والدفع</h2>
+  <p class="muted">6 شاشات</p>
+  <div class="screen" data-id="I1" data-title="الاشتراكات والدفع" data-t="i1" data-cap="أرقام المحصّل والمعلّق والمنتهي، وقايمة بفلاتر. على الديسكتوب جدول." data-n="4" data-fab="تسجيل دفعة" data-cr="الاشتراكات"></div>
+  <div class="screen" data-id="I2" data-title="تسجيل دفعة" data-t="i2" data-cap="المبلغ وطريقة الدفع (كاش، فودافون كاش، إنستاباي، تحويل) والتاريخ وملحوظة." data-n="4" data-b="الاشتراكات والدفع" data-cr="الاشتراكات › تسجيل دفعة"></div>
+  <div class="screen" data-id="I3" data-title="تجديد اشتراك" data-t="i3" data-cap="اختيار الباقة وتاريخ البداية وطريقة الدفع في شاشة واحدة." data-n="4" data-b="الاشتراكات والدفع" data-cr="الاشتراكات › تجديد"></div>
+  <div class="screen" data-id="I4" data-title="الباقات والأسعار" data-t="i4" data-cap="قايمة الباقات بحالة التفعيل." data-n="4" data-fab="باقة جديدة" data-cr="الاشتراكات › الباقات"></div>
+  <div class="screen" data-id="I5" data-title="إضافة وتعديل باقة" data-t="i5" data-cap="الاسم والمدة والسعر والمميزات ومفتاح التفعيل." data-n="4" data-b="الباقات والأسعار" data-cr="الاشتراكات › الباقات › 3 شهور"></div>
+  <div class="screen" data-id="I6" data-title="المتدرب: اختيار باقة والدفع" data-t="i6" data-cap="اختيار باقة ودفع أونلاين (Paymob / Fawry) مع حالتي نجاح وفشل." data-k="tr" data-n="-1"></div>
+</section>
+
+<section class="sec" id="J">
+  <h2>ي) التقارير</h2>
+  <p class="muted">3 شاشات</p>
+  <div class="screen" data-id="J1" data-title="التقارير" data-t="j1" data-cap="الدخل الشهري كأعمدة، وعدد المتدربين الفعّالين ونسبة التجديد." data-n="5" data-cr="التقارير"></div>
+  <div class="screen" data-id="J2" data-title="تقرير الالتزام" data-t="j2" data-cap="مين مقصّر في Check-in ومين التزامه عالي." data-n="5" data-b="التقارير" data-cr="التقارير › الالتزام"></div>
+  <div class="screen" data-id="J3" data-title="تصدير تقرير" data-t="j3" data-cap="CSV أو PDF مع اختيار الفترة والمحتوى." data-n="5" data-b="التقارير" data-cr="التقارير › تصدير"></div>
+</section>
+
+<section class="sec" id="K">
+  <h2>ك) الرسائل والإشعارات</h2>
+  <p class="muted">3 شاشات</p>
+  <div class="screen" data-id="K1" data-title="مركز الإشعارات" data-t="k1" data-cap="تجديدات وCheck-in ودفعات وتأخير، مع اقرا الكل." data-n="6" data-cr="الإشعارات"></div>
+  <div class="screen" data-id="K2" data-title="الرسائل" data-t="k2" data-cap="قايمة المحادثات بآخر رسالة وعدد غير المقروء." data-n="6" data-fab="رسالة جديدة" data-cr="الرسائل"></div>
+  <div class="screen" data-id="K3" data-title="محادثة مع متدرب" data-t="k3" data-cap="نصوص وصور وإرفاق برنامج، وزرار الإرسال هو الأكسنت." data-n="6" data-b="الرسائل" data-cr="الرسائل › سارة محمود"></div>
+</section>
+
+<!-- BATCH 5 done -->  <section class="sec" id="L">
+  <h2>ل) المزيد والإعدادات</h2>
+  <p class="muted">17 شاشة (S0 – S16)</p>
+  <div class="screen" data-id="S0" data-title="المزيد والإعدادات" data-t="s0" data-cap="بيانات الكابتن وقايمة كل الأقسام. الحذف والخروج في آخر الصفحة." data-k="mn" data-n="4" data-dn="7" data-cr="الإعدادات"></div>
+  <div class="screen" data-id="S1" data-title="بيانات الكابتن والهوية" data-t="s1" data-cap="الاسم والصورة واللوجو وواتساب ونبذة." data-n="7" data-cr="الإعدادات › بيانات الكابتن والهوية" data-b="المزيد"></div>
+  <div class="screen" data-id="S2" data-title="قوالب الـ PDF" data-t="s2" data-cap="لون القالب والتذييل والملحوظة الافتراضية مع معاينة لايف." data-n="7" data-cr="الإعدادات › قوالب الـ PDF" data-b="المزيد"></div>
+  <div class="screen" data-id="S3" data-title="الباقات والأسعار" data-t="s3" data-cap="ملخص الباقات وزرار يفتح إدارتها (I4)." data-n="7" data-cr="الإعدادات › الباقات والأسعار" data-b="المزيد"></div>
+  <div class="screen" data-id="S4" data-title="المظهر" data-t="s4" data-cap="فاتح أو داكن أو تلقائي مع معاينة لكل واحد." data-n="7" data-cr="الإعدادات › المظهر" data-b="المزيد"></div>
+  <div class="screen" data-id="S5" data-title="اللغة والوحدات" data-t="s5" data-cap="عربي أو English، كجم أو رطل، سم أو بوصة." data-n="7" data-cr="الإعدادات › اللغة والوحدات" data-b="المزيد"></div>
+  <div class="screen" data-id="S6" data-title="تفضيلات الإشعارات" data-t="s6" data-cap="قنوات لكل نوع: داخل التطبيق وواتساب وإيميل." data-n="7" data-cr="الإعدادات › تفضيلات الإشعارات" data-b="المزيد"></div>
+  <div class="screen" data-id="S7" data-title="قواعد التذكيرات" data-t="s7" data-cap="أيام قبل التجديد وتأخر Check-in ورسائل جاهزة." data-n="7" data-cr="الإعدادات › قواعد التذكيرات" data-b="المزيد"></div>
+  <div class="screen" data-id="S8" data-title="البرامج الافتراضية" data-t="s8" data-cap="الراحة بين المجموعات وعدد الوجبات وعرض الماكروز." data-n="7" data-cr="الإعدادات › البرامج الافتراضية" data-b="المزيد"></div>
+  <div class="screen" data-id="S9" data-title="ربط الدفع" data-t="s9" data-cap="حالة Paymob وFawry ومفاتيح مخفية واختبار الاتصال." data-n="7" data-cr="الإعدادات › ربط الدفع" data-b="المزيد"></div>
+  <div class="screen" data-id="S10" data-title="النسخ الاحتياطي" data-t="s10" data-cap="نسخة JSON كاملة واستيراد وتصدير CSV وآخر نسخة." data-n="7" data-cr="الإعدادات › النسخ الاحتياطي" data-b="المزيد"></div>
+  <div class="screen" data-id="S11" data-title="الأمان" data-t="s11" data-cap="كلمة السر والجلسات النشطة والتحقق بخطوتين." data-n="7" data-cr="الإعدادات › الأمان" data-b="المزيد"></div>
+  <div class="screen" data-id="S12" data-title="المدربين المساعدين" data-t="s12" data-cap="ميزة مستقبلية: قايمة ودعوة وصلاحيات." data-n="7" data-cr="الإعدادات › المدربين المساعدين" data-b="المزيد"></div>
+  <div class="screen" data-id="S13" data-title="الحساب والفواتير" data-t="s13" data-cap="خطة السيستم والفواتير." data-n="7" data-cr="الإعدادات › الحساب والفواتير" data-b="المزيد"></div>
+  <div class="screen" data-id="S14" data-title="المساعدة والدعم" data-t="s14" data-cap="أسئلة شائعة وتواصل مع الدعم وعن السيستم." data-n="7" data-cr="الإعدادات › المساعدة والدعم" data-b="المزيد"></div>
+  <div class="screen" data-id="S15" data-title="حذف الحساب" data-t="s15" data-cap="نافذة بخطوات: تنبيه وتأكيد بالكتابة." data-n="7" data-cr="الإعدادات › حذف الحساب" data-b="المزيد"></div>
+  <div class="screen" data-id="S16" data-title="تسجيل الخروج" data-t="s16" data-cap="نافذة تأكيد بسيطة." data-n="7" data-cr="الإعدادات › تسجيل الخروج" data-b="المزيد"></div>
+</section>
+
+<!-- BATCH 6 done -->
+
+<section class="sec" id="M">
+  <h2>م) لوحة المكونات والحالات العامة</h2>
+  <p class="muted">4 شاشات (Z1 – Z4)</p>
+  <div class="screen" data-id="Z1" data-title="المكونات" data-t="z1" data-cap="كل مكوّن بحالاته: أزرار، حقول، Chips، Badges، كروت، صفوف، Avatar."></div>
+  <div class="screen" data-id="Z2" data-title="الألوان والخطوط" data-t="z2" data-cap="الألوان فاتح وداكن جنب بعض، وسلم الخطوط بمقاس الجهاز المعروض."></div>
+  <div class="screen" data-id="Z3" data-title="الأنماط التفاعلية" data-t="z3" data-cap="Toast، تأكيد، Sheet (اضغط عشان يفتح)، Drawer، Skeleton، Empty، بدون إنترنت، حفظ تلقائي."></div>
+    <div class="screen" data-id="Z4" data-title="خريطة التنقل" data-t="z4" data-cap="العلاقة بين كل الشاشات: الموبايل بتاباته الخمسة، والديسكتوب بقايمته الجانبية، وصفحات المتدرب."></div>
+</section>
+</main>
+
+<template id="t-z1">
+<h3 class="h">الأزرار</h3>
+<div class="row"><button class="btn pri">حفظ البرنامج</button><button class="btn sec-b">إلغاء</button><button class="btn lnk">تعديل</button><button class="btn dng">حذف العميل</button><button class="btn pri" disabled>معطّل</button></div>
+<h3 class="h">الحقول</h3>
+<div class="grid">
+<div class="fld"><label>الاسم</label><input class="inp" value="سارة محمود"></div>
+<div class="fld"><label>في تركيز</label><input class="inp foc" value="01012345678" dir="auto"></div>
+<div class="fld"><label>فيه خطأ</label><input class="inp err" value="1234"><span class="msg"><svg class="ic"><use href="#i-alert"/></svg>رقم الموبايل لازم يكون 11 رقم</span></div>
+<div class="fld"><label>معطّل</label><input class="inp" value="تاريخ البداية" disabled></div>
+</div>
+<h3 class="h">Chips وBadges</h3>
+<div class="row"><span class="chip on">الكل</span><span class="chip">فعّال</span><span class="chip">ينتهي قريب</span><span class="chip">منتهي</span></div>
+<div class="row" style="margin-top:var(--s-3)"><span class="bdg ok">فعّال</span><span class="bdg warn">ينتهي قريب</span><span class="bdg dn">منتهي</span><span class="bdg inf">Check-in جديد</span></div>
+<h3 class="h">كارت وصف قايمة وAvatar</h3>
+<div class="grid">
+<div class="card"><div class="row"><span class="av">س</span><div><b>سارة محمود</b><div class="muted" style="font-size:var(--fs-small)">باقة 3 شهور · ينتهي بعد 9 أيام</div></div></div>
+<div class="bar"><i style="width:34%;background:var(--macro-p)"></i><i style="width:42%;background:var(--macro-c)"></i><i style="width:24%;background:var(--macro-f)"></i></div>
+<div class="row" style="margin-top:var(--s-3);font-size:var(--fs-small);font-weight:600"><span style="color:var(--macro-p-text)">بروتين 140g</span><span style="color:var(--macro-c-text)">كارب 170g</span><span style="color:var(--macro-f-text)">دهون 45g</span></div></div>
+<div class="card"><div class="li"><span class="av">م</span><div class="grow"><b>محمد عادل</b><div class="muted" style="font-size:var(--fs-small)">آخر Check-in امبارح</div></div><span class="bdg ok">فعّال</span></div>
+<div class="li"><span class="av">ه</span><div class="grow"><b>هبة سمير</b><div class="muted" style="font-size:var(--fs-small)">دفعة معلّقة 1,200 ج.م</div></div><span class="bdg warn">معلّق</span></div>
+<div class="li"><span class="av">ك</span><div class="grow"><b>كريم ياسر</b><div class="muted" style="font-size:var(--fs-small)">انتهى من 3 أيام</div></div><span class="bdg dn">منتهي</span></div></div>
+</div>
+<div class="tabs" style="margin-top:var(--s-4)"><span class="on">التغذية</span><span>التمرين</span><span>التقدم</span></div>
+<div class="ph" style="margin-top:var(--s-4)">صورة قبل</div>
+</template>
+
+<template id="t-z2">
+<h3 class="h">الألوان</h3>
+<div class="grid">
+<div class="pan" data-theme="light"><b>فاتح</b><div class="sw" style="margin-top:var(--s-3)" data-v="bg surface border text text-muted accent accent-soft accent-text on-accent total-bg track macro-p macro-c macro-f ok-bg warn-bg danger-bg info-bg"></div></div>
+<div class="pan" data-theme="dark"><b>داكن</b><div class="sw" style="margin-top:var(--s-3)" data-v="bg surface surface-2 border text text-muted accent accent-soft accent-text on-accent total-bg track macro-p macro-c macro-f ok-bg warn-bg danger-bg info-bg"></div></div>
+</div>
+<h3 class="h">قوالب الـ PDF (فاتحة دايمًا)</h3>
+<div class="row"><div class="pan" data-theme="light" style="--pdf-main:#0F1B2D;--pdf-soft:#E8EDF3"><div class="sw" data-v="pdf-main pdf-soft"></div>كحلي حبر</div><div class="pan" data-theme="light" style="--pdf-main:#243B6B;--pdf-soft:#E7ECF6"><div class="sw" data-v="pdf-main pdf-soft"></div>أزرق ملكي</div><div class="pan" data-theme="light" style="--pdf-main:#2B2B2B;--pdf-soft:#EFEDEA"><div class="sw" data-v="pdf-main pdf-soft"></div>فحمي</div></div>
+<h3 class="h">سلم الخطوط</h3>
+<div class="card">
+<div class="ts"><span class="display" style="font-size:var(--fs-display);font-weight:800;line-height:1.1">1,850 سعرة</span><small>Display · Cairo 800</small></div>
+<div class="ts"><h1 style="font-size:var(--fs-h1);font-weight:800;line-height:1.3">برنامج سارة</h1><small>H1 · Cairo 800</small></div>
+<div class="ts"><h2 style="font-size:var(--fs-h2);font-weight:700;line-height:1.3">وجبة الفطار</h2><small>H2 · Cairo 700</small></div>
+<div class="ts"><span style="font-size:var(--fs-h3);font-weight:600">فول مدمس 150 جم</span><small>H3 · Plex 600</small></div>
+<div class="ts"><span style="font-size:var(--fs-body)">عيش بلدي مع جبنة قريش</span><small>Body · Plex 400</small></div>
+<div class="ts"><span style="font-size:var(--fs-small)" class="muted">تفاصيل وتسميات</span><small>Small 13</small></div>
+<div class="ts"><span style="font-size:var(--fs-min);font-weight:500" class="muted">الحد الأدنى</span><small>Min 12 · 500</small></div>
+</div>
+</template>
+
+<template id="t-z3">
+<h3 class="h">Toast</h3>
+<div class="toast"><svg class="ic"><use href="#i-check"/></svg>اتحفظ التعديل</div>
+<div class="toast"><svg class="ic"><use href="#i-alert"/></svg>مقدرناش نحفظ، جرّب تاني</div>
+<div class="toast"><svg class="ic"><use href="#i-info"/></svg>الرابط اتنسخ</div>
+<h3 class="h">نافذة تأكيد حذف</h3>
+<div class="dlg"><b style="font-size:var(--fs-h3)">تحذف الوجبة؟</b><p class="muted" style="margin:var(--s-2) 0 var(--s-4)">وجبة الغدا بكل أصنافها هتتمسح من البرنامج.</p><div class="row"><button class="btn dng">احذف الوجبة</button><button class="btn sec-b">لأ، رجوع</button></div></div>
+<h3 class="h">Bottom Sheet</h3>
+<div class="stage"><div style="padding:var(--s-4)"><button class="btn sec-b" onclick="this.closest('.stage').classList.toggle('open')">اختار صنف</button></div><div class="ov"></div>
+<div class="sheet"><div class="grab"></div><b>اختار صنف</b><div class="li"><span class="av">ف</span><div class="grow">فول مدمس<div class="muted" style="font-size:var(--fs-small)">100 جم · 110 سعرة</div></div></div><div class="li"><span class="av">ط</span><div class="grow">طعمية<div class="muted" style="font-size:var(--fs-small)">100 جم · 333 سعرة</div></div></div></div></div>
+<h3 class="h">Drawer جانبي (420)</h3>
+<div class="dlg"><b>تبديل الصنف</b><div class="fld" style="margin-top:var(--s-3)"><div class="srch" style="min-width:0"><svg class="ic"><use href="#i-search"/></svg>ابحث عن صنف</div></div><div class="li"><span class="av">أ</span><div class="grow">أرز أبيض مسلوق<div class="muted" style="font-size:var(--fs-small)">100 جم · 130 سعرة</div></div></div></div>
+<h3 class="h">Skeleton وEmpty</h3>
+<div class="grid"><div class="card"><div class="sk" style="width:60%"></div><div class="sk"></div><div class="sk" style="width:80%"></div></div>
+<div class="card empty"><svg class="ic"><use href="#i-inbox"/></svg><p style="margin-bottom:var(--s-3)">لسه مفيش متدربين</p><button class="btn pri">ضيف أول متدرب</button></div></div>
+<h3 class="h">بدون إنترنت وحفظ تلقائي</h3>
+<div class="off"><svg class="ic"><use href="#i-wifi"/></svg>مفيش إنترنت. هنحفظ أول ما يرجع.</div>
+<p style="margin-top:var(--s-3)"><span class="save"><svg class="ic"><use href="#i-check"/></svg>تم الحفظ</span></p>
+</template>
+
+<script>
+const ic=n=>`<svg class="ic"><use href="#i-${n}"/></svg>`,
+B=(c,t)=>`<span class="bdg ${c}">${t}</span>`,
+R=(n,s,b,c,x)=>`<div class="li ${x||''}"><span class="av">${n[0]}</span><div class="grow"><b>${n}</b><div class="muted sm">${s}</div></div>${b?B(c,b):''}</div>`,
+F=(l,v,x)=>`<div class="fld"><label>${l}</label><input class="inp ${x||''}" value="${v}" dir="auto"></div>`,
+CH=(a,o)=>`<div class="row">${a.map((t,i)=>`<span class="chip ${i==o?'on':''}">${t}</span>`).join('')}</div>`,
+G=(l,a,o)=>`<div class="fld"><label>${l}</label>${CH(a,o)}</div>`,
+H=t=>`<h3 class="h">${t}</h3>`,
+T1=t=>`<h1 style="font-size:var(--fs-h1);font-weight:800;line-height:1.3;margin-bottom:var(--s-2)">${t}</h1>`,
+K=(l,v)=>`<div class="card"><div class="muted sm">${l}</div><div class="kv">${v}</div></div>`,
+TB=n=>`<div class="tabs" style="margin:var(--s-4) 0">${['نظرة','التقدم','Check-in','الاشتراك'].map((t,i)=>`<span class="${i==n?'on':''}">${t}</span>`).join('')}</div>`,
+BT=(t,c)=>`<button class="btn ${c||'pri'}" style="width:100%;margin-top:var(--s-3)">${t}</button>`,
+PH=t=>`<div class="ph">${t}</div>`,
+SR=`<div class="srch" style="min-width:0;margin-bottom:var(--s-3)">${ic('search')}ابحث بالاسم أو الموبايل</div>`,
+KG=`style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));margin-top:var(--s-4)"`,
+SK=`<div class="li"><i class="sk" style="width:40px;height:40px;border-radius:50%;margin:0"></i><div class="grow"><div class="sk" style="width:50%"></div><div class="sk" style="width:30%;margin:0"></div></div></div>`,
+FL=['الكل','فعّال','ينتهي قريب','منتهي','معلّق دفع'],
+CL=[['سارة محمود','3 شهور','فعّال','ok','12 نوفمبر','امبارح'],['محمد عادل','شهري','ينتهي قريب','warn','10 أكتوبر','من 3 أيام'],['هبة سمير','6 شهور','معلّق دفع','warn','—','من أسبوع'],['كريم ياسر','شهري','منتهي','dn','4 أكتوبر','من 12 يوم'],['نورا حسن','3 شهور','فعّال','ok','30 نوفمبر','النهارده']],
+FORM=n=>`<div class="grid">${F('الاسم',n)}${F('الموبايل','01098765432')}${G('النوع',['أنثى','ذكر'],0)}${F('السن','29')}${F('الطول (سم)','162')}${F('الوزن (كجم)','74')}${G('الهدف',['تخسيس','تضخيم','لياقة'],0)}${G('مستوى النشاط',['خفيف','متوسط','عالي'],1)}${G('الباقة',['شهري','3 شهور','6 شهور'],1)}${F('تاريخ البداية','15 أكتوبر 2026')}</div>`,
+PROF=`<div class="row"><span class="av" style="width:56px;height:56px;font-size:20px">س</span><div><b style="font-size:var(--fs-h3)">سارة محمود</b><div class="muted sm">باقة 3 شهور</div></div><span class="grow"></span>${B('ok','فعّال')}</div>`;
+const S={
+a1:`<span class="av" style="width:56px;height:56px;font-size:20px;margin-bottom:var(--s-3)">أ</span>${T1('أهلاً يا كابتن')}<p class="muted" style="margin-bottom:var(--s-4)">ادخل عشان تكمّل شغلك</p>${F('الإيميل أو الموبايل','ahmed@example.com')}${F('كلمة السر','••••••••')}<button class="btn lnk" style="padding:0">نسيت كلمة السر؟</button>${BT('دخول')}`,
+a2:`${T1('نسيت كلمة السر؟')}<p class="muted" style="margin-bottom:var(--s-4)">اكتب إيميلك وهنبعتلك كود تغيّر بيه كلمة السر</p>${F('الإيميل','ahmed@example.com')}${BT('ابعتلي الكود')}`,
+a3:`${T1('اكتب الكود')}<p class="muted" style="margin-bottom:var(--s-4)">بعتنا كود من 6 أرقام على ahmed@example.com</p><div class="otp"><i>4</i><i>8</i><i>2</i><i>9</i><i class="cur"></i><i></i></div><p class="muted sm" style="text-align:center;margin:var(--s-3) 0">ابعت الكود تاني بعد <span class="num">00:42</span></p>${F('كلمة السر الجديدة','••••••••')}${F('أكّد كلمة السر','••••••••')}${BT('غيّر كلمة السر')}`,
+a4:`<div class="stp"><i class="on"></i><i class="on"></i><i></i></div><p class="muted sm" style="margin:var(--s-2) 0 var(--s-4)">خطوة 2 من 3</p><div class="card" style="margin-bottom:var(--s-3)"><b>1. بياناتك</b> ${B('ok','تمت')}</div><div class="card" style="margin-bottom:var(--s-3)"><b>2. اللوجو واللون</b>${PH('اللوجو')}<div class="row" style="margin-top:var(--s-3)"><i class="dot" style="background:#0F1B2D;outline:2px solid var(--text);outline-offset:2px"></i><i class="dot" style="background:#243B6B"></i><i class="dot" style="background:#2B2B2B"></i></div></div><div class="card"><b>3. أول متدرب</b><div class="muted sm">هتضيفه بعد ما تخلّص</div></div>${BT('التالي')}<button class="btn lnk" style="width:100%">تخطي</button>`,
+b1:`${T1('صباح الخير يا كابتن أحمد')}<p class="muted">النهارده عندك 9 Check-ins جداد</p><div class="grid" ${KG}>${K('متدربين فعّالين','34')}${K('تجديدات الأسبوع','6')}${K('دخل الشهر','28,400 ج.م')}${K('Check-ins جديدة','9')}</div>${H('محتاج متابعة')}<div class="card">${R('هبة سمير','دفعة معلّقة 1,200 ج.م','معلّق','warn')}${R('كريم ياسر','الاشتراك خلص من 3 أيام','منتهي','dn')}${R('نورا حسن','مبعتتش Check-in من 9 أيام','متأخرة','warn')}</div>${H('اختصارات')}<div class="row"><button class="btn sec-b">حاسبة السعرات</button><button class="btn sec-b">قالب جديد</button><button class="btn sec-b">قايمة المشتريات</button></div>`,
+b2:`${T1('أهلاً يا كابتن أحمد')}<div class="grid" ${KG}>${K('متدربين فعّالين','0')}${K('دخل الشهر','0 ج.م')}</div><div class="card empty" style="margin-top:var(--s-4)">${ic('users')}<p style="margin-bottom:var(--s-3)"><b>لسه مفيش متدربين</b><br><span class="muted">ضيف أول متدرب وجهّز برنامجه في دقايق</span></p><button class="btn pri">ضيف أول متدرب</button></div>`,
+c1:`${SR}${CH(FL,0)}<div class="row sm muted" style="justify-content:space-between;margin:var(--s-3) 0"><span>34 عميل</span><span>ترتيب: الأحدث</span></div><div class="card">${CL.map(r=>R(r[0],r[1]+' · آخر Check-in '+r[5],r[2],r[3])).join('')}</div>`,
+c2:`${H('مفيش نتايج')}<div class="srch" style="min-width:0">${ic('search')}سمر</div><div class="card empty" style="margin-top:var(--s-3)">${ic('search')}<p style="margin-bottom:var(--s-3)"><b>مفيش حد بالاسم ده</b><br><span class="muted">جرّب اسم تاني أو امسح الفلتر</span></p><button class="btn sec-b">امسح البحث</button></div>${H('تحميل')}<div class="card">${SK}${SK}${SK}</div>`,
+c3:`${FORM('نورا حسن')}${BT('حفظ العميل')}`,
+c4:`<p style="margin-bottom:var(--s-3)"><span class="save">${ic('check')}تم الحفظ</span></p>${F('إصابات','ألم خفيف في الركبة اليمين')}${G('حساسية أكل',['لاكتوز','جلوتين','مكسرات','مفيش'],0)}${F('أصناف مش بيحبها','سمك، كبدة')}${F('أدوية','فيتامين د')}${F('ملاحظات','بتصوم الاتنين والخميس')}${BT('كمّل للبرنامج')}`,
+c5:`${FORM('سارة محمود')}${BT('حفظ التعديلات')}<hr style="border:0;border-top:1px solid var(--border);margin:var(--s-8) 0 var(--s-4)"><button class="btn dng">حذف العميل</button>${H('تأكيد الحذف')}<div class="dlg"><b>تحذف سارة محمود؟</b><p class="muted" style="margin:var(--s-2) 0 var(--s-4)">ملفها وبرامجها وكل الـ Check-ins هتتمسح ومش هترجع.</p><div class="row"><button class="btn dng">احذف العميل</button><button class="btn sec-b">لأ، رجوع</button></div></div>`,
+c6:`${PROF}${TB(0)}<div class="card"><div class="li"><span class="muted grow">السن · الطول</span>31 سنة · 165 سم</div><div class="li"><span class="muted grow">الوزن الحالي · الهدف</span>78.4 · 68 كجم</div></div><div class="grid" style="margin-top:var(--s-3)"><div class="card"><div class="muted sm">التغذية</div><div class="kv">1,850 سعرة</div><div class="muted sm">4 وجبات · اتعدّل امبارح</div></div><div class="card"><div class="muted sm">التمرين</div><div class="kv">4 أيام</div><div class="muted sm">دفع وسحب ورجل</div></div></div>${H('آخر Check-in')}<div class="card">${R('أسبوع 8','12 أكتوبر · 78.4 كجم','التزام 90%','ok')}</div>${H('الاشتراك')}<div class="card">${R('باقة 3 شهور','ينتهي 12 نوفمبر','فعّال','ok')}</div>`,
+c7:`${TB(1)}<div class="card"><svg viewBox="0 0 320 140" width="100%"><line x1="10" y1="108" x2="310" y2="108" stroke="var(--ok-text)" stroke-dasharray="5 4"/><text x="12" y="102" font-size="11" fill="var(--ok-text)">الهدف 68</text><polyline fill="none" stroke="var(--macro-f)" stroke-width="2.5" points="10,20 55,28 100,36 145,46 190,52 235,60 280,68 310,72"/></svg><div class="muted sm">من 86.0 إلى 78.4 كجم في 8 أسابيع</div></div>${H('القياسات')}<div class="card"><div class="li"><span class="grow">محيط الوسط</span><b>84 سم</b>${B('ok','−6')}</div><div class="li"><span class="grow">محيط الورك</span><b>104 سم</b>${B('ok','−4')}</div></div>${H('الالتزام')}<div class="card"><b>86%</b><div class="bar"><i style="width:86%;background:var(--macro-c)"></i></div></div>${H('قبل / بعد')}<div class="grid" style="grid-template-columns:1fr 1fr">${PH('صورة قبل')}${PH('صورة بعد')}</div>`,
+c8:`${TB(2)}<div class="card">${R('أسبوع 8','12 أكتوبر · 78.4 كجم','التزام 90%','ok')}${R('أسبوع 7','5 أكتوبر · 79.1 كجم','التزام 75%','warn')}${R('أسبوع 6','28 سبتمبر · 79.8 كجم','التزام 95%','ok')}${R('أسبوع 5','21 سبتمبر · 80.2 كجم','التزام 55%','dn')}</div>`,
+c9:`${T1('Check-in أسبوع 8')}<div class="grid" ${KG}>${K('الوزن','78.4 كجم')}${K('الالتزام','90%')}</div>${H('الصور')}<div class="grid" style="grid-template-columns:1fr 1fr">${PH('صورة أمامية')}${PH('صورة جانبية')}</div>${H('كلام المتدربة')}<div class="card">تعبت شوية في التمرين التالت بس كملت. الأكل تمام ماعدا يوم الخميس.</div>${H('ردك')}${F('رد الكابتن','برافو يا سارة، كملي كده وهزوّد الكارديو')}${BT('عدّل البرنامج')}${BT('ابعت الرد','sec-b')}`,
+c10:`${TB(3)}<div class="card">${R('باقة 3 شهور','12 أغسطس ← 12 نوفمبر','فعّال','ok')}<div class="kv" style="margin-top:var(--s-2)">3,600 ج.م</div></div>${H('سجل الدفعات')}<div class="card">${R('1,800 ج.م','12 أغسطس · فودافون كاش','مدفوع','ok')}${R('1,800 ج.م','12 سبتمبر · إنستاباي','مدفوع','ok')}</div>${BT('جدّد الاشتراك')}`,
+c11:`${H('النسخ السابقة')}<div class="card">${R('النسخة 4','11 أكتوبر · 1,850 سعرة','الحالية','ok')}${R('النسخة 3','27 سبتمبر · 2,000 سعرة','سابقة','inf')}${R('النسخة 2','10 سبتمبر · 2,100 سعرة','سابقة','inf')}</div>${H('مقارنة 4 و 3')}<div class="card"><table class="tbl"><tr><th>الحاجة<th>4<th>3</tr><tr><td>السعرات<td>1,850<td>2,000</tr><tr><td>بروتين<td>140g<td>130g</tr><tr><td>أيام التمرين<td>4<td>3</tr></table></div>${BT('استرجع النسخة 3')}`,
+c12:`<div class="grab"></div><b style="font-size:var(--fs-h3)">اختار عميل</b><div style="margin-top:var(--s-3)">${SR}</div><div class="card">${R('سارة محمود','باقة 3 شهور','فعّال','ok','sel')}${R('محمد عادل','باقة شهري','ينتهي قريب','warn')}${R('نورا حسن','باقة 3 شهور','فعّال','ok')}${R('أحمد فتحي','باقة 6 شهور','فعّال','ok')}</div>${BT('اختار سارة')}`};
+S.c1d=`${SR}${CH(FL,0)}<p class="muted sm" style="margin:var(--s-3) 0">34 عميل · ترتيب: الأحدث</p><div class="card"><table class="tbl"><tr><th>العميل<th>الباقة<th>الحالة<th>ينتهي<th>آخر Check-in</tr>${CL.map(r=>`<tr><td><b>${r[0]}</b><td>${r[1]}<td>${B(r[3],r[2])}<td>${r[4]}<td>${r[5]}</tr>`).join('')}</table></div>`;
+</script>
+<script>
+const FD=(n,q,k)=>`<div class="fd"><div class="grow"><b>${n}</b><div class="muted sm">${k} سعرة</div></div><button class="pm" aria-label="نقّص">${ic('minus')}</button><span class="num" style="min-width:52px;text-align:center">${q}</span><button class="pm" aria-label="زوّد">${ic('plus')}</button><button class="pm" aria-label="بدّل الصنف">${ic('swap')}</button></div>`,
+ML=(t,k,r)=>`<div class="card" style="padding:0;margin-bottom:var(--s-3)"><div class="li" style="padding:var(--s-2) var(--s-4)"><b class="grow">${t}</b><span class="muted sm">${k} سعرة</span><button class="pm" aria-label="خيارات الوجبة">${ic('dots')}</button></div><div style="padding:0 var(--s-4)">${r}</div><button class="btn lnk" style="width:100%">+ أضف صنف</button></div>`,
+LG=(c,t)=>`<span><i style="background:var(--macro-${c})"></i>${t}</span>`,
+TOT=`<div class="tot"><div class="row" style="justify-content:space-between;align-items:end"><div><div class="m sm">سعرات النهارده</div><div class="kd">1,465<span class="m sm"> / 1,850</span></div></div><span class="m sm">${ic('check')} تم الحفظ</span></div><div class="bar"><i style="width:24%;background:var(--macro-p)"></i><i style="width:35%;background:var(--macro-c)"></i><i style="width:18%;background:var(--macro-f)"></i></div><div class="lg">${LG('p','بروتين 112g')}${LG('c','كارب 160g')}${LG('f','دهون 38g')}</div></div>`,
+MEALS=ML('فطار',470,FD('فول مدمس','150 جم',165)+FD('عيش بلدي','60 جم',165)+FD('بيض مسلوق','2 حبة',140))+ML('غدا',570,FD('صدور فراخ مشوية','200 جم',330)+FD('أرز أبيض','150 جم',195)+FD('سلطة خضار','150 جم',45))+ML('سناك',125,FD('جبنة قريش','150 جم',110)+FD('خيار','100 جم',15))+ML('عشا',300,FD('كشري لايت','250 جم',300)),
+MC=(p,c,f)=>`<span style="color:var(--macro-p-text)">ب ${p}</span> · <span style="color:var(--macro-c-text)">ك ${c}</span> · <span style="color:var(--macro-f-text)">د ${f}</span>`,
+FR=(n,q,k,m,x)=>`<div class="li ${x||''}"><div class="grow"><b>${n}</b><div class="muted sm">${q} · ${k} سعرة</div><div class="sm">${m}</div></div>${ic('plus')}</div>`,
+AL=(c,i,t,s)=>`<div class="al" style="background:var(--${c}-bg);color:var(--${c}-text)">${ic(i)}<div><b>${t}</b><div class="sm">${s}</div></div></div>`,
+AC=(i,t,c)=>`<div class="act" style="${c?'color:var(--danger-text)':''}">${ic(i)}<span class="grow">${t}</span></div>`,
+CK=(n,q,on)=>`<div class="li"><span class="ck ${on?'on':''}"></span><span class="grow">${n}</span><span class="num muted">${q}</span></div>`,
+MR=(n,c,t,w)=>`<div class="card" style="margin-bottom:var(--s-2)"><div class="row" style="justify-content:space-between"><b style="color:var(--macro-${c}-text)">${n}</b><span class="num">${t}</span></div><div class="bar"><i style="width:${w}%;background:var(--macro-${c})"></i></div></div>`;
+S.d1=`${TOT}${MEALS}`;
+S.d1d=`<div class="two"><div>${MEALS}</div><div class="side">${TOT}<div class="paper"><b style="font-family:var(--font-display);font-size:16px">برنامج التغذية</b><div>سارة محمود · 1,850 سعرة</div><hr style="border:0;border-top:3px solid var(--accent);margin:8px 0"><div>فطار: فول مدمس، عيش بلدي، بيض</div><div>غدا: صدور فراخ، أرز، سلطة</div><div>سناك: جبنة قريش، خيار</div><div>عشا: كشري لايت</div></div><p class="muted sm" style="margin-top:var(--s-2)">معاينة لايف للـ PDF</p></div></div>`;
+S.d2=`<div class="grab"></div><b style="font-size:var(--fs-h3)">بدّل: صدور فراخ مشوية</b><div class="muted sm">الكميات على 150 جم زي الصنف الحالي</div><div style="margin-top:var(--s-3)">${SR.replace('بالاسم أو الموبايل','عن صنف')}</div>${CH(['الكل','بروتين','نشويات','خضار','ألبان'],1)}<div class="card" style="margin-top:var(--s-3)">${FR('صدور فراخ مشوية','150 جم',248,MC(47,0,5),'sel')}${FR('كبدة فراخ','150 جم',200,MC(30,1,8))}${FR('تونة معلبة','150 جم',165,MC(36,0,1))}${FR('جبنة قريش','150 جم',108,MC(18,5,2))}${FR('بيض مسلوق','150 جم',232,MC(19,2,16))}</div>`;
+S.d3=`<div class="grab"></div><b style="font-size:var(--fs-h3)">أضف وجبة جاهزة</b><div style="margin-top:var(--s-3)">${SR.replace('بالاسم أو الموبايل','عن وجبة')}</div>${CH(['الكل','فطار','غدا','سناك'],0)}<div class="card" style="margin-top:var(--s-3)">${R('فطار فول وبيض','3 أصناف · 470 سعرة','','','sel')}${R('غدا فراخ وأرز','3 أصناف · 570 سعرة')}${R('سناك قريش وخيار','2 صنف · 125 سعرة')}${R('كشري لايت','صنف واحد · 300 سعرة')}</div>${H('محتوى الوجبة')}<div class="card">${FD('فول مدمس','150 جم',165).replace(/<button.*<\/button>/,'')}<div class="fd"><b class="grow">عيش بلدي</b><span class="num">60 جم</span></div><div class="fd"><b class="grow">بيض مسلوق</b><span class="num">2 حبة</span></div></div>${BT('أضف للفطار')}`;
+S.d4=`<div class="grab"></div><b style="font-size:var(--fs-h3)">وجبة الغدا</b><div style="margin-top:var(--s-2)">${AC('plus','وجبة جديدة')}${AC('edit','إعادة تسمية')}${AC('copy','نسخ الوجبة')}${AC('layout','احفظها كوجبة جاهزة')}</div><div style="margin-top:var(--s-6)">${AC('trash','حذف الوجبة',1)}</div>`;
+S.d5=`${G('النوع',['أنثى','ذكر'],0)}<div class="grid">${F('السن','31')}${F('الطول (سم)','165')}${F('الوزن (كجم)','78.4')}</div>${G('مستوى النشاط',['خفيف','متوسط','عالي'],1)}${G('الهدف',['تخسيس','ثبات','زيادة'],0)}${H('النتيجة المقترحة')}<div class="card"><div class="row" style="justify-content:space-between"><span class="muted">BMR</span><b class="num">1,520</b></div><div class="row" style="justify-content:space-between"><span class="muted">TDEE</span><b class="num">2,090</b></div><div class="li"></div><div class="muted sm">السعرات المقترحة للتخسيس</div><div class="kv" style="font-size:var(--fs-display)">1,750</div><div class="sm">${MC('140g','170g','56g')}</div></div>${BT('طبّق كهدف')}`;
+S.d6=`${CH(['نسبة %','جرام لكل كجم'],0)}<div style="margin-top:var(--s-3)">${F('سعرات الهدف','1,750')}</div>${H('توزيع الماكروز')}${MR('بروتين','p','32% · 140g',32)}${MR('كارب','c','39% · 170g',39)}${MR('دهون','f','29% · 56g',29)}<p style="margin-top:var(--s-3)">${B('ok','المجموع 100%')}</p>${BT('احفظ الهدف')}`;
+S.d7=`<p class="muted sm" style="margin-bottom:var(--s-2)">لأسبوع كامل من برنامج سارة</p>${H('بروتين')}<div class="card">${CK('صدور فراخ','1.4 كجم',1)}${CK('بيض','14 حبة',1)}${CK('جبنة قريش','1 كجم')}</div>${H('نشويات')}<div class="card">${CK('أرز أبيض','1 كجم')}${CK('عيش بلدي','7 أرغفة')}${CK('فول مدمس','1 كجم')}</div>${H('خضار')}<div class="card">${CK('خيار','700 جم')}${CK('خضار سلطة','1 كجم')}</div>${BT('ابعتها واتساب')}${BT('انسخ القايمة','sec-b')}`;
+S.d8=`${H('زيادة في السعرات')}${AL('danger','alert','زيادة 290 سعرة عن الهدف','الإجمالي 2,140 والهدف 1,850. قلّل كمية أو بدّل صنف.')}${H('تأكيد حذف وجبة')}<div class="dlg"><b>تحذف وجبة الغدا؟</b><p class="muted" style="margin:var(--s-2) 0 var(--s-4)">الأصناف التلاتة اللي فيها هتتشال من البرنامج.</p><div class="row"><button class="btn dng">احذف الوجبة</button><button class="btn sec-b">لأ، رجوع</button></div></div>${H('حفظ كقالب')}<div class="dlg"><b>احفظ البرنامج كقالب</b><div style="margin-top:var(--s-3)">${F('اسم القالب','تخسيس 1,850 سعرة')}</div><div class="row"><button class="btn pri">احفظ القالب</button><button class="btn sec-b">إلغاء</button></div></div>`;
+</script>
+<script>
+const TT=n=>n<0?'':`<div class="tab">${[['home','اليوم'],['book','التغذية'],['layout','التمرين'],['msg','Check-in']].map((x,i)=>`<a class="${i==n?'on':''}">${ic(x[0])}${x[1]}</a>`).join('')}</div>`,
+EX=(n,s,r,t,note)=>`<div class="card" style="margin-bottom:var(--s-3)"><div class="row"><b class="grow">${n}</b><button class="pm" aria-label="ترتيب">${ic('dots')}</button></div><div class="grid" style="grid-template-columns:repeat(3,1fr);gap:var(--s-2)">${F('مجموعات',s)}${F('تكرار',r)}${F('راحة (ث)',t)}</div>${note?F('ملحوظة',note):''}</div>`,
+DAYS=`<div class="tabs"><span class="on">يوم 1 · دفع</span><span>يوم 2 · سحب</span><span>يوم 3 · رجل</span><span>+ يوم</span></div>`,
+AS=`<p style="margin:var(--s-3) 0"><span class="save">${ic('check')}تم الحفظ</span></p>`,
+ER=(n,m,x)=>`<div class="li ${x||''}"><div class="ph" style="width:56px;min-height:56px;font-size:12px">فيديو</div><div class="grow"><b>${n}</b><div class="muted sm">${m}</div></div>${ic('plus')}</div>`,
+PMAC=`<div class="pg"><div style="color:var(--pp)"><b>140g</b><br>بروتين</div><div style="color:var(--pc)"><b>170g</b><br>كارب</div><div style="color:var(--pf)"><b>56g</b><br>دهون</div></div>`,
+PR=(a,b)=>`<div class="pr"><b>${a}</b><span>${b}</span></div>`,
+PP=(t,body)=>`<div class="paper"><div class="ph2"><b>${t}</b><div>سارة محمود · الكابتن أحمد إيهاب</div></div>${body}</div>`,
+PN=PP('برنامج التغذية · 1,850 سعرة',`${PMAC}${PR('فطار','فول مدمس 150 جم · عيش بلدي 60 جم · بيض 2')}${PR('غدا','صدور فراخ 200 جم · أرز 150 جم · سلطة')}${PR('سناك','جبنة قريش 150 جم · خيار')}${PR('عشا','كشري لايت 250 جم')}`),
+PW=PP('برنامج التمرين · 4 أيام',`${PR('يوم 1 · دفع','بنش برس 4×10 · دامبل مائل 3×12')}${PR('يوم 2 · سحب','سحب أمامي 4×10 · تجديف 3×12')}${PR('يوم 3 · رجل','سكوات 4×10 · ضغط رجل 3×12')}`),
+OP=`${G('المحتوى',['تغذية','تمرين','الاتنين'],2)}<div class="fld"><label>لون القالب</label><div class="row"><i class="dot" style="background:#0F1B2D;outline:2px solid var(--text);outline-offset:2px"></i><i class="dot" style="background:#243B6B"></i><i class="dot" style="background:#2B2B2B"></i></div></div>${F('ملحوظة في آخر الورقة','اشربي 3 لتر مياه يوميًا')}`,
+TH=t=>`<div class="card" style="margin-bottom:var(--s-3)"><b>${t}</b></div>`,
+TM=(t,k,r)=>`<div class="card" style="margin-bottom:var(--s-3)"><div class="row" style="justify-content:space-between"><b>${t}</b><span class="muted sm">${k} سعرة</span></div>${r.map(x=>`<div class="li" style="min-height:44px"><span class="grow">${x[0]}</span><span class="num muted">${x[1]}</span></div>`).join('')}</div>`,
+TE=(n,d,x)=>`<div class="card" style="margin-bottom:var(--s-2)"><b>${n}</b><div class="muted sm">${d}</div>${x?`<div class="sm">${x}</div>`:''}</div>`;
+S.e1=`${DAYS}${AS}${EX('بنش برس بالبار','4','10','90','انزل ببطء 3 ثواني')}${EX('دامبل برس مائل','3','12','75')}${EX('ضغط كتف','3','12','75')}${EX('تراي بوشداون','3','15','60')}`;
+S.e2=`<div class="grab"></div><b style="font-size:var(--fs-h3)">اختار تمرين</b><div style="margin-top:var(--s-3)">${SR.replace('بالاسم أو الموبايل','عن تمرين')}</div>${CH(['الكل','صدر','ضهر','أرجل','كتف','دراع'],1)}<div class="card" style="margin-top:var(--s-3)">${ER('بنش برس بالبار','صدر · بار','sel')}${ER('دامبل برس مائل','صدر · دمبل')}${ER('فلاي كابل','صدر · كابل')}${ER('ضغط بالبار','صدر · وزن الجسم')}</div>`;
+S.e3=`<div class="ph" style="min-height:180px">فيديو التمرين</div>${T1('بنش برس بالبار').replace('margin-bottom','margin-top:var(--s-4);margin-bottom')}<div class="row">${B('inf','صدر')}${B('inf','بار')}</div><p style="margin-top:var(--s-3)">استلقي على البنش، وامسك البار بعرض أوسع من الكتف شوية، وانزل بيه لحد منتصف الصدر وارفعه.</p>${H('نصايح')}<div class="card"><div class="li"><span class="grow">ثبّت الكتف لورا وللأسفل</span></div><div class="li"><span class="grow">القدمين ثابتين على الأرض</span></div><div class="li"><span class="grow">ما تقفلش الكوع في آخر الرفع</span></div></div>${BT('أضف ليوم 1')}`;
+S.e4=`${BT('أضف يوم')}${H('أيام البرنامج')}<div class="card">${R('يوم 1 · دفع','4 تمارين','','','sel')}${R('يوم 2 · سحب','5 تمارين')}${R('يوم 3 · رجل','4 تمارين')}</div>${H('إجراءات يوم 2')}<div class="card" style="padding-block:0">${AC('edit','إعادة تسمية')}${AC('copy','نسخ اليوم')}</div><div style="margin-top:var(--s-6)" class="card" ><div style="color:var(--danger-text)" class="row">${ic('trash')}حذف اليوم</div></div>`.replace('<button class="btn pri" style="width:100%;margin-top:var(--s-3)">أضف يوم</button>','<button class="btn pri" style="width:100%">أضف يوم</button>');
+S.e5=`${H('يوم فاضي')}<div class="card empty">${ic('inbox')}<p style="margin-bottom:var(--s-3)"><b>اليوم ده لسه فاضي</b><br><span class="muted">ضيف أول تمرين فيه</span></p><button class="btn pri">ضيف تمرين</button></div>${H('تأكيد حذف يوم')}<div class="dlg"><b>تحذف يوم 2 · سحب؟</b><p class="muted" style="margin:var(--s-2) 0 var(--s-4)">التمارين الخمسة اللي فيه هتتمسح.</p><div class="row"><button class="btn dng">احذف اليوم</button><button class="btn sec-b">لأ، رجوع</button></div></div>${H('حفظ كقالب')}<div class="dlg"><b>احفظ التمرين كقالب</b><div style="margin-top:var(--s-3)">${F('اسم القالب','دفع وسحب ورجل · 4 أيام')}</div><div class="row"><button class="btn sec-b">احفظ القالب</button><button class="btn sec-b">إلغاء</button></div></div>`;
+S.f1=`${OP}${H('المعاينة')}${PN}${BT('حمّل PDF')}`;
+S.f1d=`<div class="two"><div>${PN}${PW}</div><div class="side">${OP}${BT('حمّل PDF')}</div></div>`;
+S.f2=`${PN}${PW}`;
+S.f3=`<b style="font-size:var(--fs-h3)">انشر صفحة سارة</b><p class="muted sm">أي حد معاه الرابط يشوف البرنامج ويبعت Check-in</p><div class="fld" style="margin-top:var(--s-3)"><label>الرابط</label><input class="inp" dir="ltr" value="ahmedehab.fit/p/sara-7k2m"></div><div class="grid" style="grid-template-columns:96px 1fr;align-items:center"><div class="ph" style="min-height:96px">QR</div><div><button class="btn sec-b" style="width:100%">انسخ الرابط</button></div></div>${BT('ابعت واتساب')}<hr style="border:0;border-top:1px solid var(--border);margin:var(--s-6) 0 var(--s-4)"><button class="btn dng">إيقاف النشر</button>`;
+S.f4=`${T1('أهلاً يا سارة')}<p class="muted">النهارده يوم 2 من برنامجك</p>${H('تمرين النهارده')}<div class="card"><b>سحب وبايسبس</b><div class="muted sm">5 تمارين · حوالي 55 دقيقة</div>${BT('ابدأ التمرين')}</div>${H('أكل النهارده')}<div class="card"><div class="kv">1,850 سعرة</div><div class="muted sm">4 وجبات</div><div class="bar"><i style="width:30%;background:var(--macro-p)"></i><i style="width:40%;background:var(--macro-c)"></i><i style="width:25%;background:var(--macro-f)"></i></div><div class="row sm" style="margin-top:var(--s-3);font-weight:600"><span style="color:var(--macro-p-text)">بروتين 140g</span><span style="color:var(--macro-c-text)">كارب 170g</span><span style="color:var(--macro-f-text)">دهون 56g</span></div></div>`;
+S.f5=`${T1('التغذية')}<p class="muted" style="margin-bottom:var(--s-3)">1,850 سعرة في اليوم</p>${TM('فطار',470,[['فول مدمس','150 جم'],['عيش بلدي','60 جم'],['بيض مسلوق','2 حبة']])}${TM('غدا',570,[['صدور فراخ مشوية','200 جم'],['أرز أبيض','150 جم'],['سلطة خضار','150 جم']])}${TM('سناك',125,[['جبنة قريش','150 جم'],['خيار','100 جم']])}${TM('عشا',300,[['كشري لايت','250 جم']])}`;
+S.f6=`${T1('التمرين')}${DAYS.replace('+ يوم','يوم 4 · كارديو')}<div style="margin-top:var(--s-3)">${TE('بنش برس بالبار','4 مجموعات × 10 تكرارات · راحة 90 ث','انزل ببطء 3 ثواني')}${TE('دامبل برس مائل','3 مجموعات × 12 تكرار · راحة 75 ث')}${TE('ضغط كتف','3 مجموعات × 12 تكرار · راحة 75 ث')}${TE('تراي بوشداون','3 مجموعات × 15 تكرار · راحة 60 ث')}</div>`;
+S.f7=`${T1('ابعت Check-in')}<p class="muted" style="margin-bottom:var(--s-3)">أسبوع 9 · ياريت تصوّري الصبح على الريق</p>${F('وزنك النهارده (كجم)','78.0')}<div class="grid" style="grid-template-columns:1fr 1fr">${PH('صورة أمامية')}${PH('صورة جانبية')}</div>${G('التزامك الأسبوع ده',['ممتاز','كويس','متوسط','ضعيف'],1).replace('<div class="fld">','<div class="fld" style="margin-top:var(--s-3)">')}${F('كلامك للكابتن','كملت التمرين كله والأكل تمام')}${BT('ابعت Check-in')}`;
+S.f8=`<div class="card empty" style="margin-top:var(--s-8)">${ic('alert')}<p style="margin-bottom:var(--s-3)"><b>اشتراكك خلص يوم 4 أكتوبر</b><br><span class="muted">جدّد عشان يرجعلك برنامجك وتكمّل مع الكابتن</span></p><button class="btn pri" style="width:100%">جدّد اشتراكك</button><button class="btn sec-b" style="width:100%;margin-top:var(--s-2)">كلّم الكابتن على واتساب</button></div>`;
+S.f9=`<div class="card empty" style="margin-top:var(--s-8)">${ic('inbox')}<p style="margin-bottom:var(--s-3)"><b>الرابط ده مش متاح</b><br><span class="muted">يمكن الكابتن وقف النشر أو الرابط اتغيّر. كلّمه وهيبعتلك رابط جديد.</span></p><button class="btn pri" style="width:100%">كلّم الكابتن على واتساب</button></div>`;
+</script>
+<script>
+const LT=n=>`<div class="tabs" style="margin-bottom:var(--s-3)">${['الأطعمة','التمارين','الوجبات الجاهزة'].map((t,i)=>`<span class="${i==n?'on':''}">${t}</span>`).join('')}</div>`,
+FOODS=[['فول مدمس','بقوليات',110,8,19,1],['طعمية','بقوليات',333,13,31,18],['عيش بلدي','نشويات',270,9,55,1],['جبنة قريش','ألبان',72,12,3,1],['أرز أبيض مسلوق','نشويات',130,3,28,0],['صدور فراخ مشوية','بروتين',165,31,0,4]],
+NM=(c,v)=>`<span class="num" style="color:var(--macro-${c}-text)">${v}</span>`,
+TC=(n,s,u)=>`<div class="card" style="margin-bottom:var(--s-3)"><b>${n}</b><div class="muted sm">${s}</div><div class="row" style="margin-top:var(--s-2)">${B('inf','اتستخدم '+u+' مرة')}</div></div>`,
+HT=n=>`<div class="tabs" style="margin-bottom:var(--s-3)"><span class="${n?'':'on'}">تغذية</span><span class="${n?'on':''}">تمرين</span></div>`;
+S.g1=`${LT(0)}${SR.replace('بالاسم أو الموبايل','عن صنف')}${CH(['الكل','بروتين','نشويات','بقوليات','ألبان','خضار'],0)}<p class="muted sm" style="margin:var(--s-3) 0">126 صنف · الماكروز لكل 100 جم</p><div class="card">${FOODS.map(f=>R(f[0],`${f[2]} سعرة<br>${MC(f[3],f[4],f[5])}`)).join('')}</div>`;
+S.g1d=`${LT(0)}${SR.replace('بالاسم أو الموبايل','عن صنف')}${CH(['الكل','بروتين','نشويات','بقوليات','ألبان','خضار'],0)}<p class="muted sm" style="margin:var(--s-3) 0">126 صنف · الماكروز لكل 100 جم</p><div class="card"><table class="tbl"><tr><th>الصنف<th>التصنيف<th>سعرات<th>بروتين<th>كارب<th>دهون</tr>${FOODS.map(f=>`<tr><td><b>${f[0]}</b><td>${f[1]}<td>${f[2]}<td>${NM('p',f[3])}<td>${NM('c',f[4])}<td>${NM('f',f[5])}</tr>`).join('')}</table></div>`;
+S.g2=`${F('اسم الصنف','فول مدمس')}${G('التصنيف',['بقوليات','نشويات','بروتين','ألبان'],0)}${H('القيم الغذائية لكل 100 جم')}<div class="grid">${F('سعرات','110')}${F('بروتين (جم)','8')}${F('كارب (جم)','19')}${F('دهون (جم)','1')}</div>${H('الوحدات')}${CH(['جرام','ملعقة','حبة'],0)}<div style="margin-top:var(--s-3)">${F('الملعقة بكام جرام','15')}</div>${BT('احفظ الصنف')}`;
+S.g3=`${LT(1)}${SR.replace('بالاسم أو الموبايل','عن تمرين')}${CH(['الكل','صدر','ضهر','أرجل','كتف','دراع'],0)}<div class="card" style="margin-top:var(--s-3)">${ER('بنش برس بالبار','صدر · بار')}${ER('سحب أمامي','ضهر · بار ثابت')}${ER('سكوات بالبار','أرجل · بار')}${ER('ضغط كتف دمبل','كتف · دمبل')}${ER('تراي بوشداون','دراع · كابل')}</div>`;
+S.g4=`${F('اسم التمرين','بنش برس بالبار')}${G('العضلة',['صدر','ضهر','أرجل','كتف','دراع'],0)}${G('المعدات',['بار','دمبل','كابل','وزن الجسم'],0)}<div class="ph" style="min-height:140px">فيديو التمرين</div><button class="btn sec-b" style="margin:var(--s-3) 0">ارفع فيديو</button>${F('الشرح','استلقي على البنش وانزل بالبار لمنتصف الصدر وارفعه')}${BT('احفظ التمرين')}`;
+S.g5=`${LT(2)}<div class="card">${R('فطار فول وبيض',`3 أصناف · 470 سعرة<br>${MC(31,52,14)}`)}${R('غدا فراخ وأرز',`3 أصناف · 570 سعرة<br>${MC(62,50,8)}`)}${R('سناك قريش وخيار',`2 صنف · 125 سعرة<br>${MC(17,6,3)}`)}${R('كشري لايت',`صنف واحد · 300 سعرة<br>${MC(10,60,3)}`)}</div>`;
+S.g6=`${F('اسم الوجبة','فطار فول وبيض')}${G('التصنيف',['فطار','غدا','سناك'],0)}${H('الأصناف')}<div class="card" style="padding-block:0">${FD('فول مدمس','150 جم',165)}${FD('عيش بلدي','60 جم',165)}${FD('بيض مسلوق','2 حبة',140)}<button class="btn lnk" style="width:100%">+ أضف صنف</button></div><div class="card" style="margin-top:var(--s-3)"><div class="muted sm">إجمالي الوجبة</div><div class="kv">470 سعرة</div><div class="sm">${MC('31g','52g','14g')}</div></div>${BT('احفظ الوجبة')}`;
+S.g7=`<div class="ph" style="min-height:96px">اسحب ملف CSV هنا</div><p class="sm" style="margin:var(--s-3) 0"><b>اصناف-جديدة.csv</b> · 48 صف</p>${AL('warn','alert','4 صفوف فيها مشكلة','هنتخطاها ونستورد الباقي: 44 صنف جاهز.')}${H('معاينة قبل التأكيد')}<div class="card" style="overflow-x:auto"><table class="tbl"><tr><th>الصنف<th>سعرات<th>بروتين<th>الحالة</tr><tr><td>بطاطس مسلوقة<td>87<td>2<td>${B('ok','جاهز')}</tr><tr><td>عدس أصفر<td>116<td>9<td>${B('ok','جاهز')}</tr><tr><td>تمر<td>—<td>2<td>${B('dn','سعرات ناقصة')}</tr><tr><td>زبادي يوناني<td>97<td>9<td>${B('ok','جاهز')}</tr></table></div>${BT('استورد 44 صنف')}<button class="btn sec-b" style="width:100%;margin-top:var(--s-2)">إلغاء</button>`;
+S.g8=`${H('مفيش نتيجة بحث')}<div class="card empty">${ic('search')}<p style="margin-bottom:var(--s-3)"><b>مفيش صنف اسمه "كنافة"</b><br><span class="muted">تضيفه كصنف جديد؟</span></p><button class="btn sec-b">ضيف صنف جديد</button></div>${H('حذف صنف مستخدم')}<div class="dlg"><b>تحذف الفول المدمس؟</b>${AL('warn','alert','مستخدم في 7 برامج','منهم سارة محمود ومحمد عادل وهبة سمير. هيتشال منهم كلهم.').replace('class="al"','class="al" style="margin-top:var(--s-3)"')}<div class="row" style="margin-top:var(--s-4)"><button class="btn dng">احذف الصنف</button><button class="btn sec-b">لأ، رجوع</button></div></div>`;
+S.h1=`${HT(0)}${TC('تخسيس 1,850 سعرة','4 وجبات · بروتين 140g · كارب 170g · دهون 56g',12)}${TC('تضخيم 2,800 سعرة','5 وجبات · بروتين 180g · كارب 340g · دهون 80g',7)}${TC('ثبات 2,200 سعرة','4 وجبات · بروتين 150g · كارب 250g · دهون 65g',4)}`;
+S.h2=`${T1('تخسيس 1,850 سعرة')}<p class="muted" style="margin-bottom:var(--s-3)">4 وجبات · اتستخدم 12 مرة</p>${TM('فطار',470,[['فول مدمس','150 جم'],['عيش بلدي','60 جم'],['بيض مسلوق','2 حبة']])}${TM('غدا',570,[['صدور فراخ مشوية','200 جم'],['أرز أبيض','150 جم']])}${BT('طبّق على عميل')}<div class="row" style="margin-top:var(--s-3)"><button class="btn sec-b">عدّل</button><button class="btn sec-b">انسخ</button></div><hr style="border:0;border-top:1px solid var(--border);margin:var(--s-6) 0 var(--s-4)"><button class="btn dng">احذف القالب</button>`;
+S.h3=`<p class="muted" style="margin-bottom:var(--s-3)">القالب: <b style="color:var(--text)">تخسيس 1,850 سعرة</b></p>${SR}<div class="card">${R('سارة محمود','باقة 3 شهور','فعّال','ok','sel')}${R('نورا حسن','باقة 3 شهور','فعّال','ok')}${R('أحمد فتحي','باقة 6 شهور','فعّال','ok')}</div><div style="margin-top:var(--s-3)">${AL('warn','alert','هيستبدل البرنامج الحالي','برنامج سارة الحالي (1,850 سعرة) هيتحفظ في سجل البرامج وتقدر ترجعله.')}</div>${BT('طبّق القالب على سارة')}`;
+</script>
+<script>
+const PAYS=[['سارة محمود','3 شهور','1,800 ج.م','مدفوع','ok','12 أكتوبر'],['هبة سمير','6 شهور','1,200 ج.م','معلّق','warn','—'],['محمد عادل','شهري','1,500 ج.م','ينتهي قريب','warn','10 أكتوبر'],['كريم ياسر','شهري','1,500 ج.م','منتهي','dn','4 أكتوبر'],['نورا حسن','3 شهور','3,600 ج.م','مدفوع','ok','30 سبتمبر']],
+PKC=(n,d,p,on)=>`<div class="card ${on?'sel':''}" style="margin-bottom:var(--s-2);${on?'border-color:var(--text)':''}"><div class="row" style="justify-content:space-between"><b>${n}</b><b class="num">${p}</b></div><div class="muted sm">${d}</div></div>`,
+PM=['كاش','فودافون كاش','إنستاباي','تحويل'],
+TG=(t,on)=>`<div class="li"><b class="grow">${t}</b><span class="tg ${on?'on':''}"></span></div>`,
+RB=(n,v,c)=>`<div class="li"><span class="av">${n[0]}</span><div class="grow"><b>${n}</b><div class="bar" style="margin-top:var(--s-1)"><i style="width:${v}%;background:var(--${c})"></i></div></div><b class="num">${v}%</b></div>`,
+NR=(i,t,s,tm,u)=>`<div class="li"><span class="ni">${ic(i)}</span><div class="grow"><b>${t}</b><div class="muted sm">${s}</div></div><span class="muted sm">${tm}</span>${u?'<i class="ud"></i>':''}</div>`,
+BU=(t,me)=>`<div class="bb ${me?'me':''}">${t}</div>`;
+S.i1=`<div class="grid" ${KG}>${K('محصّل الشهر','28,400 ج.م')}${K('معلّق','4,800 ج.م')}${K('بينتهي الأسبوع ده','6')}</div><div style="margin-top:var(--s-3)">${CH(['الكل','مدفوع','معلّق','ينتهي قريب'],0)}</div><div class="card" style="margin-top:var(--s-3)">${PAYS.map(r=>R(r[0],r[1]+' · '+r[2],r[3],r[4])).join('')}</div>`;
+S.i1d=`<div class="grid" ${KG}>${K('محصّل الشهر','28,400 ج.م')}${K('معلّق','4,800 ج.م')}${K('بينتهي الأسبوع ده','6')}</div><div style="margin:var(--s-4) 0">${CH(['الكل','مدفوع','معلّق','ينتهي قريب'],0)}</div><div class="card"><table class="tbl"><tr><th>العميل<th>الباقة<th>المبلغ<th>الحالة<th>التاريخ</tr>${PAYS.map(r=>`<tr><td><b>${r[0]}</b><td>${r[1]}<td>${r[2]}<td>${B(r[4],r[3])}<td>${r[5]}</tr>`).join('')}</table></div>`;
+S.i2=`<div class="card" style="margin-bottom:var(--s-3)">${R('سارة محمود','باقة 3 شهور · الدفعة التالية 1,800 ج.م')}</div>${F('المبلغ (ج.م)','1,800')}${G('طريقة الدفع',PM,1)}${F('التاريخ','12 أكتوبر 2026')}${F('ملحوظة','الدفعة التانية من 3,600')}${BT('سجّل الدفعة')}`;
+S.i3=`<div class="card" style="margin-bottom:var(--s-3)">${R('محمد عادل','باقة شهري · بتنتهي 10 أكتوبر','ينتهي قريب','warn')}</div>${H('اختار الباقة')}${PKC('شهري','30 يوم','1,500 ج.م')}${PKC('3 شهور','90 يوم · وفّر 900 ج.م','3,600 ج.م',1)}${PKC('6 شهور','180 يوم · وفّر 2,400 ج.م','6,600 ج.م')}<div style="margin-top:var(--s-3)">${F('تاريخ البداية','11 أكتوبر 2026')}${G('الدفع',PM,1)}</div>${BT('جدّد وسجّل الدفع')}`;
+S.i4=`<div class="card" style="padding-block:0">${R('شهري','30 يوم · 1,500 ج.م','مفعّلة','ok')}${R('3 شهور','90 يوم · 3,600 ج.م','مفعّلة','ok')}${R('6 شهور','180 يوم · 6,600 ج.م','مفعّلة','ok')}${R('أسبوع تجريبي','7 أيام · 300 ج.م','موقوفة','warn')}</div>`;
+S.i5=`${F('اسم الباقة','3 شهور')}<div class="grid">${F('المدة (يوم)','90')}${F('السعر (ج.م)','3,600')}</div>${H('المميزات')}<div class="card" style="padding-block:0">${CK('برنامج تغذية','',1)}${CK('برنامج تمرين','',1)}${CK('متابعة أسبوعية بـ Check-in','',1)}${CK('تعديلات مفتوحة','',1)}</div><div class="card" style="margin-top:var(--s-3);padding-block:0">${TG('مفعّلة',1)}</div>${BT('احفظ الباقة')}`;
+S.i6=`${T1('اختار باقتك')}<p class="muted" style="margin-bottom:var(--s-3)">أهلاً يا سارة، جدّدي وكمّلي مع الكابتن أحمد</p>${PKC('شهري','30 يوم','1,500 ج.م')}${PKC('3 شهور','90 يوم · وفّر 900 ج.م','3,600 ج.م',1)}${PKC('6 شهور','180 يوم · وفّر 2,400 ج.م','6,600 ج.م')}${G('طريقة الدفع',['كارت بنكي','فوري','محفظة'],0).replace('<div class="fld">','<div class="fld" style="margin-top:var(--s-3)">')}${BT('ادفع 3,600 ج.م')}${H('بعد الدفع: نجاح')}<div class="card empty"><span class="ok bdg" style="margin-bottom:var(--s-2)">${ic('check')}تم الدفع</span><p><b>اشتراكك اتجدد لحد 11 يناير</b><br><span class="muted">برنامجك جاهز في صفحتك</span></p></div>${H('بعد الدفع: فشل')}${AL('danger','alert','الدفع ماتمش','الكارت اترفض. مفيش مبلغ اتخصم. جرّبي كارت تاني.')}${BT('جرّب تاني','sec-b')}`;
+const MO=['مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر'],MV=[18.2,21.5,24,22.8,26.1,28.4],
+CHART=`<svg viewBox="0 0 320 160" width="100%">${MV.map((v,i)=>{const h=v*3.9,x=270-i*50;return `<rect x="${x}" y="${130-h}" width="34" height="${h}" rx="6" fill="${i==5?'var(--text)':'var(--text-muted)'}" fill-opacity="${i==5?1:.35}"/><text x="${x+17}" y="148" font-size="11" text-anchor="middle" fill="var(--text-muted)">${MO[i]}</text>`}).join('')}<text x="20" y="${130-28.4*3.9-6}" font-size="12" font-weight="700" fill="var(--text)" text-anchor="middle">28,400</text></svg>`;
+S.j1=`${CH(['الشهر ده','3 شهور','السنة'],1)}${H('الدخل الشهري (ج.م)')}<div class="card">${CHART}</div><div class="grid" ${KG}>${K('متدربين فعّالين','34')}${K('نسبة التجديد','78%')}</div>`;
+S.j2=`${CH(['آخر 30 يوم','آخر 3 شهور'],0)}${H('مقصّرين في Check-in')}<div class="card">${RB('نورا حسن',20,'danger')}${RB('كريم ياسر',35,'danger')}${RB('هبة سمير',50,'danger')}</div>${H('التزام عالي')}<div class="card">${RB('سارة محمود',95,'ok-text')}${RB('محمد عادل',90,'ok-text')}${RB('أحمد فتحي',88,'ok-text')}</div>`;
+S.j3=`${G('نوع الملف',['CSV','PDF'],0)}${G('الفترة',['الشهر ده','3 شهور','السنة','مخصص'],1)}<div class="grid">${F('من','1 أغسطس 2026')}${F('إلى','31 أكتوبر 2026')}</div>${H('يشمل')}<div class="card" style="padding-block:0">${CK('الدفعات','',1)}${CK('الاشتراكات','',1)}${CK('الالتزام بالـ Check-in','')}</div>${BT('صدّر التقرير')}`;
+S.k1=`<div class="row" style="justify-content:space-between;margin-bottom:var(--s-2)"><b>الأحدث</b><button class="btn lnk" style="min-height:44px">اقرا الكل</button></div><div class="card">${NR('msg','Check-in جديد','سارة محمود بعتت Check-in أسبوع 8','10 د',1)}${NR('check','دفعة جديدة','نورا حسن دفعت 3,600 ج.م','ساعة',1)}${NR('card','تجديد قرّب','اشتراك محمد عادل بينتهي بعد 3 أيام','3 س')}${NR('alert','Check-in متأخر','كريم ياسر مبعتش من 12 يوم','امبارح')}</div>`;
+S.k2=`${SR.replace('بالاسم أو الموبايل','في المحادثات')}<div class="card">${R('سارة محمود','شكرًا يا كابتن، هبعتلك الصور بكرة','2','inf')}${R('محمد عادل','هو أقدر أبدّل الفراخ بسمك؟','1','inf')}${R('نورا حسن','تمام يا كابتن')}${R('أحمد فتحي','تمرين الرجل كان صعب شوية')}</div>`;
+S.k3=`${BU('صباح الخير يا كابتن، التمرين التالت كان تقيل عليا')}${BU('صباح النور يا سارة، خلّينا نقلل الوزن 10% الأسبوع ده',1)}${BU('<div class="ph" style="min-width:160px">صورة</div>')}${BU(`<div class="row">${ic('layout')}<div><b>برنامج التغذية</b><div class="sm">1,850 سعرة · النسخة 4</div></div></div>`,1)}<div class="cmp"><button class="pm" aria-label="إرفاق">${ic('plus')}</button><input class="inp" placeholder="اكتب رسالتك"><button class="btn pri" style="width:48px;padding:0" aria-label="إرسال">${ic('right')}</button></div>`;
+</script>
+<script>
+const SECL=[['users','بيانات الكابتن والهوية'],['layout','قوالب الـ PDF'],['card','الباقات والأسعار'],['gear','المظهر'],['msg','اللغة والوحدات'],['bell','تفضيلات الإشعارات'],['alert','قواعد التذكيرات'],['book','البرامج الافتراضية'],['card','ربط الدفع'],['copy','النسخ الاحتياطي'],['info','الأمان'],['users','المدربين المساعدين'],['card','الحساب والفواتير'],['info','المساعدة والدعم']],
+CHV=`<span style="display:inline-flex;transform:scaleX(-1)">${ic('right')}</span>`,
+SP=(i,c)=>`<div class="two2"><div class="card" style="padding:var(--s-2)">${SECL.map((s,j)=>`<div class="act ${j+1==i?'sel':''}" style="padding-inline:var(--s-3);border-radius:var(--r-md);${j+1==i?'font-weight:600':''}">${ic(s[0])}<span class="grow">${s[1]}</span></div>`).join('')}</div><div>${c}</div></div>`,
+DT=(a,b,c)=>`<div class="dot" style="${a}"></div>`,
+TH3=(t,th,on)=>`<div class="pan" data-theme="${th}" style="padding:var(--s-3);text-align:center;${on?'outline:2px solid var(--text);outline-offset:2px':''}"><div class="bar" style="margin:0 0 var(--s-2)"><i style="width:60%;background:var(--text)"></i></div>${t}</div>`,
+NC=(t,a,b,c)=>`<div class="card" style="margin-bottom:var(--s-3);padding-block:var(--s-2)"><b>${t}</b>${TG('داخل التطبيق',a)}${TG('واتساب',b)}${TG('إيميل',c)}</div>`,
+SE=(n,d,b,c)=>`<div class="li"><span class="grow"><b>${n}</b><div class="muted sm">${d}</div></span>${b?B(c,b):''}</div>`;
+S.s0=`<div class="card"><div class="row"><span class="av" style="width:56px;height:56px;font-size:20px">أ</span><div><b style="font-size:var(--fs-h3)">كابتن أحمد إيهاب</b><div class="muted sm">ahmed@example.com</div></div></div></div><div class="card" style="margin-top:var(--s-3);padding-block:0">${SECL.map(s=>`<div class="act">${ic(s[0])}<span class="grow">${s[1]}</span>${CHV}</div>`).join('')}</div><div class="card" style="margin-top:var(--s-4);padding-block:0"><div class="act" style="color:var(--danger-text)">${ic('trash')}<span class="grow">حذف الحساب</span></div><div class="act">${ic('right')}<span class="grow">تسجيل الخروج</span></div></div>`;
+S.s1=`<div class="grid" style="grid-template-columns:1fr 1fr">${PH('صورة الكابتن')}${PH('اللوجو')}</div><div style="margin-top:var(--s-3)">${F('الاسم','أحمد إيهاب')}${F('رقم الواتساب','01012345678')}${F('نبذة','مدرب لياقة بدنية أونلاين، متخصص في برامج التخسيس')}</div>${BT('احفظ')}`;
+S.s2=`<div class="fld"><label>لون القالب</label><div class="row"><div style="text-align:center"><i class="dot" style="background:#0F1B2D;outline:2px solid var(--text);outline-offset:2px"></i><div class="sm">كحلي حبر</div></div><div style="text-align:center"><i class="dot" style="background:#243B6B"></i><div class="sm">أزرق ملكي</div></div><div style="text-align:center"><i class="dot" style="background:#2B2B2B"></i><div class="sm">فحمي</div></div></div></div>${F('نص التذييل','كابتن أحمد إيهاب · واتساب 01012345678')}${F('ملحوظة افتراضية','اشرب 3 لتر مياه يوميًا')}${H('معاينة لايف')}${PP('برنامج التغذية',PR('فطار','فول مدمس 150 جم')+PR('غدا','صدور فراخ 200 جم')+'<div class="sm" style="margin-top:var(--s-2)">كابتن أحمد إيهاب · واتساب 01012345678</div>')}${BT('احفظ القالب')}`;
+S.s3=`<div class="card" style="padding-block:0">${R('شهري','1,500 ج.م','مفعّلة','ok')}${R('3 شهور','3,600 ج.م','مفعّلة','ok')}${R('6 شهور','6,600 ج.م','مفعّلة','ok')}</div>${BT('إدارة الباقات والأسعار')}`;
+S.s4=`<div class="grid" style="grid-template-columns:repeat(3,1fr)">${TH3('فاتح','light',1)}${TH3('داكن','dark')}<div class="pan" style="padding:var(--s-3);text-align:center"><div class="bar" style="margin:0 0 var(--s-2)"><i style="width:30%;background:var(--text)"></i></div>تلقائي</div></div><p class="muted sm" style="margin-top:var(--s-3)">التلقائي بيمشي على إعداد موبايلك أو جهازك.</p>`;
+S.s5=`${G('اللغة',['عربي','English'],0)}${G('الوزن',['كجم','رطل'],0)}${G('الطول',['سم','بوصة'],0)}<p class="muted sm">الاتجاه بيتغيّر لوحده مع اللغة: عربي يمين لشمال وEnglish شمال ليمين.</p>${BT('احفظ')}`;
+S.s6=`${NC('تجديدات',1,1,0)}${NC('Check-in جديد',1,1,0)}${NC('دفعات',1,0,1)}${NC('تأخر Check-in',1,1,0)}`;
+S.s7=`<div class="grid">${F('ذكّرني قبل التجديد بـ (يوم)','3')}${F('تأخر Check-in بعد (يوم)','7')}</div>${H('رسائل جاهزة')}<div class="card" style="margin-bottom:var(--s-2)"><b>تجديد الاشتراك</b><div class="muted sm">أهلاً يا {الاسم}، اشتراكك بينتهي بعد 3 أيام. تحب نجدّد؟</div></div><div class="card"><b>Check-in متأخر</b><div class="muted sm">أهلاً يا {الاسم}، وحشتنا أخبارك. ابعتلي Check-in الأسبوع ده.</div></div>${BT('احفظ')}`;
+S.s8=`${F('الراحة بين المجموعات (ث)','90')}${G('عدد الوجبات الافتراضي',['3','4','5','6'],1)}${H('عرض الماكروز')}<div class="card" style="padding-block:0">${TG('بروتين',1)}${TG('كارب',1)}${TG('دهون',1)}</div>${BT('احفظ')}`;
+S.s9=`<div class="card">${SE('Paymob','الدفع بالكارت والمحفظة','متصل','ok')}${SE('Fawry','الدفع في الفروع',' غير متصل','warn')}</div><div style="margin-top:var(--s-3)">${F('مفتاح الربط (API Key)','••••••••••••••••')}${F('Integration ID','••••••••')}</div><button class="btn sec-b">اختبر الاتصال</button><div style="margin-top:var(--s-3)">${AL('ok','check','الاتصال شغال','آخر اختبار النهارده 10:15 ص')}</div>${BT('احفظ')}`;
+S.s10=`<div class="card">${SE('آخر نسخة احتياطية','امبارح 11:40 م · 2.4 MB','تمت','ok')}</div>${BT('نزّل نسخة كاملة (JSON)')}<button class="btn sec-b" style="width:100%;margin-top:var(--s-2)">استورد من ملف</button><button class="btn sec-b" style="width:100%;margin-top:var(--s-2)">صدّر CSV (عملاء ودفعات)</button>`;
+S.s11=`<button class="btn sec-b" style="width:100%">غيّر كلمة السر</button><div class="card" style="margin-top:var(--s-3);padding-block:0">${TG('التحقق بخطوتين',1)}</div>${H('الجلسات النشطة')}<div class="card">${SE('موبايل Android','القاهرة · دلوقتي','الجهاز ده','ok')}${SE('Chrome على ويندوز','القاهرة · امبارح','','')}</div><button class="btn lnk" style="margin-top:var(--s-2)">اخرج من الأجهزة التانية</button>`;
+S.s12=`<p style="margin-bottom:var(--s-3)">${B('inf','قريبًا')}</p><div class="card">${SE('منى علي','مدربة مساعدة','نشطة','ok')}${SE('عمرو سعيد','مدرب مساعد','مدعو','warn')}</div>${H('الصلاحيات')}<div class="card" style="padding-block:0">${CK('يشوف العملاء','',1)}${CK('يعدّل البرامج','',1)}${CK('يشوف الدفعات','')}</div>${BT('ادعو مدرب')}`;
+S.s13=`<div class="card"><b>خطة السيستم: احترافي</b><div class="kv">450 ج.م / شهر</div><div class="muted sm">التجديد الجاي 1 نوفمبر 2026</div></div>${H('الفواتير')}<div class="card">${SE('فاتورة أكتوبر','450 ج.م · 1 أكتوبر','مدفوعة','ok')}${SE('فاتورة سبتمبر','450 ج.م · 1 سبتمبر','مدفوعة','ok')}</div><button class="btn sec-b" style="width:100%;margin-top:var(--s-3)">غيّر الخطة</button>`;
+S.s14=`${H('أسئلة شائعة')}<div class="card" style="padding-block:0"><div class="act"><span class="grow">إزاي أضيف متدرب جديد؟</span>${CHV}</div><div class="act"><span class="grow">إزاي أطلّع PDF للبرنامج؟</span>${CHV}</div><div class="act"><span class="grow">إزاي أجدّد اشتراك؟</span>${CHV}</div></div>${BT('كلّم الدعم على واتساب')}<p class="muted sm" style="margin-top:var(--s-4)">عن السيستم: الإصدار 1.0 · أكتوبر 2026</p>`;
+S.s15=`<div class="stp"><i class="on"></i><i class="on"></i><i></i></div><p class="muted sm" style="margin:var(--s-2) 0 var(--s-3)">خطوة 2 من 3</p>${T1('حذف الحساب')}${AL('danger','alert','الحذف نهائي','هيتمسح كل المتدربين والبرامج والدفعات ومش هترجع.')}<div class="card" style="margin-top:var(--s-3);padding-block:0">${CK('نزّلت نسخة احتياطية','',1)}${CK('فهمت إن الحذف مش هيرجع','',1)}</div><div style="margin-top:var(--s-3)">${F('اكتب "احذف حسابي" للتأكيد','احذف حسابي')}</div><button class="btn dng" style="width:100%">احذف الحساب نهائيًا</button><button class="btn sec-b" style="width:100%;margin-top:var(--s-2)">لأ، رجوع</button>`;
+S.s16=`<div class="dlg"><b style="font-size:var(--fs-h3)">تسجّل خروج؟</b><p class="muted" style="margin:var(--s-2) 0 var(--s-4)">هتحتاج تدخل تاني بإيميلك وكلمة السر.</p><div class="row"><button class="btn pri">سجّل خروج</button><button class="btn sec-b">لأ، رجوع</button></div></div>`;
+for(let i=1;i<=14;i++)S['s'+i+'d']=SP(i,S['s'+i]);
+</script>
+<script>
+const ZC=c=>c.map(x=>`<span class="chip" style="min-height:32px;padding:0 var(--s-3);font-size:var(--fs-small)">${x}</span>`).join(''),
+ZN=(t,c,n)=>`<div class="card" style="margin-bottom:var(--s-3)"><b>${t}</b><div class="row" style="margin:var(--s-2) 0">${ZC(c)}</div>${n?`<div class="muted sm">${n}</div>`:''}</div>`;
+S.z4=`${H('الدخول')}${ZN('A1 › A2 › A3',['A1','A2','A3','A4'],'نسيت كلمة السر بتفتح A2 ثم A3. بعد أول دخول بييجي الإعداد الأولي A4 ثم الرئيسية.')}${H('الموبايل: 5 تابات')}${ZN('الرئيسية',['B1','B2'],'اختصارات B1 بتفتح D5 وD7 وH1.')}${ZN('العملاء',['C1','C2','C3','C4','C5','C6','C7','C8','C9','C10','C11','C12'],'C1 › C6 › تابات C7 وC8 وC10. C8 › C9. C6 › C5 وC11.')}${ZN('بناء البرنامج من ملف العميل',['D1','D2','D3','D4','D5','D6','D7','D8','E1','E2','E3','E4','E5','F1','F2','F3'],'C6 › D1 للتغذية وE1 للتمرين. D1 وE1 فيهم Sheets، وF1 بتطلع PDF وF3 بتنشر الرابط.')}${ZN('المكتبة',['G1','G2','G3','G4','G5','G6','G7','G8'],'كل قايمة بتفتح نموذج الإضافة بتاعها، وG1 بتفتح G7 للاستيراد.')}${ZN('القوالب',['H1','H2','H3','C12'],'H1 › H2 › H3، واختيار العميل بـ C12.')}${ZN('المزيد',['S0','S1','S2','S3','S4','S5','S6','S7','S8','S9','S10','S11','S12','S13','S14','S15','S16','I1','I2','I3','I4','I5','J1','J2','J3','K1','K2','K3'],'الاشتراكات والتقارير والرسائل على الموبايل جوه المزيد، وS3 بتفتح I4.')}${H('الديسكتوب: القايمة الجانبية')}${ZN('الرئيسية',['B1','B2'])}${ZN('العملاء',['C1','C6','D1','E1','F1'],'نفس شاشات الموبايل، والقوايم جداول، والبناء عمودين.')}${ZN('المكتبة والقوالب',['G1','G3','G5','H1'])}${ZN('الاشتراكات',['I1','I2','I3','I4','I5'])}${ZN('التقارير',['J1','J2','J3'])}${ZN('الرسائل',['K1','K2','K3'])}${ZN('الإعدادات',['S0','S1','S2','S14'],'لوحتين: الأقسام على جنب والمحتوى على الجنب التاني.')}${H('بالرابط من غير دخول')}${ZN('صفحة المتدرب',['F4','F5','F6','F7','F8','F9','I6'],'F4 تابات F5 وF6 وF7. F8 لو الاشتراك خلص وبتودّي لـ I6. F9 لو الرابط وقف.')}`;
+</script>
+<script>
+const I=n=>`<svg class="ic"><use href="#i-${n}"/></svg>`;
+const nav=[['home','الرئيسية'],['users','العملاء'],['book','المكتبة'],['layout','القوالب'],['card','الاشتراكات'],['chart','التقارير'],['msg','الرسائل'],['gear','الإعدادات']];
+/* بناء إطار الموبايل والديسكتوب لكل شاشة من نفس المحتوى */
+document.querySelectorAll('.screen').forEach(s=>{
+ const {id,title,cap,t}=s.dataset,k=s.dataset.k||'in',n=+(s.dataset.n??7),b=s.dataset.b||'المزيد',cr=s.dataset.cr||'المزيد › '+title,fb=s.dataset.fab,c=document.getElementById('t-'+t)?.innerHTML||S[t],cd=S[t+'d']||c;
+ s.innerHTML=`<div class="mw"><div class="frame m">${k=='tr'?`<div class="mtop"><span class="av">أ</span><b>كابتن أحمد إيهاب</b></div>`:k=='mn'?`<div class="mtop"><b>${title}</b></div>`:(k=='au'&&!s.dataset.b)?'':`<div class="mtop"><button class="back">${I('right')}${b}</button><b>${title}</b></div>`}<div class="body">${k=='au'?`<div class="aw">${c}</div>`:c}</div>${k=='mn'?`<div class="tab">${[['home','الرئيسية'],['users','العملاء'],['book','المكتبة'],['layout','القوالب'],['dots','المزيد']].map((x,i)=>`<a class="${i==n?'on':''}">${I(x[0])}${x[1]}</a>`).join('')}</div>`:''}${k=='tr'?TT(n):''}${fb?`<button class="fab" aria-label="${fb}">${I('plus')}</button>`:''}</div></div>
+<div class="dw"><div class="hs"><div class="frame d">${k=='au'||k=='tr'?'':`<aside class="sb"><div class="logo">كابتن أحمد إيهاب</div>${nav.map((x,i)=>`<a class="${i==(s.dataset.dn??n)?'on':''}">${I(x[0])}${x[1]}</a>`).join('')}</aside>`}<div class="dm">${k=='au'||k=='tr'?'':`<div class="dtop"><span class="muted">${cr}</span><span class="grow"></span>${fb?`<button class="btn pri">${fb}</button>`:''}<span class="srch">${I('search')}بحث</span>${I('bell')}<span class="av">أ</span></div>`}<div class="body">${k=='au'||k=='tr'?`<div class="aw" style="${k=='tr'?'max-width:720px;margin:0 auto':''}">${cd}</div>`:cd}</div></div></div></div></div>
+<p class="cap"><b>${id}</b>${title} — ${cap}</p>`;
+});
+/* عينات الألوان */
+document.querySelectorAll('.sw[data-v]').forEach(e=>e.innerHTML=e.dataset.v.split(' ').map(v=>`<div><i style="background:var(--${v})"></i>${v}</div>`).join(''));
+/* مفاتيح الجهاز والمظهر */
+const root=document.documentElement,mq=matchMedia('(prefers-color-scheme:dark)');let mode='light';
+function applyTheme(){root.dataset.theme=mode=='auto'?(mq.matches?'dark':'light'):mode}
+mq.addEventListener('change',applyTheme);
+function seg(id,fn){document.getElementById(id).addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;e.currentTarget.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));fn(b.dataset)})}
+seg('devSeg',d=>document.body.dataset.device=d.d);
+seg('thSeg',d=>{mode=d.t;applyTheme()});
+applyTheme();
+</script>
+</body>
+</html>
