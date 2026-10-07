@@ -275,6 +275,7 @@ h2{margin:var(--s-5) 0 var(--s-3)}
 .center{min-height:100vh;display:grid;place-items:center;padding:var(--s-4)}
 .banner{background:var(--info-bg);color:var(--info-text);padding:var(--s-2) var(--s-4);display:flex;align-items:center;justify-content:space-between;font-size:var(--fs-small)}
 .swc{width:44px;height:44px;border-radius:50%;border:0;cursor:pointer;background:var(--pdf-main)}.swc.is-on{outline:2px solid var(--text);outline-offset:2px}
+.ph{display:flex;align-items:center;justify-content:center;min-height:180px;border:1px dashed var(--border);border-radius:var(--r-md);background:var(--track);color:var(--text-muted);font-size:var(--fs-small)}
 select.input{appearance:auto}
 .tabbar.keep{display:flex}
 @media(min-width:1024px){
@@ -284,6 +285,8 @@ select.input{appearance:auto}
 .sheet-wrap{justify-content:flex-end;align-items:stretch}
 .sheet{width:var(--drawer-w);max-height:none;height:100%;border-radius:0;transform:translateX(-100%)}
 .sheet-wrap.open .sheet{transform:none}.sheet__grab{display:none}.fab{inset-block-end:var(--s-6)}.sub .fab{inset-block-end:var(--s-6)}}
+details{margin-bottom:var(--s-3)}summary{cursor:pointer;min-height:44px;display:flex;align-items:center;gap:var(--s-3);font:700 var(--fs-h3) var(--font-display);list-style:none}summary::-webkit-details-marker{display:none}summary::before{content:"+";width:20px;color:var(--text-muted)}details[open] summary::before{content:"−"}
+.cd{font:700 12px var(--font-display);background:var(--track);border-radius:var(--r-sm);padding:2px 8px;min-width:44px;text-align:center;flex:none}.fg{display:grid;gap:var(--s-3);grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
 @media print{.noprint,.fab,.tabbar,.toast-host,.side{display:none!important}.page{padding:0}.paper{border:0}}
 </style>
 </head>
@@ -297,13 +300,102 @@ select.input{appearance:auto}
 const $=s=>document.querySelector(s),E=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])),N=n=>Math.round(n).toLocaleString('en-US'),I=n=>'<svg class="ic"><use href="#i-'+n+'"/></svg>';
 /* ===== بيانات تجريبية (بدل الباك إند) ===== */
 const F=[['فول مدمس','بقوليات',110,8,19,1],['طعمية','بقوليات',333,13,31,18],['عيش بلدي','نشويات',270,9,55,1],['جبنة قريش','ألبان',72,12,3,1],['أرز أبيض مسلوق','نشويات',130,3,28,0],['صدور فراخ مشوية','بروتين',165,31,0,4],['بيض مسلوق','بروتين',155,13,1,11],['كشري لايت','نشويات',120,4,24,1],['تونة معلبة','بروتين',110,24,0,1],['زبادي','ألبان',60,4,5,3],['بطاطس مسلوقة','نشويات',87,2,20,0],['سلطة خضار','خضار',25,1,5,0],['خيار','خضار',15,1,3,0],['موز','فاكهة',89,1,23,0],['تفاح','فاكهة',52,0,14,0],['لحم بقري مشوي','بروتين',250,26,0,17],['عدس مطبوخ','بقوليات',116,9,20,0],['شوفان','نشويات',380,13,66,7],['لوز','دهون',579,21,22,50],['زيت زيتون','دهون',884,0,0,100]].map(([n,cat,k,p,c,f],id)=>({id,n,cat,k,p,c,f}));
-const X=[['بنش برس بالبار','صدر'],['دامبل برس مائل','صدر'],['فلاي كابل','صدر'],['ضغط كتف دمبل','كتف'],['رفرفة جانبي','كتف'],['سحب أمامي','ضهر'],['تجديف بالبار','ضهر'],['سكوات بالبار','أرجل'],['ضغط رجل','أرجل'],['تراي بوشداون','دراع'],['باي دمبل','دراع'],['مشي سريع','كارديو']].map(([n,m],id)=>({id,n,m}));
-const prog=()=>({meals:[['فطار',[[0,150],[2,60],[6,100]]],['غدا',[[5,200],[4,150],[11,150]]],['سناك',[[3,150],[12,100]]],['عشا',[[7,250]]]].map(([n,it])=>({n,it:it.map(([f,g])=>({f,g}))})),days:[['يوم 1 · دفع',[[0,4,10,90],[1,3,12,75],[3,3,12,75],[9,3,15,60]]],['يوم 2 · سحب',[[5,4,10,90],[6,3,12,75]]],['يوم 3 · رجل',[[7,4,10,90],[8,3,12,75]]]].map(([n,e])=>({n,ex:e.map(([x,s,r,t])=>({x,s,r,t}))}))});
+const X=[['بنش برس بالبار','صدر','بار','استلقي على البنش وانزل بالبار لمنتصف الصدر وارفعه بتحكم.'],['دامبل برس مائل','صدر','دمبل','على بنش مائل، ادفع الدمبل لفوق وانزل ببطء لحد مستوى الصدر.'],['فلاي كابل','صدر','كابل','قف في منتصف الكابل واضم إيدك قدامك مع شد الصدر.'],['ضغط كتف دمبل','كتف','دمبل','اجلس وارفع الدمبل فوق راسك من غير ما تقفل الكوع.'],['رفرفة جانبي','كتف','دمبل','ارفع الدمبل للجنب لحد مستوى الكتف وانزل ببطء.'],['سحب أمامي','ضهر','بار ثابت','اشدّ نفسك لحد ما دقنك تعدّي البار وانزل بتحكم.'],['تجديف بالبار','ضهر','بار','وانت مايل للأمام اسحب البار ناحية بطنك وشدّ لوح الكتف.'],['سكوات بالبار','أرجل','بار','انزل لحد ما فخذك يوازي الأرض وارجع لفوق وضهرك مستقيم.'],['ضغط رجل','أرجل','جهاز','ادفع المنصة بكعب رجلك وما تقفلش الركبة في الآخر.'],['تراي بوشداون','دراع','كابل','ثبّت كوعك جنب جسمك وافرد الكابل لتحت.'],['باي دمبل','دراع','دمبل','اثني الدمبل لفوق من غير ما تحرّك كتفك.'],['مشي سريع','كارديو','جهاز','سرعة ثابتة تخلّيك تتكلم بصعوبة بسيطة.']].map(([n,m,eq,d],id)=>({id,n,m,eq,d}));
+const prog=(s=1)=>({meals:[['فطار',[[0,150],[2,60],[6,100]]],['غدا',[[5,200],[4,150],[11,150]]],['سناك',[[3,150],[12,100]]],['عشا',[[7,250]]]].map(([n,it])=>({n,it:it.map(([f,g])=>({f,g:Math.max(10,Math.round(g*s/10)*10)}))})),days:[['يوم 1 · دفع',[[0,4,10,90],[1,3,12,75],[3,3,12,75],[9,3,15,60]]],['يوم 2 · سحب',[[5,4,10,90],[6,3,12,75]]],['يوم 3 · رجل',[[7,4,10,90],[8,3,12,75]]]].map(([n,e])=>({n,ex:e.map(([x,s,r,t])=>({x,s,r,t}))}))});
 const C=[['سارة محمود','01012345678','تخسيس','3 شهور',36,86,78.4,68,1850,0,0],['محمد عادل','01123456789','تخسيس','شهري',3,98,92,85,2200,0,3],['هبة سمير','01234567890','تخسيس','6 شهور',20,78,70,62,1650,1200,5],['كريم ياسر','01555555555','تضخيم','شهري',-3,70,72,78,2800,0,12],['نورا حسن','01098765432','تخسيس','3 شهور',53,74,74,64,1700,0,9],['أحمد فتحي','01011112222','لياقة','6 شهور',120,88,84,80,2300,0,2]].map(([n,ph,g,pk,left,w0,w,tg,kc,due,late],i)=>({id:i+1,n,ph,g,pk,left,w0,w,tg,kc,due,late,pays:[],...prog()}));
 C[0].pays=[{a:1800,m:'فودافون كاش',d:'12 أغسطس'},{a:1800,m:'إنستاباي',d:'12 سبتمبر'}];
 C.forEach(c=>c.pays.length||c.pays.push({a:1500,m:'كاش',d:'الشهر اللي فات'}));
-const ST={in:0,th:'light',income:28400,f:'all',q:'',ct:0,day:0,pt:0,fq:'',fc:'الكل',xq:'',xc:'الكل',lt:0,lq:'',lc:'الكل',eaten:{},done:{},pdf:{m:'both',c:'navy',note:'اشرب 3 لتر مياه يوميًا'}};
-const CATS=['الكل','بروتين','نشويات','بقوليات','ألبان','خضار','فاكهة','دهون'],MUS=['الكل','صدر','ضهر','كتف','أرجل','دراع','كارديو'];
+const ST={in:0,th:'auto',income:28400,f:'all',q:'',ct:0,day:0,pt:0,fq:'',fc:'الكل',xq:'',xc:'الكل',lt:0,lq:'',lc:'الكل',eaten:{},done:{},pdf:{m:'both',c:'navy',note:'اشرب 3 لتر مياه يوميًا'}};
+const EQ=['بار','دمبل','كابل','جهاز','بار ثابت','وزن الجسم'],CATS=['الكل','بروتين','نشويات','بقوليات','ألبان','خضار','فاكهة','دهون'],MUS=['الكل','صدر','ضهر','كتف','أرجل','دراع','كارديو'];
+const FT=[['بناء التغذية بسرعة','أصناف مصرية بالجرامات، وإجمالي السعرات والماكروز لحظي، وتبديل أي صنف بضغطة، وتنبيه لو زادت السعرات.'],['بناء التمرين','أيام وتمارين بمجموعات وتكرار وراحة، مع مكتبة تمارين بفيديو وشرح.'],['PDF ورابط ويب','ورقة PDF احترافية بـ 3 قوالب، أو رابط صفحة للمتدرب فيها برنامجه وQR وواتساب.'],['إدارة العملاء','ملف كامل لكل متدرب: بيانات وصحة وتقدم ووزن وصور قبل وبعد وسجل نسخ البرنامج.'],['الاشتراكات والدفع','باقات وأسعار، وتسجيل دفعات كاش وفودافون كاش وإنستاباي، وتجديد، ودفع أونلاين بـ Paymob وFawry.'],['المكتبة والقوالب','أطعمة وتمارين ووجبات جاهزة بتضيفها وتستوردها من CSV، وقوالب برامج تطبّقها على أي عميل.'],['التقارير والتواصل','دخل شهري ونسبة تجديد وتقرير التزام، وإشعارات ورسائل ومحادثة مع كل متدرب.'],['موبايل وديسكتوب','عربي RTL بوضع فاتح وداكن وتلقائي، وحفظ تلقائي بدل أزرار الحفظ، وكل شاشة على بعد ضغطة أو اتنين.']];
+const SEC=[['أ','الدخول والبداية',`A1|تسجيل الدخول|إيميل أو موبايل وكلمة سر|p
+A2|نسيت كلمة السر|إدخال الإيميل وإرسال كود
+A3|كود التحقق|OTP وتعيين كلمة سر جديدة
+A4|الإعداد الأولي|3 خطوات: بياناتك، اللوجو واللون، أول متدرب`],
+['ب','الرئيسية',`B1|الرئيسية|أرقام الشغل وقايمة محتاج متابعة واختصارات|p
+B2|الرئيسية فاضية|أول مرة بدون متدربين مع زرار إضافة`],
+['ج','العملاء',`C1|قايمة العملاء|بحث وفلاتر وترتيب وعدد النتايج|p
+C2|نتايج البحث والتحميل|حالة مفيش نتايج وحالة تحميل
+C3|إضافة عميل|الاسم والموبايل والسن والطول والوزن والهدف والباقة|p
+C4|البيانات الصحية|إصابات وحساسية أكل وأدوية وملاحظات
+C5|تعديل عميل|نفس النموذج ببيانات وحذف بتأكيد
+C6|ملف العميل: نظرة|البيانات والتغذية والتمرين وحالة الاشتراك|p
+C7|ملف العميل: التقدم|رسم الوزن مع خط الهدف والقياسات وصور قبل وبعد
+C8|ملف العميل: Check-in|قايمة المتابعات السابقة|d
+C9|تفاصيل Check-in|وزن وصور وكلام المتدرب ورد الكابتن|d
+C10|الاشتراك والدفع|الباقة والتواريخ وسجل الدفعات والتجديد|p
+C11|سجل البرامج|النسخ السابقة واسترجاع ومقارنة بسيطة
+C12|اختيار عميل|قايمة سريعة عند تطبيق قالب أو نسخ برنامج`],
+['د','بناء التغذية',`D1|بناء التغذية|إجمالي ثابت وجرامات + و− وتبديل أي صنف|p
+D2|اختيار وتبديل صنف|بحث وتصنيفات وماكروز كل صنف|p
+D3|وجبة جاهزة|إضافة وجبة كاملة مع معاينة محتواها
+D4|إجراءات الوجبة|جديدة وإعادة تسمية ونسخ وحذف|p
+D5|حاسبة السعرات|BMR وTDEE وهدف مقترح بضغطة
+D6|ضبط الهدف والماكروز|بالنسبة أو بالجرام لكل كجم
+D7|قايمة المشتريات|مستخرجة من برنامج الأسبوع وتتبعت واتساب
+D8|تحذيرات وتأكيدات|زيادة السعرات وحذف وجبة وحفظ كقالب|p`],
+['هـ','بناء التمرين',`E1|بناء التمرين|أيام وكروت تمارين بمجموعات وتكرار وراحة|p
+E2|اختيار تمرين|بحث وفلتر عضلات|p
+E3|تفاصيل تمرين|فيديو وشرح ونصايح
+E4|إدارة الأيام|إضافة وإعادة تسمية ونسخ وحذف يوم|p
+E5|حالات التمرين|يوم فاضي وتأكيد حذف وحفظ كقالب|p`],
+['و','التصدير والنشر وصفحة المتدرب',`F1|معاينة وتصدير PDF|ورقة لايف وخيارات المحتوى واللون والملحوظة|p
+F2|ورقة الـ PDF|صفحات التغذية والتمرين بتصميم نهائي
+F3|نشر صفحة المتدرب|رابط وQR وواتساب وإيقاف النشر|p
+F4|المتدرب: اليوم|تمرين النهارده وأكل النهارده|p
+F5|المتدرب: التغذية|الوجبات والكميات والماكروز|p
+F6|المتدرب: التمرين|الأيام والتمارين|p
+F7|المتدرب: إرسال Check-in|وزن وصور والتزام وكلام|d
+F8|المتدرب: الاشتراك منتهي|رسالة وزرار تجديد
+F9|المتدرب: الرابط غير متاح|شرح وطريق للتواصل مع الكابتن`],
+['ز','المكتبة',`G1|المكتبة: الأطعمة|بحث وتصنيفات وماكروز لكل 100 جم|p
+G2|إضافة وتعديل صنف|سعرات وماكروز ووحدات (جرام، ملعقة، حبة)|p
+G3|المكتبة: التمارين|بحث وفلتر عضلات|p
+G4|إضافة وتعديل تمرين|عضلة ومعدات وفيديو وشرح
+G5|الوجبات الجاهزة|قايمة بسعرات كل وجبة
+G6|إنشاء وجبة جاهزة|أصناف وجرامات وإجمالي
+G7|استيراد أطعمة CSV|معاينة قبل التأكيد
+G8|حالات المكتبة|مفيش نتايج وحذف صنف مستخدم في برامج`],
+['ح','القوالب',`H1|القوالب|تغذية وتمرين بكروت ومرات الاستخدام
+H2|تفاصيل قالب|معاينة وتعديل ونسخ وحذف
+H3|تطبيق قالب|اختيار عميل وتحذير استبدال البرنامج`],
+['ط','الاشتراكات والدفع',`I1|الاشتراكات والدفع|محصّل ومعلّق وبينتهي وقايمة بفلاتر
+I2|تسجيل دفعة|مبلغ وطريقة دفع وتاريخ وملحوظة|p
+I3|تجديد اشتراك|باقة وتاريخ ودفع|p
+I4|الباقات والأسعار|قايمة الباقات
+I5|إضافة وتعديل باقة|اسم ومدة وسعر ومميزات وتفعيل
+I6|دفع المتدرب أونلاين|Paymob وFawry مع حالتي نجاح وفشل`],
+['ي','التقارير',`J1|التقارير|دخل شهري وفعّالين ونسبة تجديد
+J2|تقرير الالتزام|مين ملتزم ومين مقصّر|d
+J3|تصدير تقرير|CSV أو PDF بفترة محددة`],
+['ك','الرسائل والإشعارات',`K1|مركز الإشعارات|تجديدات ودفعات وتأخير مع اقرا الكل
+K2|الرسائل|قايمة المحادثات
+K3|محادثة مع متدرب|نصوص وصور وإرفاق برنامج`],
+['ل','المزيد والإعدادات',`S0|المزيد|بيانات الكابتن وقايمة الأقسام|p
+S1|بيانات الكابتن والهوية|اسم وصورة ولوجو وواتساب ونبذة
+S2|قوالب الـ PDF|لون وتذييل وملحوظة افتراضية
+S3|الباقات والأسعار|رابط لإدارة الباقات
+S4|المظهر|فاتح وداكن وتلقائي|p
+S5|اللغة والوحدات|عربي أو English وكجم أو رطل
+S6|تفضيلات الإشعارات|داخل التطبيق وواتساب وإيميل
+S7|قواعد التذكيرات|قبل التجديد وتأخر المتابعة ورسائل جاهزة
+S8|البرامج الافتراضية|راحة وعدد وجبات وعرض الماكروز
+S9|ربط الدفع|Paymob وFawry واختبار الاتصال
+S10|النسخ الاحتياطي|نسخة JSON كاملة واستيراد وتصدير CSV
+S11|الأمان|كلمة السر والجلسات والتحقق بخطوتين
+S12|المدربين المساعدين|دعوة وصلاحيات|f
+S13|الحساب والفواتير|خطة السيستم وفواتيره
+S14|المساعدة والدعم|أسئلة شائعة وتواصل مع الدعم
+S15|حذف الحساب|خطوات وتأكيد بالكتابة
+S16|تسجيل الخروج|نافذة تأكيد|p`],
+['م','مرجع التصميم (للمطوّر)',`Z1|المكونات|أزرار وحقول وChips وكروت وصفوف
+Z2|الألوان والخطوط|فاتح وداكن وسلم الخطوط
+Z3|الأنماط التفاعلية|Toast وSheet وDrawer وحالات النظام
+Z4|خريطة التنقل|العلاقة بين كل الشاشات`]];
+const TAG={p:['ok','في النموذج التجريبي'],d:['warn','حسب قرار الكابتن'],f:['info','ميزة مستقبلية']};
+const ROWS=SEC.map(([l,t,s])=>[l,t,s.split('\n').map(r=>r.split('|'))]);
+const all=ROWS.flatMap(s=>s[2]),cnt=k=>all.filter(r=>r[3]==k).length;
+
 /* ===== أدوات ===== */
 const cl=id=>C.find(c=>c.id==id),cur=()=>cl(location.hash.split('/')[2]);
 const tot=c=>c.meals.reduce((a,m)=>(m.it.forEach(({f,g})=>{const x=F[f],r=g/100;a.k+=x.k*r;a.p+=x.p*r;a.c+=x.c*r;a.f+=x.f*r}),a),{k:0,p:0,c:0,f:0});
@@ -312,19 +404,20 @@ const sts=c=>c.left<0?['منتهي','danger']:c.left<=7?['ينتهي قريب','
 const bd=(l,k)=>`<span class="badge badge-${k}">${l}</span>`,av=n=>`<span class="avatar">${E(n[0])}</span>`;
 const mac=(x,r)=>`<span class="text-p">${N(x.p*r)}</span> / <span class="text-c">${N(x.c*r)}</span> / <span class="text-f">${N(x.f*r)}</span>`;
 const toast=(m,i)=>{const t=document.createElement('div');t.className='toast';t.innerHTML=I(i||'check')+'<span></span>';t.lastChild.textContent=m;$('.toast-host').append(t);setTimeout(()=>t.remove(),2500)};
-const sheet=h=>{$('#shc').innerHTML=h;$('#sh').classList.add('open')},unsheet=()=>$('#sh').classList.remove('open');
-const dlg=(t,m,ok,fn,d)=>{ST.fn=fn;$('#dgc').innerHTML=`<b>${t}</b><p class="muted" style="margin:8px 0 16px">${m}</p><div class="row"><button class="btn ${d?'btn-danger':'btn-primary'}" data-a="dok">${ok}</button><button class="btn btn-secondary" data-a="dno">لأ، رجوع</button></div>`;$('#dg').classList.add('open')};
+const hide=()=>{$('#sh').classList.remove('open');$('#dg').classList.remove('open')},ov=()=>{if(!ST.ov){ST.ov=1;history.pushState({ov:1},'')}},sheet=h=>{$('#shc').innerHTML=h;ov();$('#sh').classList.add('open')},unsheet=()=>{hide();if(ST.ov){ST.ov=0;ST.pend=1;history.back()}},go2=(h,r)=>h=='back'?history.back():r?location.replace(h):location.hash=h,nav=(h,r)=>ST.pend?ST.go=[h,r]:go2(h,r);
+const dlg=(t,m,ok,fn,d)=>{ST.fn=fn;$('#dgc').innerHTML=`<b>${t}</b><p class="muted" style="margin:8px 0 16px">${m}</p><div class="row"><button class="btn ${d?'btn-danger':'btn-primary'}" data-a="dok">${ok}</button><button class="btn btn-secondary" data-a="dno">لأ، رجوع</button></div>`;ov();$('#dg').classList.add('open')};
 const rr=()=>{const y=scrollY;render();scrollTo(0,y)},chg=()=>{rr();const e=$('#sv span');if(e){e.textContent='جاري الحفظ...';setTimeout(()=>{const x=$('#sv span');if(x)x.textContent='تم الحفظ'},600)}};
 const setTh=m=>{ST.th=m;const r=document.documentElement;m=='auto'?r.removeAttribute('data-theme'):r.dataset.theme=m};
 const chips=(a,cur,act)=>`<div class="row" style="margin:8px 0">${a.map(k=>`<span class="chip ${cur==k?'is-on':''}" data-a="${act}" data-v="${k}">${k}</span>`).join('')}</div>`;
+[['منى عبد الله','01001234567','تخسيس','3 شهور',44,81,76,66,0,.9],['عمرو سعيد','01112223344','تضخيم','6 شهور',95,66,71,76,0,1.3],['دينا مصطفى','01223344556','تخسيس','شهري',6,72,68,62,0,.85],['يوسف إبراهيم','01534567890','لياقة','3 شهور',28,90,86,80,0,1.1],['ريم أشرف','01011223344','تخسيس','شهري',-8,76,75,65,0,.8],['مصطفى كمال','01145678901','تضخيم','شهري',12,68,70,75,600,1.25],['ياسمين فاروق','01256781234','تخسيس','6 شهور',140,84,77,66,0,.95],['طارق حسام','01067890123','تخسيس','3 شهور',2,102,95,85,0,1.15],['آية رمضان','01178901234','لياقة','شهري',17,60,60,58,0,.85],['عمر خالد','01589012345','تضخيم','3 شهور',61,63,67,72,0,1.3],['سلمى ياسر','01290123456','تخسيس','شهري',-1,79,78,68,900,.9],['حسن علاء','01012349876','تخسيس','6 شهور',77,95,90,82,0,1.2],['فاطمة نبيل','01123450987','تخسيس','3 شهور',33,71,67,60,0,.85],['إسلام جمال','01534561234','لياقة','شهري',9,82,81,78,0,1.05]].forEach(([n,ph,g,pk,left,w0,w,tg,due,s],i)=>{const c={id:C.length+1,n,ph,g,pk,left,w0,w,tg,kc:0,due,late:0,pays:[{a:{'شهري':1500,'3 شهور':3600,'6 شهور':6600}[pk],m:['كاش','فودافون كاش','إنستاباي'][i%3],d:'الشهر اللي فات'}],...prog(s)};c.kc=Math.round(tot(c).k*1.12/50)*50;C.push(c)});
 /* ===== الإطار العام ===== */
 const NAV=[['home','الرئيسية','#/'],['users','العملاء','#/clients'],['book','المكتبة','#/library'],['dots','المزيد','#/more']];
-const shell=p=>`<div class="shell ${p.main?'':'sub'}"><aside class="sidebar noprint"><b class="logo">كابتن أحمد إيهاب</b>${NAV.map(n=>`<a href="${n[2]}" class="${p.nav==n[2]?'is-on':''}">${I(n[0])}<span>${n[1]}</span></a>`).join('')}</aside><div class="main"><header class="topbar noprint">${p.back?`<a class="back" href="${p.back}">${I('right')}رجوع</a>`:''}<b>${p.t}</b><span style="flex:1"></span>${p.sv?`<span class="autosave" id="sv">${I('check')}<span>تم الحفظ</span></span>`:''}</header><main class="page">${p.body}</main></div>${p.main?`<nav class="tabbar noprint">${NAV.map(n=>`<a href="${n[2]}" class="${p.nav==n[2]?'is-on':''}">${I(n[0])}${n[1]}</a>`).join('')}</nav>`:''}${p.fab?`<button class="fab noprint" data-a="${p.fab[0]}" aria-label="${p.fab[1]}">${I('plus')}</button>`:''}</div>`;
+const shell=p=>`<div class="shell ${p.main?'':'sub'}"><aside class="sidebar noprint"><b class="logo">كابتن أحمد إيهاب</b>${NAV.map(n=>`<a href="${n[2]}" class="${p.nav==n[2]?'is-on':''}">${I(n[0])}<span>${n[1]}</span></a>`).join('')}</aside><div class="main"><header class="topbar noprint">${p.back?`<a class="back" href="${p.back}" data-a="bk">${I('right')}رجوع</a>`:''}<b>${p.t}</b><span style="flex:1"></span>${p.sv?`<span class="autosave" id="sv">${I('check')}<span>تم الحفظ</span></span>`:''}</header><main class="page">${p.body}</main></div>${p.main?`<nav class="tabbar noprint">${NAV.map(n=>`<a href="${n[2]}" class="${p.nav==n[2]?'is-on':''}">${I(n[0])}${n[1]}</a>`).join('')}</nav>`:''}${p.fab?`<button class="fab noprint" data-a="${p.fab[0]}" aria-label="${p.fab[1]}">${I('plus')}</button>`:''}</div>`;
 /* ===== الصفحات ===== */
 const login=()=>`<div class="center"><div style="width:100%;max-width:420px"><span class="avatar" style="width:56px;height:56px;font-size:20px">أ</span><h1 style="margin:12px 0 4px">أهلاً يا كابتن</h1><p class="muted" style="margin-bottom:16px">ادخل عشان تكمّل شغلك</p><div class="field"><label>الإيميل أو الموبايل</label><input class="input" value="ahmed@example.com" dir="auto"></div><div class="field"><label>كلمة السر</label><input class="input" type="password" value="12345678"></div><button class="btn btn-link" style="padding:0" data-a="fg">نسيت كلمة السر؟</button><button class="btn btn-primary" style="width:100%;margin-top:12px" data-a="in">دخول</button></div></div>`;
 const home=()=>{const need=[],K=(l,v)=>`<div class="card"><div class="muted sm">${l}</div><div class="kv">${v}</div></div>`;
 C.forEach(c=>{if(c.left<0)need.push([c,`الاشتراك خلص من ${-c.left} أيام`,'منتهي','danger']);else if(c.left<=7)need.push([c,`بينتهي بعد ${c.left} أيام`,'قريب','warn']);if(c.due)need.push([c,`دفعة معلّقة ${N(c.due)} ج.م`,'معلّق','warn'])});
-return{t:'الرئيسية',main:1,nav:'#/',fab:['newc','عميل جديد'],body:`<h1>صباح الخير يا كابتن أحمد</h1><p class="muted">النهارده عندك ${need.length} محتاجين متابعة</p><div class="kpis" style="margin-top:16px">${K('متدربين فعّالين',C.filter(c=>c.left>=0).length)}${K('تجديدات الأسبوع',C.filter(c=>c.left>=0&&c.left<=7).length)}${K('دخل الشهر',N(ST.income)+' ج.م')}${K('إجمالي المتدربين',C.length)}</div><h2>محتاج متابعة</h2><div class="card">${need.map(([c,t,b,k])=>`<a class="list-row" href="#/c/${c.id}">${av(c.n)}<div class="list-row__body"><b>${E(c.n)}</b><div class="muted sm">${t}</div></div>${bd(b,k)}</a>`).join('')||'<div class="empty">كله تمام</div>'}</div>`}};
+return{t:'الرئيسية',main:1,nav:'#/',fab:['newc','عميل جديد'],body:`<h1>صباح الخير يا كابتن أحمد</h1><p class="muted">النهارده عندك ${need.length} محتاجين متابعة</p><div class="kpis" style="margin-top:16px">${K('متدربين فعّالين',C.filter(c=>c.left>=0).length)}${K('تجديدات الأسبوع',C.filter(c=>c.left>=0&&c.left<=7).length)}${K('دخل الشهر',N(ST.income)+' ج.م')}${K('إجمالي المتدربين',C.length)}</div><h2>محتاج متابعة</h2><div class="card">${need.slice(0,6).map(([c,t,b,k])=>`<a class="list-row" href="#/c/${c.id}">${av(c.n)}<div class="list-row__body"><b>${E(c.n)}</b><div class="muted sm">${t}</div></div>${bd(b,k)}</a>`).join('')||'<div class="empty">كله تمام</div>'}</div><a class="btn btn-link" href="#/clients">كل العملاء (${C.length})</a>`}};
 const flt={all:()=>1,act:c=>c.left>7,soon:c=>c.left>=0&&c.left<=7,end:c=>c.left<0,due:c=>c.due>0},FL=[['all','الكل'],['act','فعّال'],['soon','ينتهي قريب'],['end','منتهي'],['due','معلّق دفع']];
 const clist=()=>{const r=C.filter(c=>flt[ST.f](c)&&(c.n.includes(ST.q)||c.ph.includes(ST.q)));return r.length?r.map(c=>{const s=sts(c);return`<a class="list-row" href="#/c/${c.id}">${av(c.n)}<div class="list-row__body"><b>${E(c.n)}</b><div class="muted sm">${c.pk} · ${c.g}</div></div>${bd(s[0],s[1])}</a>`}).join(''):`<div class="empty">${I('search')}<p>مفيش حد بالاسم ده</p></div>`};
 const clients=()=>({t:'العملاء',main:1,nav:'#/clients',fab:['newc','عميل جديد'],body:`<input class="input" data-q="cl" placeholder="ابحث بالاسم أو الموبايل" value="${E(ST.q)}"><div class="row" style="margin:12px 0">${FL.map(([k,l])=>`<span class="chip ${ST.f==k?'is-on':''}" data-a="flt" data-v="${k}">${l}</span>`).join('')}</div><div class="card" id="list">${clist()}</div>`});
@@ -336,49 +429,58 @@ const nut=id=>{const c=cl(id),t=tot(c),w=x=>Math.min(100,x/c.kc*100);
 const side=`<div class="side"><div class="total" data-a="tg" style="cursor:pointer"><div class="muted sm">سعرات النهارده · اضغط لتعديل الهدف</div><div class="total__num">${N(t.k)} <span class="muted sm">/ ${N(c.kc)}</span></div><div class="macro-bar"><i class="macro-p" style="width:${w(t.p*4)}%"></i><i class="macro-c" style="width:${w(t.c*4)}%"></i><i class="macro-f" style="width:${w(t.f*9)}%"></i></div><div class="macro-legend"><span><i class="macro-p"></i>بروتين ${N(t.p)}g</span><span><i class="macro-c"></i>كارب ${N(t.c)}g</span><span><i class="macro-f"></i>دهون ${N(t.f)}g</span></div></div>${t.k>c.kc*1.05?`<div class="alert alert-danger" style="margin-top:8px">${I('alert')}<div><b>زيادة ${N(t.k-c.kc)} سعرة عن الهدف</b><div class="sm">قلّل كمية أو بدّل صنف.</div></div></div>`:''}</div>`;
 const ms=c.meals.map((m,mi)=>`<div class="card" style="padding:0;margin-bottom:12px"><div class="list-row" style="padding:8px 16px"><b class="list-row__body">${E(m.n)}</b><span class="muted sm">${N(mk(m))} سعرة</span><button class="icon-btn" data-a="dm" data-m="${mi}" aria-label="حذف الوجبة">${I('trash')}</button></div><div style="padding:0 16px">${m.it.map((x,ii)=>{const f=F[x.f],r=x.g/100;return`<div class="stepper"><div class="stepper__name"><b>${E(f.n)}</b><div class="muted sm">${N(f.k*r)} سعرة · ${mac(f,r)}</div></div><button class="icon-btn" data-a="g" data-m="${mi}" data-i="${ii}" data-v="-10" aria-label="نقّص">${I('minus')}</button><span class="stepper__qty"><span class="num">${x.g}</span> جم</span><button class="icon-btn" data-a="g" data-m="${mi}" data-i="${ii}" data-v="10" aria-label="زوّد">${I('plus')}</button><button class="icon-btn" data-a="swap" data-m="${mi}" data-i="${ii}" aria-label="بدّل">${I('swap')}</button></div>`}).join('')}</div><button class="btn btn-link" style="width:100%" data-a="add" data-m="${mi}">+ أضف صنف</button></div>`).join('');
 return{t:'التغذية · '+E(c.n),back:'#/c/'+id,nav:'#/clients',sv:1,fab:['am','وجبة جديدة'],body:`<div class="cols">${side}<div>${ms}</div></div>`}};
-const fl=()=>{const x=ST.pick,g=x.i>=0?cur().meals[x.m].it[x.i].g:100,r=g/100;return F.filter(f=>(ST.fc=='الكل'||f.cat==ST.fc)&&f.n.includes(ST.fq)).map(f=>`<button class="list-row" style="width:100%;background:none;border:0;border-bottom:1px solid var(--border);text-align:start;color:inherit;font:inherit;cursor:pointer" data-a="pick" data-v="${f.id}"><div class="list-row__body"><b>${E(f.n)}</b><div class="muted sm">${g} جم · ${N(f.k*r)} سعرة · ${mac(f,r)}</div></div>${I('plus')}</button>`).join('')||'<div class="empty">مفيش صنف بالاسم ده</div>'};
+const fl=()=>{const x=ST.pick,g=x.i>=0?cur().meals[x.m].it[x.i].g:100,r=g/100;return F.filter(f=>!f.del&&(ST.fc=='الكل'||f.cat==ST.fc)&&f.n.includes(ST.fq)).map(f=>`<button class="list-row" style="width:100%;background:none;border:0;border-bottom:1px solid var(--border);text-align:start;color:inherit;font:inherit;cursor:pointer" data-a="pick" data-v="${f.id}"><div class="list-row__body"><b>${E(f.n)}</b><div class="muted sm">${g} جم · ${N(f.k*r)} سعرة · ${mac(f,r)}</div></div>${I('plus')}</button>`).join('')||'<div class="empty">مفيش صنف بالاسم ده</div>'};
 const foodSheet=()=>sheet(`<div class="sheet__grab"></div><b>${ST.pick.i>=0?'بدّل الصنف':'أضف صنف'}</b><input class="input" data-q="fd" placeholder="ابحث عن صنف" value="${E(ST.fq)}" style="margin:12px 0">${chips(CATS,ST.fc,'fc')}<div id="fl">${fl()}</div>`);
 const wk=id=>{const c=cl(id),di=Math.min(ST.day,c.days.length-1),d=c.days[di],nb=(k,l,v,i,s)=>`<div><div class="muted sm">${l}</div><div class="row" style="gap:4px;flex-wrap:nowrap"><button class="icon-btn" data-a="ex" data-i="${i}" data-k="${k}" data-v="-${s}">${I('minus')}</button><b class="num" style="min-width:30px;text-align:center">${v}</b><button class="icon-btn" data-a="ex" data-i="${i}" data-k="${k}" data-v="${s}">${I('plus')}</button></div></div>`;
 const ex=d.ex.map((e,i)=>`<div class="card" style="margin-bottom:12px"><div class="row"><b style="flex:1">${E(X[e.x].n)}</b>${bd(X[e.x].m,'info')}<button class="icon-btn" data-a="xd" data-i="${i}" aria-label="شيل التمرين">${I('trash')}</button></div><div class="g3" style="margin-top:12px">${nb('s','مجموعات',e.s,i,1)}${nb('r','تكرار',e.r,i,1)}${nb('t','راحة (ث)',e.t,i,15)}</div></div>`).join('');
 return{t:'التمرين · '+E(c.n),back:'#/c/'+id,nav:'#/clients',sv:1,fab:d.ex.length?['ax','إضافة تمرين']:0,body:`<div class="tabs">${c.days.map((x,i)=>`<button class="tab ${i==di?'is-on':''}" data-a="day" data-v="${i}">${E(x.n)}</button>`).join('')}<button class="tab" data-a="aday">+ يوم</button></div><div style="margin-top:16px">${ex||`<div class="card empty">${I('inbox')}<p>اليوم ده لسه فاضي</p><button class="btn btn-primary" data-a="ax">ضيف تمرين</button></div>`}</div><button class="btn btn-link" data-a="dday">حذف اليوم</button>`}};
-const xl=()=>X.filter(e=>(ST.xc=='الكل'||e.m==ST.xc)&&e.n.includes(ST.xq)).map(e=>`<button class="list-row" style="width:100%;background:none;border:0;border-bottom:1px solid var(--border);text-align:start;color:inherit;font:inherit;cursor:pointer" data-a="px" data-v="${e.id}"><div class="list-row__body"><b>${E(e.n)}</b><div class="muted sm">${e.m}</div></div>${I('plus')}</button>`).join('')||'<div class="empty">مفيش تمرين بالاسم ده</div>';
+const xl=()=>X.filter(e=>!e.del&&(ST.xc=='الكل'||e.m==ST.xc)&&e.n.includes(ST.xq)).map(e=>`<button class="list-row" style="width:100%;background:none;border:0;border-bottom:1px solid var(--border);text-align:start;color:inherit;font:inherit;cursor:pointer" data-a="px" data-v="${e.id}"><div class="list-row__body"><b>${E(e.n)}</b><div class="muted sm">${e.m}</div></div>${I('plus')}</button>`).join('')||'<div class="empty">مفيش تمرين بالاسم ده</div>';
 const paper=c=>{const P=ST.pdf,t=tot(c);return`<div class="pdf-${P.c}"><div class="paper"><div class="paper__head"><b>برنامج ${E(c.n)}</b><div>الكابتن أحمد إيهاب · ${c.g}</div></div>${P.m!='w'?`<b style="display:block;margin:4px 0 8px;font-family:var(--font-display)">التغذية · ${N(t.k)} سعرة</b><div class="paper__macros"><div style="color:var(--pdf-p)"><b>${N(t.p)}g</b><br>بروتين</div><div style="color:var(--pdf-c)"><b>${N(t.c)}g</b><br>كارب</div><div style="color:var(--pdf-f)"><b>${N(t.f)}g</b><br>دهون</div></div>${c.meals.map(m=>`<div class="paper__row"><b>${E(m.n)} · ${N(mk(m))} سعرة</b><span>${m.it.map(x=>F[x.f].n+' '+x.g+' جم').join(' · ')}</span></div>`).join('')}`:''}${P.m!='n'?`<b style="display:block;margin:16px 0 8px;font-family:var(--font-display)">التمرين</b>${c.days.map(d=>`<div class="paper__row"><b>${E(d.n)}</b><span>${d.ex.map(e=>X[e.x].n+' '+e.s+'×'+e.r).join(' · ')}</span></div>`).join('')}`:''}${P.note?`<p style="margin-top:12px">${E(P.note)}</p>`:''}</div></div>`};
 const pdf=id=>{const c=cl(id),P=ST.pdf;return{t:'معاينة PDF',back:'#/c/'+id,nav:'#/clients',body:`<div class="cols"><div class="side noprint" style="position:static"><b>المحتوى</b><div class="row" style="margin:8px 0">${[['n','تغذية'],['w','تمرين'],['both','الاتنين']].map(([k,l])=>`<span class="chip ${P.m==k?'is-on':''}" data-a="pm" data-v="${k}">${l}</span>`).join('')}</div><b>لون القالب</b><div class="row" style="margin:8px 0">${['navy','royal','charcoal'].map(k=>`<span class="pdf-${k}"><button class="swc ${P.c==k?'is-on':''}" data-a="pc" data-v="${k}" aria-label="${k}"></button></span>`).join('')}</div><div class="field"><label>ملحوظة آخر الورقة</label><input class="input" data-q="note" value="${E(P.note)}"></div><button class="btn btn-primary" style="width:100%" data-a="print">حمّل PDF</button></div><div id="pp">${paper(c)}</div></div>`}};
-const ll=()=>ST.lt==0?F.filter(f=>(ST.lc=='الكل'||f.cat==ST.lc)&&f.n.includes(ST.lq)).map(f=>`<div class="list-row"><div class="list-row__body"><b>${E(f.n)}</b><div class="muted sm">100 جم · ${f.k} سعرة · ${mac(f,1)}</div></div>${bd(f.cat,'info')}</div>`).join('')||'<div class="empty">مفيش صنف بالاسم ده</div>':X.filter(e=>e.n.includes(ST.lq)).map(e=>`<div class="list-row"><div class="list-row__body"><b>${E(e.n)}</b></div>${bd(e.m,'info')}</div>`).join('');
-const lib=()=>({t:'المكتبة',main:1,nav:'#/library',fab:ST.lt==0?['nf','صنف جديد']:0,body:`<div class="tabs" style="margin-bottom:12px">${['الأطعمة','التمارين'].map((x,i)=>`<button class="tab ${i==ST.lt?'is-on':''}" data-a="lt" data-v="${i}">${x}</button>`).join('')}</div><input class="input" data-q="lib" placeholder="ابحث" value="${E(ST.lq)}">${ST.lt==0?chips(CATS,ST.lc,'lc'):''}<div class="card" id="ll" style="margin-top:8px">${ll()}</div>`});
-const more=()=>({t:'المزيد',main:1,nav:'#/more',body:`<div class="card"><div class="row">${av('أ')}<div><b>كابتن أحمد إيهاب</b><div class="muted sm">ahmed@example.com</div></div></div></div><h2>المظهر</h2>${chips(['light','dark','auto'].map(k=>k),ST.th,'th').replace(/>light</g,'>فاتح<').replace(/>dark</g,'>داكن<').replace(/>auto</g,'>تلقائي<')}<h2>عن النموذج</h2><div class="card muted">نموذج تجريبي شغّال بدون سيرفر. كل التعديلات بتفضل لحد ما تعمل تحديث للصفحة.</div><div style="margin-top:16px"><button class="btn btn-danger" data-a="out">تسجيل الخروج</button></div>`});
+const ll=()=>ST.lt==0?F.filter(f=>!f.del&&(ST.lc=='الكل'||f.cat==ST.lc)&&f.n.includes(ST.lq)).map(f=>`<a class="list-row" href="#/lib/f/${f.id}"><div class="list-row__body"><b>${E(f.n)}</b><div class="muted sm">100 جم · ${f.k} سعرة · ${mac(f,1)}</div></div>${bd(f.cat,'info')}</a>`).join('')||'<div class="empty">مفيش صنف بالاسم ده</div>':X.filter(e=>!e.del&&e.n.includes(ST.lq)).map(e=>`<a class="list-row" href="#/lib/x/${e.id}"><div class="list-row__body"><b>${E(e.n)}</b><div class="muted sm">${e.eq}</div></div>${bd(e.m,'info')}</a>`).join('')||'<div class="empty">مفيش تمرين بالاسم ده</div>';
+const lib=()=>({t:'المكتبة',main:1,nav:'#/library',fab:ST.lt==0?['nf','صنف جديد']:['nx','تمرين جديد'],body:`<div class="tabs" style="margin-bottom:12px">${['الأطعمة','التمارين'].map((x,i)=>`<button class="tab ${i==ST.lt?'is-on':''}" data-a="lt" data-v="${i}">${x}</button>`).join('')}</div><input class="input" data-q="lib" placeholder="ابحث" value="${E(ST.lq)}">${ST.lt==0?chips(CATS,ST.lc,'lc'):''}<div class="card" id="ll" style="margin-top:8px">${ll()}</div>`});
+const more=()=>({t:'المزيد',main:1,nav:'#/more',body:`<div class="card"><div class="row">${av('أ')}<div><b>كابتن أحمد إيهاب</b><div class="muted sm">ahmed@example.com</div></div></div></div><div class="card" style="margin-top:12px"><b>النظام الحقيقي</b><p class="muted sm">${all.length} صفحة وكل الأدوات والتقنيات اللي هتكون في السيستم الحقيقي.</p><a class="btn btn-primary" href="#/real">شوف النظام الحقيقي</a></div><h2>المظهر</h2>${chips(['light','dark','auto'].map(k=>k),ST.th,'th').replace(/>light</g,'>فاتح<').replace(/>dark</g,'>داكن<').replace(/>auto</g,'>تلقائي<')}<h2>عن النموذج</h2><div class="card muted">نموذج تجريبي شغّال بدون سيرفر. كل التعديلات بتفضل لحد ما تعمل تحديث للصفحة.</div><div style="margin-top:16px"><button class="btn btn-danger" data-a="out">تسجيل الخروج</button></div>`});
 const trn=id=>{const c=cl(id),t=tot(c),T=['اليوم','التغذية','التمرين'],ic=['home','book','layout'],di=Math.min(ST.day,c.days.length-1),d=c.days[di],p=ST.pt;let b;
 const ck=(k,on)=>`<button class="checkbox ${on?'is-on':''}" data-a="${p==1?'eat':'done'}" data-v="${k}" role="checkbox" aria-checked="${!!on}"></button>`;
 if(p==0)b=`<h1>أهلاً يا ${E(c.n.split(' ')[0])}</h1><p class="muted">النهارده ${E(c.days[0].n)}</p><h2>تمرين النهارده</h2><div class="card"><b>${c.days[0].ex.length} تمارين</b><div class="muted sm">${c.days[0].ex.map(e=>X[e.x].n).join('، ')}</div><button class="btn btn-primary" style="width:100%;margin-top:12px" data-a="ptab" data-v="2">ابدأ التمرين</button></div><h2>أكل النهارده</h2><div class="card"><div class="kv">${N(t.k)} سعرة</div><div class="macro-bar"><i class="macro-p" style="width:${t.p*4/t.k*100}%"></i><i class="macro-c" style="width:${t.c*4/t.k*100}%"></i><i class="macro-f" style="width:${t.f*9/t.k*100}%"></i></div><div class="macro-legend"><span class="text-p">بروتين ${N(t.p)}g</span><span class="text-c">كارب ${N(t.c)}g</span><span class="text-f">دهون ${N(t.f)}g</span></div></div>`;
 else if(p==1)b=`<h1>التغذية</h1>${c.meals.map((m,mi)=>`<div class="card" style="margin:12px 0"><div class="list-row"><b class="list-row__body">${E(m.n)}</b><span class="muted sm">${N(mk(m))} سعرة</span></div>${m.it.map((x,ii)=>`<div class="list-row">${ck(mi+'-'+ii,ST.eaten[mi+'-'+ii])}<span class="list-row__body">${E(F[x.f].n)}</span><span class="num muted">${x.g} جم</span></div>`).join('')}</div>`).join('')}`;
 else b=`<h1>التمرين</h1><div class="tabs" style="margin:12px 0">${c.days.map((x,i)=>`<button class="tab ${i==di?'is-on':''}" data-a="day" data-v="${i}">${E(x.n)}</button>`).join('')}</div>${d.ex.map((e,i)=>`<div class="card" style="margin-bottom:8px"><div class="list-row">${ck(di+'-'+i,ST.done[di+'-'+i])}<div class="list-row__body"><b>${E(X[e.x].n)}</b><div class="muted sm">${e.s} مجموعات × ${e.r} تكرار · راحة ${e.t} ث</div></div></div></div>`).join('')}`;
 return`<div class="banner noprint"><span>وضع تجربة: شايف صفحة ${E(c.n)}</span><a class="btn btn-link" href="#/c/${id}">رجوع للكابتن</a></div><header class="topbar">${av('أ')}<b>كابتن أحمد إيهاب</b></header><main class="page" style="max-width:720px">${b}</main><nav class="tabbar keep">${T.map((x,i)=>`<a class="${i==p?'is-on':''}" data-a="ptab" data-v="${i}">${I(ic[i])}${x}</a>`).join('')}</nav>`};
+const FEATS=[['بناء التغذية بسرعة','أصناف مصرية بالجرامات، وإجمالي السعرات والماكروز بيتحدّث لحظيًا، وتبدّل أي صنف بضغطة.'],['بناء التمرين','أيام وتمارين بمجموعات وتكرار وراحة، من مكتبة تمارين بفيديو وشرح.'],['PDF ورابط ويب','ورقة PDF بتصميم احترافي وتلات ألوان قوالب، أو رابط صفحة يفتحها المتدرب من غير تسجيل دخول.'],['ملف كامل لكل متدرب','بياناته وهدفه وإصاباته وحساسية الأكل والأدوية في مكان واحد.'],['متابعة التقدم','رسم الوزن مع خط الهدف، والقياسات، وصور قبل وبعد.'],['متابعة المتدرب (Check-in)','وزنه وملاحظاته والتزامه بتتسجّل في مكان واحد، وبالطريقة اللي تناسبك: المتدرب يسجّل بنفسه أو أنت تسجّل.'],['سجل نسخ البرنامج','كل تعديل بيتحفظ كنسخة، وتقدر تقارن وترجع لأي نسخة قديمة.'],['المكتبة والقوالب','أطعمة وتمارين ووجبات جاهزة بتضيفها بنفسك، وقوالب برامج تطبّقها على أي متدرب.'],['لوحة رئيسية','أرقام شغلك وقايمة اللي محتاج متابعة في أول شاشة.'],['تطبيق ويب','بيشتغل من المتصفح على الموبايل والكمبيوتر من غير تحميل، وهو ليك إنت بس.']];
+const TOOLS=[['إنشاء PDF','قوالب فاتحة بألوانك، وتنزيل مباشر'],['رابط وQR للمتدرب','رابط خاص لكل متدرب، وتوقف النشر في أي وقت'],['واتساب','إرسال الرابط وقايمة المشتريات برسائل جاهزة'],['استيراد وتصدير','أطعمة من ملف CSV، ونسخة احتياطية كاملة من بياناتك'],['صور وفيديوهات','رفع صور قبل وبعد وفيديوهات شرح التمارين'],['بحث سريع','في المتدربين والأطعمة والتمارين من غير تعليق'],['إعداداتك الافتراضية','الراحة بين المجموعات وعدد الوجبات وعرض الماكروز مرة واحدة'],['فاتح وداكن وعربي وEnglish','RTL كامل ووحدات كجم/رطل وسم/بوصة']];
+const real=()=>({t:'النظام الحقيقي',back:'#/more',nav:'#/more',body:`<h1>ده جزء صغير من السيستم</h1><p class="muted">النموذج بيوريك أهم الشغل اليومي، والسيستم الحقيقي فيه كل ده.</p><div class="kpis" style="margin-top:16px">${[['صفحة',all.length],['قسم',ROWS.length],['متجرّبة هنا',cnt('p')],['أداة رئيسية',TOOLS.length]].map(x=>`<div class="card"><div class="muted sm">${x[0]}</div><div class="kv">${x[1]}</div></div>`).join('')}</div><h2>الميزات</h2><div class="fg">${FEATS.map(x=>`<div class="card"><b>${x[0]}</b><p class="muted sm">${x[1]}</p></div>`).join('')}</div><h2>الأدوات</h2><div class="fg">${TOOLS.map(x=>`<div class="card"><b>${x[0]}</b><p class="muted sm">${x[1]}</p></div>`).join('')}</div>`});
+const used=(k,id)=>C.filter(c=>k=='f'?c.meals.some(m=>m.it.some(i=>i.f==id)):c.days.some(d=>d.ex.some(e=>e.x==id))).length;
+const libd=(k,id)=>{const o=(k=='f'?F:X)[id];if(!o||o.del)return{t:'المكتبة',back:'#/library',nav:'#/library',body:`<div class="empty">${I('inbox')}<p>العنصر ده مش موجود</p></div>`};
+const u=used(k,id),us=u?bd('مستخدم في '+u+' برنامج','info'):bd('غير مستخدم في أي برنامج','ok'),sm=k=='f'?(o.p+o.c+o.f)||1:1,
+act=(e,d)=>`<div class="row" style="margin-top:16px"><button class="btn btn-primary" data-a="${e}" data-v="${id}">تعديل</button></div><hr style="border:0;border-top:1px solid var(--border);margin:24px 0 16px"><button class="btn btn-danger" data-a="${d}" data-v="${id}">حذف</button>`;
+return{t:k=='f'?'ملف الصنف':'ملف التمرين',back:'#/library',nav:'#/library',body:k=='f'?`<div class="row"><h1 style="flex:1">${E(o.n)}</h1>${bd(o.cat,'info')}</div><div class="card" style="margin-top:12px"><div class="muted sm">لكل 100 جم</div><div class="kv">${o.k} سعرة</div>${[['بروتين','p',o.p],['كارب','c',o.c],['دهون','f',o.f]].map(([l,m,v])=>`<div class="list-row"><b class="list-row__body text-${m}">${l}</b><b class="num">${v}g</b></div><div class="macro-bar" style="margin:0 0 8px"><i class="macro-${m}" style="width:${v/sm*100}%"></i></div>`).join('')}</div><p style="margin-top:12px">${us}</p>${act('ef','dfd')}`:`<div class="ph">فيديو التمرين</div><h1 style="margin-top:12px">${E(o.n)}</h1><div class="row" style="margin:8px 0">${bd(o.m,'info')}${bd(o.eq,'info')}</div><p style="margin:12px 0">${E(o.d||'مفيش شرح لسه')}</p><p>${us}</p>${act('ee','dxd')}`}};
 /* ===== الراوتر ===== */
 function render(){const h=location.hash||'#/',[a,b,c]=h.slice(2).split('/');
-if(!ST.in&&a!='login'&&a!='p'){location.hash='#/login';return}
-if(ST.in&&a=='login'){location.hash='#/';return}
-if(h!=ST.last){ST.last=h;ST.ct=0;ST.day=0;ST.pt=0;scrollTo(0,0)}
+if(!ST.in&&a!='login'&&a!='p'){location.replace('#/login');return}
+if(ST.in&&a=='login'){location.replace('#/');return}
+if(h!=ST.last){ST.prev=ST.last;ST.last=h;ST.ct=0;ST.day=0;ST.pt=0;scrollTo(0,0)}
 const app=$('#app');
 if(a=='login')return app.innerHTML=login();
 if(a=='p')return app.innerHTML=trn(b);
-const P=a=='clients'?clients():a=='c'?(c=='nutrition'?nut(b):c=='workout'?wk(b):c=='pdf'?pdf(b):client(b)):a=='library'?lib():a=='more'?more():home();
+const P=a=='clients'?clients():a=='c'?(c=='nutrition'?nut(b):c=='workout'?wk(b):c=='pdf'?pdf(b):client(b)):a=='library'?lib():a=='lib'?libd(b,c):a=='more'?more():a=='real'?real():home();
 app.innerHTML=shell(P)}
 addEventListener('hashchange',render);
+addEventListener('popstate',()=>{if(ST.pend){ST.pend=0;if(ST.go){const[g,r]=ST.go;ST.go=0;go2(g,r)}return}if(ST.ov){ST.ov=0;hide()}});
 /* ===== التفاعل ===== */
 const frm=(n,l,v,x)=>`<div class="field"><label>${l}</label><input class="input" id="${n}" value="${v||''}" ${x||''}></div>`;
 const A={
-in:()=>{ST.in=1;location.hash='#/'},fg:()=>toast('في النسخة الحقيقية هيجيلك كود على الإيميل','info'),
-out:()=>dlg('تسجّل خروج؟','هترجع لشاشة الدخول.','سجّل خروج',()=>{ST.in=0;location.hash='#/login'}),
-close:unsheet,dno:()=>$('#dg').classList.remove('open'),dok:()=>{const f=ST.fn;ST.fn=0;$('#dg').classList.remove('open');f&&f()},
+in:()=>{ST.in=1;go2('#/',1)},fg:()=>toast('في النسخة الحقيقية هيجيلك كود على الإيميل','info'),
+out:()=>dlg('تسجّل خروج؟','هترجع لصفحة الدخول.','سجّل خروج',()=>{ST.in=0;ST.prev=0;nav('#/login',1)}),
+close:unsheet,dno:unsheet,dok:()=>{const f=ST.fn;ST.fn=0;unsheet();f&&f()},bk:(d,b,e)=>{if(ST.prev){e.preventDefault();history.back()}},
 th:d=>{setTh({'فاتح':'light','داكن':'dark','تلقائي':'auto'}[d.v]||d.v);rr()},
 flt:d=>{ST.f=d.v;rr()},ct:d=>{ST.ct=+d.v;rr()},lt:d=>{ST.lt=+d.v;ST.lq='';rr()},lc:d=>{ST.lc=d.v;rr()},
 newc:()=>sheet(`<div class="sheet__grab"></div><b>عميل جديد</b><div style="margin-top:12px">${frm('nn','الاسم')}${frm('np','الموبايل','','dir="ltr" inputmode="tel"')}${frm('nw','الوزن الحالي (كجم)','','inputmode="decimal"')}<div class="field"><label>الهدف</label><select class="input" id="ng"><option>تخسيس</option><option>تضخيم</option><option>لياقة</option></select></div><div class="field"><label>الباقة</label><select class="input" id="npk"><option>شهري</option><option selected>3 شهور</option><option>6 شهور</option></select></div><button class="btn btn-primary" style="width:100%" data-a="savec">حفظ وكمّل للبرنامج</button></div>`),
-savec:()=>{const n=$('#nn').value.trim();if(!n)return toast('اكتب اسم المتدرب','alert');const pk=$('#npk').value,w=+$('#nw').value||70,c={id:C.length+1,n,ph:$('#np').value||'01000000000',g:$('#ng').value,pk,left:{'شهري':30,'3 شهور':90,'6 شهور':180}[pk],w0:w,w,tg:w-8,kc:1800,due:0,late:0,pays:[],...prog()};C.push(c);unsheet();toast('اتضاف '+n);location.hash='#/c/'+c.id},
+savec:()=>{const n=$('#nn').value.trim();if(!n)return toast('اكتب اسم المتدرب','alert');const pk=$('#npk').value,w=+$('#nw').value||70,c={id:C.length+1,n,ph:$('#np').value||'01000000000',g:$('#ng').value,pk,left:{'شهري':30,'3 شهور':90,'6 شهور':180}[pk],w0:w,w,tg:w-8,kc:1800,due:0,late:0,pays:[],...prog()};C.push(c);unsheet();toast('اتضاف '+n);nav('#/c/'+c.id)},
 pay:()=>sheet(`<div class="sheet__grab"></div><b>تسجيل دفعة</b><div style="margin-top:12px">${frm('pa','المبلغ (ج.م)','1800','inputmode="numeric"')}<div class="field"><label>طريقة الدفع</label><select class="input" id="pm"><option>كاش</option><option>فودافون كاش</option><option>إنستاباي</option><option>تحويل</option></select></div><button class="btn btn-primary" style="width:100%" data-a="savep">سجّل الدفعة</button></div>`),
 savep:()=>{const c=cur(),a=+$('#pa').value;if(!a)return toast('اكتب المبلغ','alert');c.pays.unshift({a,m:$('#pm').value,d:'النهارده'});ST.income+=a;c.due=Math.max(0,c.due-a);unsheet();toast('اتسجلت الدفعة');rr()},
 renew:()=>{const c=cur();c.left=Math.max(c.left,0)+30;toast('اتجدد الاشتراك 30 يوم');rr()},
 pub:d=>sheet(`<div class="sheet__grab"></div><b>انشر صفحة ${E(cur().n.split(' ')[0])}</b><p class="muted sm">أي حد معاه الرابط يشوف برنامجه</p><div class="field" style="margin-top:12px"><input class="input" dir="ltr" readonly value="ahmedehab.fit/p/${d.v}k7x2"></div><button class="btn btn-primary" style="width:100%" data-a="opent" data-v="${d.v}">افتح صفحة المتدرب (تجربة)</button><button class="btn btn-secondary" style="width:100%;margin-top:8px" data-a="cp">انسخ الرابط</button>`),
-opent:d=>{unsheet();location.hash='#/p/'+d.v},cp:()=>toast('اتنسخ الرابط','info'),
+opent:d=>{unsheet();nav('#/p/'+d.v)},cp:()=>toast('اتنسخ الرابط','info'),
 g:d=>{const it=cur().meals[+d.m].it,x=it[+d.i];x.g+=+d.v;if(x.g<=0){it.splice(+d.i,1);toast('اتشال الصنف','info')}chg()},
 swap:d=>{ST.pick={m:+d.m,i:+d.i};ST.fq='';ST.fc='الكل';foodSheet()},add:d=>{ST.pick={m:+d.m,i:-1};ST.fq='';ST.fc='الكل';foodSheet()},
 fc:d=>{ST.fc=d.v;foodSheet()},
@@ -395,15 +497,21 @@ xd:d=>{const c=cur();c.days[Math.min(ST.day,c.days.length-1)].ex.splice(+d.i,1);
 ax:()=>{ST.xq='';ST.xc='الكل';xs()},xc:d=>{ST.xc=d.v;xs()},
 px:d=>{const c=cur();c.days[Math.min(ST.day,c.days.length-1)].ex.push({x:+d.v,s:3,r:12,t:60});unsheet();chg();toast('اتضاف التمرين')},
 pm:d=>{ST.pdf.m=d.v;rr()},pc:d=>{ST.pdf.c=d.v;rr()},print:()=>{try{print()}catch(e){toast('الطباعة بتشتغل من المتصفح','info')}},
-nf:()=>sheet(`<div class="sheet__grab"></div><b>صنف جديد</b><div style="margin-top:12px">${frm('fn','الاسم')}<div class="g2">${frm('fk','سعرات لكل 100 جم','','inputmode="numeric"')}${frm('fp','بروتين','','inputmode="numeric"')}${frm('fcc','كارب','','inputmode="numeric"')}${frm('ff','دهون','','inputmode="numeric"')}</div><div class="field"><label>التصنيف</label><select class="input" id="fct">${CATS.slice(1).map(k=>`<option>${k}</option>`).join('')}</select></div><button class="btn btn-primary" style="width:100%" data-a="savef">احفظ الصنف</button></div>`),
-savef:()=>{const n=$('#fn').value.trim();if(!n)return toast('اكتب اسم الصنف','alert');F.push({id:F.length,n,cat:$('#fct').value,k:+$('#fk').value||0,p:+$('#fp').value||0,c:+$('#fcc').value||0,f:+$('#ff').value||0});unsheet();toast('اتضاف '+n);rr()},
+nf:()=>fsheet(),ef:d=>fsheet(F[+d.v]),nx:()=>xsheet(),ee:d=>xsheet(X[+d.v]),
+savef:d=>{const n=$('#fn').value.trim();if(!n)return toast('اكتب اسم الصنف','alert');const o={n,cat:$('#fct').value,k:+$('#fk').value||0,p:+$('#fp').value||0,c:+$('#fcc').value||0,f:+$('#ff').value||0};if(d.v!==''){Object.assign(F[+d.v],o);unsheet();toast('اتحفظ التعديل')}else{F.push({id:F.length,...o});unsheet();toast('اتضاف '+n)}rr()},
+savex:d=>{const n=$('#xn').value.trim();if(!n)return toast('اكتب اسم التمرين','alert');const o={n,m:$('#xm').value,eq:$('#xe').value,d:$('#xd').value};if(d.v!==''){Object.assign(X[+d.v],o);unsheet();toast('اتحفظ التعديل')}else{X.push({id:X.length,...o});unsheet();toast('اتضاف '+n)}rr()},
+dfd:d=>{const id=+d.v,f=F[id],n=used('f',id);dlg('تحذف '+E(f.n)+'؟',n?`الصنف ده مستخدم في ${n} برنامج وهيتشال منهم كلهم.`:'الصنف هيتمسح من المكتبة.','احذف الصنف',()=>{f.del=1;C.forEach(c=>c.meals.forEach(m=>m.it=m.it.filter(i=>i.f!=id)));toast('اتحذف الصنف','info');lb()},1)},
+dxd:d=>{const id=+d.v,e=X[id],n=used('x',id);dlg('تحذف '+E(e.n)+'؟',n?`التمرين ده مستخدم في ${n} برنامج وهيتشال منهم كلهم.`:'التمرين هيتمسح من المكتبة.','احذف التمرين',()=>{e.del=1;C.forEach(c=>c.days.forEach(d=>d.ex=d.ex.filter(x=>x.x!=id)));toast('اتحذف التمرين','info');lb()},1)},
 ptab:d=>{ST.pt=+d.v;rr()},eat:d=>{ST.eaten[d.v]=!ST.eaten[d.v];rr()},done:d=>{ST.done[d.v]=!ST.done[d.v];rr()},
 };
+const lb=()=>nav(ST.prev&&ST.prev.startsWith('#/library')?'back':'#/library',1);
+const fsheet=f=>sheet(`<div class="sheet__grab"></div><b>${f?'تعديل الصنف':'صنف جديد'}</b><div style="margin-top:12px">${frm('fn','الاسم',f?E(f.n):'')}<div class="g2">${frm('fk','سعرات لكل 100 جم',f?String(f.k):'','inputmode="numeric"')}${frm('fp','بروتين',f?String(f.p):'','inputmode="numeric"')}${frm('fcc','كارب',f?String(f.c):'','inputmode="numeric"')}${frm('ff','دهون',f?String(f.f):'','inputmode="numeric"')}</div><div class="field"><label>التصنيف</label><select class="input" id="fct">${CATS.slice(1).map(k=>`<option ${f&&f.cat==k?'selected':''}>${k}</option>`).join('')}</select></div><button class="btn btn-primary" style="width:100%" data-a="savef" data-v="${f?f.id:''}">${f?'احفظ التعديل':'احفظ الصنف'}</button></div>`);
+const xsheet=e=>sheet(`<div class="sheet__grab"></div><b>${e?'تعديل التمرين':'تمرين جديد'}</b><div style="margin-top:12px">${frm('xn','اسم التمرين',e?E(e.n):'')}<div class="field"><label>العضلة</label><select class="input" id="xm">${MUS.slice(1).map(k=>`<option ${e&&e.m==k?'selected':''}>${k}</option>`).join('')}</select></div><div class="field"><label>المعدات</label><select class="input" id="xe">${EQ.map(k=>`<option ${e&&e.eq==k?'selected':''}>${k}</option>`).join('')}</select></div>${frm('xd','الشرح',e?E(e.d||''):'')}<div class="ph" style="min-height:80px;margin-bottom:12px">فيديو التمرين (الرفع في النسخة الحقيقية)</div><button class="btn btn-primary" style="width:100%" data-a="savex" data-v="${e?e.id:''}">${e?'احفظ التعديل':'احفظ التمرين'}</button></div>`);
 const xs=()=>sheet(`<div class="sheet__grab"></div><b>اختار تمرين</b><input class="input" data-q="xs" placeholder="ابحث عن تمرين" value="${E(ST.xq)}" style="margin:12px 0">${chips(MUS,ST.xc,'xc')}<div id="xl">${xl()}</div>`);
-document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(b&&A[b.dataset.a])A[b.dataset.a](b.dataset,b)});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(b&&A[b.dataset.a])A[b.dataset.a](b.dataset,b,e)});
 document.addEventListener('input',e=>{const q=e.target.dataset.q;if(!q)return;const v=e.target.value;
 if(q=='cl'){ST.q=v;$('#list').innerHTML=clist()}else if(q=='fd'){ST.fq=v;$('#fl').innerHTML=fl()}else if(q=='xs'){ST.xq=v;$('#xl').innerHTML=xl()}else if(q=='lib'){ST.lq=v;$('#ll').innerHTML=ll()}else if(q=='note'){ST.pdf.note=v;$('#pp').innerHTML=paper(cur())}});
-if(!location.hash)location.hash='#/login';else render();
+if(!location.hash)location.replace('#/login');else render();
 </script>
 </body>
 </html>
