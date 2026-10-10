@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>صلاحيات الكابتن والمساعد</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =============================================================
+   variables.css · سيستم الكابتن أحمد إيهاب · Design Tokens v1.0
+   الاستخدام: <html lang="ar" dir="rtl" data-theme="light|dark">
+   بدون data-theme = تلقائي (بيمشي على إعداد الجهاز)
+   ============================================================= */
+
+/* ---------- 1) توكينز ثابتة في الوضعين ---------- */
+:root{
+  /* الخطوط */
+  --font-display:"Cairo","IBM Plex Sans Arabic",Tahoma,sans-serif;
+  --font-ui:"IBM Plex Sans Arabic","IBM Plex Sans",Tahoma,sans-serif;
+  --fw-regular:400; --fw-medium:500; --fw-semibold:600; --fw-bold:700; --fw-extrabold:800;
+  --lh-body:1.65; --lh-heading:1.3; --lh-display:1.1;
+
+  /* سلم الأحجام (موبايل) */
+  --fs-display:36px; --fs-h1:24px; --fs-h2:18px; --fs-h3:16px;
+  --fs-body:16px; --fs-small:13px; --fs-min:12px;
+
+  /* المسافات (أساس 4px) */
+  --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:20px;
+  --s-6:24px; --s-8:32px; --s-10:40px; --s-12:48px;
+
+  /* الزوايا */
+  --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:24px; --r-full:999px;
+
+  /* الحركة */
+  --ease:cubic-bezier(.2,.8,.2,1);
+  --t-fast:120ms; --t-normal:200ms; --t-slow:300ms;
+
+  /* الطبقات */
+  --z-content:0; --z-sticky:20; --z-tabbar:30; --z-sheet:50; --z-modal:60; --z-toast:80;
+
+  /* المقاسات */
+  --tap-min:44px;
+  --btn-h:48px; --input-h:48px;
+  --topbar-h:56px; --tabbar-h:64px;
+  --sidebar-w:240px; --sidebar-w-collapsed:72px;
+  --content-max:1200px; --form-max:720px;
+  --drawer-w:420px; --modal-w:480px; --modal-w-lg:640px;
+
+  /* Breakpoints (للتوثيق، مش بتشتغل جوه @media): 768 تابلت · 1024 ديسكتوب · 1440 واسع */
+  --bp-tablet:768px; --bp-desktop:1024px; --bp-wide:1440px;
+
+  /* ثابتة */
+  --shadow-fab:0 6px 16px rgba(255,106,19,.40);
+
+  /* ألوان الـ PDF (فاتحة دايمًا حتى في الوضع الداكن) */
+  --pdf-bg:#FFFFFF; --pdf-text:#1B2430; --pdf-border:#E4E9E6;
+  --pdf-p:#5B3FE0; --pdf-c:#0B7F73; --pdf-f:#1D4ED8;
+  --pdf-main:#0F1B2D; --pdf-soft:#E8EDF3; /* القالب الافتراضي: كحلي حبر */
+}
+
+/* ---------- 2) الوضع الفاتح ---------- */
+:root,[data-theme="light"]{
+  /* أسطح ونصوص */
+  --bg:#F5F7FA; --surface:#FFFFFF; --surface-2:#FFFFFF; --border:#E3E8EE;
+  --text:#0F1B2D; --text-muted:#5B6B7C;
+
+  /* الأكسنت (البرتقالي = اضغط هنا بس) */
+  --accent:#FF6A13; --accent-hover:#E55200; --accent-soft:#FFF0E6;
+  --accent-text:#C24A00;   /* الأكسنت كنص أو رابط */
+  --on-accent:#0F1B2D;     /* النص فوق الأكسنت: كحلي دايمًا */
+  --focus:#FF6A13;         /* حلقة التركيز: 2px مع إزاحة 2px */
+
+  /* أسطح خاصة */
+  --sidebar-bg:#0F1B2D; --sidebar-text:#C9D5E2;
+  --sidebar-active-bg:rgba(255,106,19,.16); --sidebar-active-text:#FF9A5C;
+  --total-bg:#0F1B2D; --total-text:#FFFFFF; --total-muted:#9FB0C3;
+  --track:#E7ECF0; --overlay:rgba(15,27,45,.50); --skeleton:#E7ECF0;
+
+  /* الماكروز: fill للأشرطة والنقاط، text للأرقام */
+  --macro-p:#7C5CFF; --macro-p-text:#5B3FE0;
+  --macro-c:#14B8A6; --macro-c-text:#0B7F73;
+  --macro-f:#3B82F6; --macro-f-text:#1D4ED8;
+
+  /* الحالات */
+  --ok-text:#166534;     --ok-bg:#DCFCE7;
+  --warn-text:#92400E;   --warn-bg:#FEF3C7;
+  --danger:#DC2626;      --danger-text:#991B1B; --danger-bg:#FEE2E2;
+  --info-text:#1E40AF;   --info-bg:#DBEAFE;
+
+  /* الظلال (في الفاتح بس) */
+  --shadow-1:0 1px 2px rgba(15,27,45,.06);
+  --shadow-2:0 8px 24px rgba(15,27,45,.10);
+}
+
+/* ---------- 3) الوضع الداكن (يدوي) ---------- */
+[data-theme="dark"]{
+  --bg:#0B1220; --surface:#131C2E; --surface-2:#1A2540; --border:#223048;
+  --text:#E8EEF5; --text-muted:#93A3B5;
+  --accent-hover:#FF8540; --accent-soft:#2A1A10; --accent-text:#FF8540; --focus:#FF8540;
+  --sidebar-bg:#070D18; --total-bg:#1A2540;
+  --track:#26364C; --overlay:rgba(0,0,0,.65); --skeleton:#1F2B42;
+  --macro-p:#9B85FF; --macro-p-text:#9B85FF;
+  --macro-c:#2DD4BF; --macro-c-text:#2DD4BF;
+  --macro-f:#60A5FA; --macro-f-text:#60A5FA;
+  --ok-text:#4ADE80;     --ok-bg:rgba(34,197,94,.15);
+  --warn-text:#FBBF24;   --warn-bg:rgba(245,158,11,.15);
+  --danger:#F87171;      --danger-text:#F87171; --danger-bg:rgba(220,38,38,.18);
+  --info-text:#93C5FD;   --info-bg:rgba(59,130,246,.15);
+  --shadow-1:none; --shadow-2:none;
+}
+
+/* ---------- 4) الوضع الداكن (تلقائي: لو المستخدم ما اختارش) ---------- */
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0B1220; --surface:#131C2E; --surface-2:#1A2540; --border:#223048;
+    --text:#E8EEF5; --text-muted:#93A3B5;
+    --accent-hover:#FF8540; --accent-soft:#2A1A10; --accent-text:#FF8540; --focus:#FF8540;
+    --sidebar-bg:#070D18; --total-bg:#1A2540;
+    --track:#26364C; --overlay:rgba(0,0,0,.65); --skeleton:#1F2B42;
+    --macro-p:#9B85FF; --macro-p-text:#9B85FF;
+    --macro-c:#2DD4BF; --macro-c-text:#2DD4BF;
+    --macro-f:#60A5FA; --macro-f-text:#60A5FA;
+    --ok-text:#4ADE80;     --ok-bg:rgba(34,197,94,.15);
+    --warn-text:#FBBF24;   --warn-bg:rgba(245,158,11,.15);
+    --danger:#F87171;      --danger-text:#F87171; --danger-bg:rgba(220,38,38,.18);
+    --info-text:#93C5FD;   --info-bg:rgba(59,130,246,.15);
+    --shadow-1:none; --shadow-2:none;
+  }
+}
+
+/* ---------- 5) الديسكتوب (1024+): أحجام الخط وارتفاع العناصر ---------- */
+@media (min-width:1024px){
+  :root{
+    --fs-display:40px; --fs-h1:30px; --fs-h2:20px; --fs-h3:17px; --fs-body:15px;
+    --btn-h:40px; --input-h:40px;
+  }
+}
+
+/* ---------- 6) قوالب الـ PDF (3 قوالب، الأكسنت هو الخط تحت الهيدر) ---------- */
+.pdf-navy    { --pdf-main:#0F1B2D; --pdf-soft:#E8EDF3; }
+.pdf-royal   { --pdf-main:#243B6B; --pdf-soft:#E7ECF6; }
+.pdf-charcoal{ --pdf-main:#2B2B2B; --pdf-soft:#EFEDEA; }
+
+/* ---------- 7) قواعد عامة على مستوى التوكينز ---------- */
+:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
+@media (prefers-reduced-motion:reduce){
+  *{ animation:none !important; transition:none !important; }
+}
+@media print{ .pdf-sheet,.paper{ -webkit-print-color-adjust:exact; print-color-adjust:exact; } }
+
+*{box-sizing:border-box;margin:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--font-ui);font-size:var(--fs-body);line-height:var(--lh-body);padding-bottom:calc(var(--tabbar-h) + 32px)}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+h1,h2,h3{font-family:var(--font-display);line-height:var(--lh-heading)}
+.wrap{max-width:var(--form-max);margin:0 auto;padding:0 var(--s-4)}
+/* top */
+.top{position:sticky;top:0;z-index:var(--z-sticky);background:var(--sidebar-bg);color:#fff}
+.top .wrap{display:flex;align-items:center;gap:var(--s-3);height:var(--topbar-h)}
+.top h1{font-size:var(--fs-h3);font-weight:var(--fw-bold);flex:1}
+.top h1 small{display:block;font-family:var(--font-ui);font-weight:400;font-size:var(--fs-min);color:var(--sidebar-text);line-height:1.2}
+.icon-btn{width:var(--tap-min);height:var(--tap-min);border-radius:var(--r-full);display:grid;place-items:center;color:var(--sidebar-text);font-size:18px}
+.icon-btn:hover{background:rgba(255,255,255,.08)}
+.prog{height:4px;background:rgba(255,255,255,.12)}
+.prog i{display:block;height:100%;background:var(--accent);width:0;transition:width var(--t-slow) var(--ease)}
+/* intro */
+.hero{padding:var(--s-6) 0 var(--s-4)}
+.hero h2{font-size:var(--fs-h1);font-weight:var(--fw-extrabold)}
+.hero p{color:var(--text-muted);margin-top:var(--s-2)}
+.chip i,.pill i,.btn i,.seg2 i{font-size:.9em}
+.legend{display:flex;flex-wrap:wrap;gap:var(--s-2);margin-top:var(--s-4)}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:var(--r-full);font-size:var(--fs-small);font-weight:var(--fw-semibold);min-height:26px}
+.c-block{background:var(--danger-bg);color:var(--danger-text)}
+.c-view{background:var(--info-bg);color:var(--info-text)}
+.c-edit{background:var(--warn-bg);color:var(--warn-text)}
+.c-full,.c-allow{background:var(--ok-bg);color:var(--ok-text)}
+/* account switch */
+.switch{position:sticky;top:calc(var(--topbar-h) + 4px);z-index:var(--z-sticky);margin:var(--s-2) 0 var(--s-4);padding:var(--s-2) 0;background:var(--bg)}
+.seg2{display:grid;grid-template-columns:1fr 1fr;background:var(--track);border-radius:var(--r-lg);padding:4px;gap:4px}
+.seg2 button{height:var(--btn-h);border-radius:var(--r-md);font-weight:var(--fw-bold);color:var(--text-muted);transition:all var(--t-normal) var(--ease)}
+.seg2 button[aria-pressed=true]{background:var(--surface);color:var(--text);box-shadow:var(--shadow-1);outline:2px solid var(--accent);outline-offset:-2px}
+/* cards */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow-1)}
+.sec-title{font-size:var(--fs-h2);font-weight:var(--fw-bold);margin:var(--s-6) 0 var(--s-3)}
+.sec-title span{display:block;font-family:var(--font-ui);font-size:var(--fs-small);color:var(--text-muted);font-weight:400}
+/* quick decisions */
+.dec{display:flex;align-items:center;gap:var(--s-3);padding:var(--s-4);min-height:var(--tap-min)}
+.dec+.dec{border-top:1px solid var(--border)}
+.dec .t{flex:1}
+.dec .t b{display:block;font-weight:var(--fw-semibold)}
+.dec .t small{color:var(--text-muted);font-size:var(--fs-small);line-height:1.4;display:block}
+.sw{position:relative;width:52px;height:30px;flex:none;border-radius:var(--r-full);background:var(--track);transition:background var(--t-normal)}
+.sw::after{content:"";position:absolute;top:3px;inset-inline-start:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform var(--t-normal) var(--ease)}
+.sw[aria-checked=true]{background:var(--accent)}
+.sw[aria-checked=true]::after{transform:translateX(-22px)}
+.tools{display:flex;gap:var(--s-2);flex-wrap:wrap;margin:var(--s-3) 0}
+.pill{height:36px;padding:0 var(--s-4);border-radius:var(--r-full);border:1px solid var(--border);background:var(--surface);font-size:var(--fs-small);font-weight:var(--fw-semibold)}
+.pill[aria-pressed=true]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-text)}
+/* sections */
+.sec{margin-bottom:var(--s-3);overflow:hidden}
+.sec-h{width:100%;display:flex;align-items:center;gap:var(--s-3);padding:var(--s-4);min-height:60px;text-align:start}
+.ico{width:40px;height:40px;border-radius:var(--r-md);display:grid;place-items:center;background:var(--accent-soft);color:var(--accent-text);font-size:17px;flex:none}
+.sec-h .n{flex:1;font-family:var(--font-display);font-weight:var(--fw-bold);font-size:var(--fs-h3)}
+.sec-h .n small{display:block;font-family:var(--font-ui);font-weight:400;font-size:var(--fs-small);color:var(--text-muted)}
+.done{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:12px;background:var(--track);color:transparent}
+.sec.rev .done{background:var(--ok-bg);color:var(--ok-text)}
+.arrow{transition:transform var(--t-normal);color:var(--text-muted)}
+.sec.open .arrow{transform:rotate(180deg)}
+.sec-b{display:none;border-top:1px solid var(--border)}
+.sec.open .sec-b{display:block}
+.row{padding:var(--s-4);display:grid;gap:var(--s-3)}
+.row+.row{border-top:1px solid var(--border)}
+.row .q{display:flex;gap:var(--s-2);align-items:flex-start}
+.row .q b{font-weight:var(--fw-medium);flex:1}
+.num{color:var(--text-muted);font-size:var(--fs-small);min-width:22px;padding-top:2px}
+.meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.tag{font-size:var(--fs-min);padding:1px 8px;border-radius:var(--r-full);background:var(--track);color:var(--text-muted)}
+.s-high{background:var(--danger-bg);color:var(--danger-text);font-weight:var(--fw-semibold)}
+.s-mid{background:var(--warn-bg);color:var(--warn-text)}
+.note{font-size:var(--fs-small);color:var(--text-muted);background:var(--bg);border-radius:var(--r-sm);padding:6px 10px}
+.opts{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px}
+.opts button{min-height:var(--tap-min);border-radius:var(--r-md);border:1.5px solid var(--border);background:var(--surface);font-size:var(--fs-small);font-weight:var(--fw-semibold);color:var(--text-muted);padding:0 4px;transition:all var(--t-fast) var(--ease)}
+.opts button:active{transform:scale(.97)}
+.opts button[disabled]{opacity:.35;cursor:not-allowed}
+.opts button[aria-pressed=true]{border-color:transparent}
+.opts .o-block[aria-pressed=true]{background:var(--danger-bg);color:var(--danger-text);outline:2px solid var(--danger)}
+.opts .o-view[aria-pressed=true]{background:var(--info-bg);color:var(--info-text);outline:2px solid var(--info-text)}
+.opts .o-edit[aria-pressed=true]{background:var(--warn-bg);color:var(--warn-text);outline:2px solid var(--warn-text)}
+.opts .o-full[aria-pressed=true],.opts .o-allow[aria-pressed=true]{background:var(--ok-bg);color:var(--ok-text);outline:2px solid var(--ok-text)}
+.sec-f{display:flex;gap:var(--s-2);padding:var(--s-4);border-top:1px solid var(--border);background:var(--bg);flex-wrap:wrap}
+.btn{height:var(--btn-h);padding:0 var(--s-5);border-radius:var(--r-md);font-weight:var(--fw-bold);display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn-p{background:var(--accent);color:var(--on-accent)}
+.btn-p:hover{background:var(--accent-hover)}
+.btn-s{background:var(--surface);border:1px solid var(--border)}
+.btn[disabled]{opacity:.5}
+textarea{width:100%;min-height:90px;border-radius:var(--r-md);border:1px solid var(--border);background:var(--surface);color:var(--text);font:inherit;padding:var(--s-3);resize:vertical}
+/* bottom bar */
+.bar{position:fixed;inset-inline:0;bottom:0;z-index:var(--z-tabbar);background:var(--surface);border-top:1px solid var(--border);padding-bottom:env(safe-area-inset-bottom)}
+.bar .wrap{display:flex;align-items:center;gap:var(--s-3);height:var(--tabbar-h)}
+.bar .st{flex:1;font-size:var(--fs-small);color:var(--text-muted);line-height:1.3}
+.bar .st b{color:var(--text);display:block;font-size:var(--fs-body)}
+/* modal */
+.ov{position:fixed;inset:0;background:var(--overlay);z-index:var(--z-modal);display:none;align-items:flex-end;justify-content:center}
+.ov.on{display:flex}
+.sheet{background:var(--surface);width:100%;max-width:var(--modal-w-lg);max-height:92vh;overflow:auto;border-radius:var(--r-xl) var(--r-xl) 0 0;padding:var(--s-6) var(--s-4) calc(var(--s-6) + env(safe-area-inset-bottom));animation:up var(--t-slow) var(--ease)}
+@keyframes up{from{transform:translateY(40px);opacity:0}}
+@media(min-width:768px){.ov{align-items:center}.sheet{border-radius:var(--r-xl)}}
+.sheet h2{font-size:var(--fs-h1);margin-bottom:var(--s-4)}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--s-2);margin-bottom:var(--s-4)}
+.stat{background:var(--bg);border-radius:var(--r-md);padding:var(--s-3)}
+.stat b{font-family:var(--font-display);font-size:var(--fs-h1);display:block;line-height:1.2}
+.stat span{font-size:var(--fs-small);color:var(--text-muted)}
+.warn{background:var(--warn-bg);color:var(--warn-text);border-radius:var(--r-md);padding:var(--s-3);margin-bottom:var(--s-3);font-size:var(--fs-small)}
+.sendprog{height:8px;border-radius:99px;background:var(--track);overflow:hidden;margin:var(--s-4) 0}
+.sendprog i{display:block;height:100%;width:0;background:var(--accent);transition:width var(--t-slow)}
+.ok{background:var(--ok-bg);color:var(--ok-text);border-radius:var(--r-md);padding:var(--s-4);font-weight:var(--fw-semibold)}
+.toast{position:fixed;bottom:calc(var(--tabbar-h) + 16px);inset-inline:var(--s-4);margin:auto;width:max-content;max-width:90%;background:var(--total-bg);color:#fff;border-radius:var(--r-full);padding:10px 20px;z-index:var(--z-toast);font-size:var(--fs-small);opacity:0;pointer-events:none;transition:opacity var(--t-normal)}
+.toast.on{opacity:1}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <h1>صلاحيات الكابتن والمساعد<small>سيستم الكابتن أحمد إيهاب</small></h1>
+    <button class="icon-btn" id="theme" aria-label="تبديل الوضع الداكن"><i class="fa-solid fa-circle-half-stroke"></i></button>
+  </div>
+  <div class="prog"><i id="prog"></i></div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <h2>حدد مين يقدر يعمل إيه</h2>
+    <p>الاختيارات الجاهزة مبنية على «أقل صلاحية لازمة». غيّر اللي مش مناسب، وراجع كل قسم، وبعدين دوس إرسال. الاختيارات بتتحفظ تلقائيًا.</p>
+    <div class="legend">
+      <span class="chip c-block"><i class="fa-solid fa-ban"></i>ممنوع: مفيش وصول</span>
+      <span class="chip c-view"><i class="fa-solid fa-eye"></i>عرض فقط</span>
+      <span class="chip c-edit"><i class="fa-solid fa-pen"></i>عرض وتعديل: من غير حذف</span>
+      <span class="chip c-full"><i class="fa-solid fa-trash-can"></i>كامل: يحذف كمان</span>
+      <span class="chip c-allow"><i class="fa-solid fa-check"></i>مسموح: يقدر ينفّذ الإجراء</span>
+    </div>
+  </section>
+
+  <h2 class="sec-title">قرارات سريعة للمساعد<span>٦ أسئلة بتغيّر مجموعة صلاحيات مرة واحدة</span></h2>
+  <div class="card" id="decs"></div>
+
+  <div class="switch"><div class="seg2" id="acct">
+    <button data-a="ast" aria-pressed="true"><i class="fa-solid fa-user-gear"></i> المساعد</button>
+    <button data-a="cap" aria-pressed="false"><i class="fa-solid fa-user-tie"></i> الكابتن</button>
+  </div></div>
+
+  <div class="tools">
+    <button class="pill" id="onlyHigh" aria-pressed="false"><i class="fa-solid fa-triangle-exclamation"></i> الحساس بس</button>
+    <button class="pill" id="openAll"><i class="fa-solid fa-angles-down"></i> فتح الكل</button>
+    <button class="pill" id="resetAcct"><i class="fa-solid fa-rotate-left"></i> رجّع المقترح</button>
+  </div>
+
+  <div id="secs"></div>
+
+  <h2 class="sec-title">ملاحظات إضافية<span>اختياري، هتوصلني مع الرسالة</span></h2>
+  <textarea id="notes" placeholder="أي حاجة تحب تضيفها..."></textarea>
+</main>
+
+<div class="bar"><div class="wrap">
+  <div class="st"><b id="stA">0 / 0 قسم تمت مراجعته</b><span id="stB"></span></div>
+  <button class="btn btn-p" id="send"><i class="fa-solid fa-paper-plane"></i> اعتماد وإرسال</button>
+</div></div>
+
+<div class="ov" id="ov"><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const PHONE="201037454618", APIKEY="9915359";
+const ROWS=[{"id": 1, "sec": "الحسابات والأمان", "t": "إضافة حساب المساعد وتحديد صلاحياته", "type": "إجراء", "sens": "عالية", "cap": "مسموح", "ast": "ممنوع", "note": "المساعد ما ينفعش يدّي نفسه صلاحيات."}, {"id": 2, "sec": "الحسابات والأمان", "t": "إيقاف حساب المساعد أو حذفه", "type": "إجراء", "sens": "عالية", "cap": "مسموح", "ast": "ممنوع", "note": ""}, {"id": 3, "sec": "الحسابات والأمان", "t": "تغيير صلاحيات المساعد", "type": "إجراء", "sens": "عالية", "cap": "مسموح", "ast": "ممنوع", "note": ""}, {"id": 4, "sec": "الحسابات والأمان", "t": "إعادة تعيين كلمة سر المساعد", "type": "إجراء", "sens": "عالية", "cap": "مسموح", "ast": "ممنوع", "note": ""}, {"id": 5, "sec": "الحسابات والأمان", "t": "تغيير كلمة سر حسابه", "type": "إجراء", "sens": "متوسطة", "cap": "مسموح", "ast": "مسموح", "note": ""}, {"id": 6, "sec": "الحسابات والأمان", "t": "إدارة التحقق بخطوتين لحسابه", "type": "إجراء", "sens": "متوسطة", "cap": "مسموح", "ast": "مسموح", "note": "التحقق بخطوتين إجباري للحسابين."}, {"id": 7, "sec": "الحسابات والأمان", "t": "عرض جلساته وتسجيل الخروج من أجهزته", "type": "إجراء", "sens": "منخفضة", "cap": "مسموح", "ast": "مسموح", "note": ""}, {"id": 8, "sec": "الحسابات والأمان", "t": "عرض جلسات المساعد وإنهاؤها", "type": "إجراء", "sens": "متوسطة", "cap": "مسموح", "ast": "ممنوع", "note": ""}, {"id": 9, "sec": "الحسابات والأمان", "t": "عرض سجل المراجعة (مين عمل إيه وإمتى)", "type": "بيانات", "sens": "عالية", "cap": "عرض فقط", "ast": "ممنوع", "note": "السجل مبيتعدّلش من أي حد."}, {"id": 10, "sec": "الحسابات والأمان", "t": "حذف حساب الكابتن نهائيًا", "type": "إجراء", "sens": "عالية", "cap": "مسموح", "ast": "ممنوع", "note": "عملية نهائية، وبتتطلب كتابة تأكيد."}, {"id": 11, "sec": "الرئيسية", "t": "أرقام الرئيسية: متدربين فعّالين وتجديدات الأسبوع", "type": "بيانات", "sens": "منخفضة", "cap": "عرض فقط", "ast": "عرض فقط", "note": ""}, {"id": 12, "sec": "الرئيسية", "t": "رقم دخل الشهر", "type": "بيانات", "sens": "عالية", "cap": "عرض فقط", "ast": "ممنوع", "note": "أرقام مالية."}, {"id": 13, "sec": "الرئيسية", "t": "قايمة \"محتاج متابعة\"", "type": "بيانات", "sens": "متوسطة", "cap": "عرض فقط", "ast": "عرض فقط", "note": "بنود الدفعات المعلّقة بتختفي لو المساعد ممنوع من الدفعات."}, {"id": 14, "sec": "الرئيسية", "t": "المتدربين الجدد المستنيين بناء برنامجهم", "type": "بيانات", "sens": "منخفضة", "cap": "عرض فقط", "ast": "عرض فقط", "note": ""}, {"id": 15, "sec": "العملاء", "t": "قايمة العملاء والبحث والفلاتر", "type": "بيانات", "sens": "منخفضة", "cap": "كامل", "ast": "عرض فقط", "note": "\"كامل\" بتشمل الإضافة والتعديل والحذف."}, {"id": 16, "sec": "العملاء", "t": "البيانات الأساسية للعميل (الاسم، الموبايل، السن، الطول، الوزن، الهدف، النشاط، الباقة)", "type": "بيانات", "sens": "متوسطة", "cap": "كامل", "ast": "عرض فقط", "note": ""}, {"id": 17, "sec": "العملاء", "t": "البيانات الصحية (إصابات، حساسية أكل، أدوية، ملاحظات)", "type": "بيانات", "sens": "عالية", "cap": "كامل", "ast": "عرض فقط", "note": "بيانات حساسة."}, {"id": 18, "sec": "العملاء", "t": "يوم التشيك ان الأسبوعي للعميل", "type": "بيانات", "sens": "منخفضة", "cap": "كامل", "ast": "عرض فقط", "note": ""}, {"id": 19, "sec": "العملاء", "t": "صور العميل (قبل/بعد وصور التشيك ان)", "type": "بيانات", "sens": "عالية", "cap": "كامل", "ast": "عرض فقط", "note": "صور جسم، أحسّاس بيانات في النظام."}, {"id": 20, "sec": "العملاء", "t": "القياسات والوزن ورسم التقدم", "type": "بيانات", "sens": "متوسطة", "cap": "كامل", "ast": "عرض فقط", "note": ""}, {"id": 21, "sec": "العملاء", "t": "إجابات فورم الاشتراك (الـ 60 سؤال)", "type": "بيانات", "sens": "عالية", "cap": "كامل", "ast": "عرض فقط", "note": ""}, {"id": 22, "sec": "العملاء", "t": "التشيك انات الأسبوعية (إجابات المتدرب)", "type": "بيانات", "sens": "متوسطة", "cap": "كامل", "ast": "عرض فقط", "note": "حسب كلام الكابتن: هو وحده يعدّل والمساعد يشوف بس."}, {"id": 23, "sec": "العملاء", "t": "سجل البرامج: عرض النسخ السابقة ومقارنتها", "type": "بيانات", "sens": "منخفضة", "cap": "عرض فقط", "ast": "عرض فقط", "note": ""}, {"id": 24, "sec": "العملاء", "t": "استرجاع نسخة برنامج قديمة", "type": "إجراء", "sens": "متوسطة", "cap": "مسموح", "ast": "ممنوع", "note": ""}, {"id": 25, "sec": "العملاء", "t": "نسخ برنامج متدرب لمتدرب تاني", "type": "إجراء", "sens": "متوسطة", "cap": "مسموح", "ast": "ممنوع", "note": ""}, {"id": 26, "sec": "العملاء", "t": "تاريخ ملف العميل (مين عدّل إيه وإمتى)", "type": "بيانات", "sens": "متوسطة", "cap": "عرض فقط", "ast": "عرض فقط", "note": ""}, {"id": 27, "sec": "العملاء", "t": "إرسال رسالة واتساب جاهزة للمتدرب", "type": "إجراء", "sens": "منخفضة", "cap": "مسموح", "ast": "مسموح", "note": ""}, {"id": 28, "sec": "فورم الاشتراك والمتدربين الجدد", "t": "قايمة طلبات المتدربين الجدد (اللي ملأوا الفورم)", "type": "بيانات", "sens": "متوسطة", "cap": "كامل", "ast": "عرض فقط", "note": ""}, {"id": 29, "sec": "فورم الاشتراك والمتدربين الجدد", "t": "تحويل طلب لملف متدرب", "type": "إجراء", "sens": "متوسطة", "cap": "مسموح", "ast": "ممنوع", "note": ""}, {"id": 30, "sec": "فورم الاشتراك والمتدربين الجدد", "t": "حذف طلب أو رسالة مزعجة", "type": "إجراء", "sens": "منخفضة", "cap": "مسموح", "ast": "ممنوع", "note": ""}, {"id": 31, "sec": "فورم الاشتراك والمتدربين الجدد", "t": "إنشاء أو تغيير رابط فورم الاشتراك العام", "type": "إجراء", "sens": "متوسطة", "cap": "مسموح", "ast": "ممنوع", "note": ""}, {"id": 32, "sec": "فورم الاشتراك والمتدربين الجدد", "t": "تعديل أسئلة الفورم", "type": "إجراء", "sens": "متوسطة", "cap": "مسموح", "ast": "ممنوع", "note": "اختياري: الأسئلة ممكن تبقى ثابتة في الإصدار الأول."}, {"id": 33, "sec": "التشيك ان الأسبوعي", "t": "إرسال تنبيه التشيك ان للمتدرب يدويًا", "type": "إجراء", "sens": "منخفضة", "cap": "مسموح", "ast": "مسموح", "note": ""}, {"id": 34, "sec": "التشيك ان الأسبوعي", "t": "فتح فورم التشيك ان لمتدرب خارج يومه (استثناء)", "type": "إجراء", "sens": "منخفضة", "cap": "مسموح", "ast": "ممنوع", "note": ""}, {"id": 35, "sec": "التشيك ان الأسبوعي", "t": "تعديل أسئلة التشيك ان", "type": "إجراء", "sens": "متوسطة", "cap": "مسموح", "ast": "ممنوع", "note": ""}, {"id": 36, "sec": "بناء التغذية", "t": "برنامج التغذية (الوجبات والأصناف والجرامات)", "type": "بيانات", "sens": "متوسطة", "cap": "كامل", "ast": "عرض فقط", "note": "لو المساعد هيبني برامج: اختار \"عرض وتعديل\"."}, {"id": 37, "sec": "بناء التغذية", "t": "هدف السعرات والماكروز لكل متدرب", "type": "بيانات", "sens": "متوسطة", "cap": "كامل", "ast": "عرض فقط", "note": ""}, {"id": 38, "sec": "بناء التغذية", "t": "استخدام حاسبة السعرات (BMR/TDEE)", "type": "إجراء", "sens": "منخفضة", "cap": "مسموح", "ast": "مسموح", "note": ""}, {"id": 39, "sec": "بناء التغذية", "t": "قايمة المشتريات: عرضها وإرسالها", "type": "إجراء", "sens": "منخفضة", "cap": "مسموح", "ast": "مسموح", "note": ""}, {"id": 40, "sec": "بناء التمرين", "t": "برنامج التمرين (الأيام والتمارين)", "type": "بيانات", "sens": "متوسطة", "cap": "كامل", "ast": "عرض فقط", "note": "لو المساعد هيبني برامج: اختار \"عرض وتعديل\"."}, {"id": 41, "sec": "التصدير والنشر", "t": "معاينة PDF", "type": "إجراء", "sens": "منخفضة", "cap": "مسموح", "ast": "مسموح", "note": ""}, {"id": 42, "sec": "التصدير والنشر", "t": "تحميل PDF", "type": "إجراء", "sens": "متوسطة", "cap": "مسموح", "ast": "مسموح", "note": "الملف فيه بيانات المتدرب."}, {"id": 43, "sec": "التصدير والنشر", "t": "اختيار قالب الورقة ووضعها (فاتح/داكن)", "type": "إجراء", "sens": "منخفضة", "cap": "مسموح", "ast": "مسموح", "note": ""}, {"id": 44, "sec": "التصدير والنشر", "t": "نشر صفحة المتدرب وإنشاء الرابط", "type": "إجراء", "sens": "متوسطة", "cap": "مسموح", "ast": "ممنوع", "note": "الرابط = مفتاح الدخول لبرنامج المتدرب."}, {"id": 45, "sec": "التصدير والنشر", "t": "إيقاف النشر أو تجديد الرابط", "type": "إجراء", "sens": "متوسطة", "cap": "مسموح", "ast": "ممنوع", "note": ""}, {"id": 46, "sec": "التصدير والنشر", "t": "تحديد تاريخ انتهاء الرابط", "type": "إجراء", "sens": "منخفضة", "cap": "مسموح", "ast": "ممنوع", "note": ""}, {"id": 47, "sec": "التصدير والنشر", "t": "نسخ الرابط وQR وإرساله واتساب", "type": "إجراء", "sens": "متوسطة", "cap": "مسموح", "ast": "ممنوع", "note": ""}, {"id": 48, "sec": "التصدير والنشر", "t": "معاينة صفحة المتدرب كما يراها", "type": "إجراء", "sens": "منخفضة", "cap": "مسموح", "ast": "مسموح", "note": ""}, {"id": 49, "sec": "المكتبة", "t": "الأطعمة", "type": "بيانات", "sens": "منخفضة", "cap": "كامل", "ast": "عرض فقط", "note": ""}, {"id": 50, "sec": "المكتبة", "t": "التمارين", "type": "بيانات", "sens": "منخفضة", "cap": "كامل", "ast": "عرض فقط", "note": ""}, {"id": 51, "sec": "المكتبة", "t": "الوجبات الجاهزة", "type": "بيانات", "sens": "منخفضة", "cap": "كامل", "ast": "عرض فقط", "note": ""}, {"id": 52, "sec": "المكتبة", "t": "استيراد أطعمة من ملف CSV", "type": "إجراء", "sens": "متوسطة", "cap": "مسموح", "ast": "ممنوع", "note": ""}, {"id": 53, "sec": "المكتبة", "t": "استيراد أطعمة وتمارين من مصادر خارجية", "type": "إجراء", "sens": "متوسطة", "cap": "مسموح", "ast": "ممنوع", "note": ""}, {"id": 54, "sec": "المكتبة", "t": "رفع صور وفيديوهات التمارين", "type": "إجراء", "sens": "منخفضة", "cap": "مسموح", "ast": "ممنوع", "note": ""}, {"id": 55, "sec": "الاشتراكات والدفع", "t": "أرقام المحصّل والمعلّق والمنتهي", "type": "بيانات", "sens": "عالية", "cap": "عرض فقط", "ast": "ممنوع", "note": "أرقام مالية."}, {"id": 56, "sec": "الاشتراكات والدفع", "t": "قايمة الاشتراكات (الباقة وتواريخ البداية والنهاية)", "type": "بيانات", "sens": "متوسطة", "cap": "كامل", "ast": "عرض فقط", "note": ""}, {"id": 57, "sec": "الاشتراكات والدفع", "t": "الدفعات (سجل المبالغ، تسجيل دفعة، تعديلها)", "type": "بيانات", "sens": "عالية", "cap": "كامل", "ast": "ممنوع", "note": "لو المساعد هيسجّل دفعات: اختار \"عرض وتعديل\"."}, {"id": 58, "sec": "الاشتراكات والدفع", "t": "تجديد اشتراك (باقة + تاريخ + دفع)", "type": "إجراء", "sens": "عالية", "cap": "مسموح", "ast": "ممنوع", "note": ""}, {"id": 59, "sec": "التقارير", "t": "تقرير الدخل الشهري", "type": "بيانات", "sens": "عالية", "cap": "عرض فقط", "ast": "ممنوع", "note": ""}, {"id": 60, "sec": "التقارير", "t": "عدد المتدربين الفعّالين", "type": "بيانات", "sens": "منخفضة", "cap": "عرض فقط", "ast": "عرض فقط", "note": ""}, {"id": 61, "sec": "التقارير", "t": "نسبة التجديد", "type": "بيانات", "sens": "متوسطة", "cap": "عرض فقط", "ast": "ممنوع", "note": ""}, {"id": 62, "sec": "التقارير", "t": "تصدير تقرير CSV أو PDF", "type": "إجراء", "sens": "عالية", "cap": "مسموح", "ast": "ممنوع", "note": ""}, {"id": 63, "sec": "الإشعارات والتنبيهات", "t": "إشعارات: متدرب جديد وتشيك ان جديد", "type": "بيانات", "sens": "منخفضة", "cap": "كامل", "ast": "عرض وتعديل", "note": "\"عرض وتعديل\" يعني يعلّمها مقروءة."}, {"id": 64, "sec": "الإشعارات والتنبيهات", "t": "إشعارات: دفعة جديدة وتجديد", "type": "بيانات", "sens": "عالية", "cap": "كامل", "ast": "ممنوع", "note": "متعلقة بالأرقام المالية."}, {"id": 65, "sec": "الإشعارات والتنبيهات", "t": "استلام الإشعارات على بوت تليجرام", "type": "إجراء", "sens": "متوسطة", "cap": "مسموح", "ast": "مسموح", "note": ""}, {"id": 66, "sec": "الإشعارات والتنبيهات", "t": "ربط بوت تليجرام بحسابه", "type": "إجراء", "sens": "متوسطة", "cap": "مسموح", "ast": "مسموح", "note": ""}, {"id": 67, "sec": "الإشعارات والتنبيهات", "t": "ضبط قواعد التذكيرات (أيام قبل التجديد وأيام التأخير)", "type": "إجراء", "sens": "متوسطة", "cap": "مسموح", "ast": "ممنوع", "note": ""}, {"id": 68, "sec": "الإشعارات والتنبيهات", "t": "تعديل رسائل التنبيه الجاهزة", "type": "إجراء", "sens": "منخفضة", "cap": "مسموح", "ast": "ممنوع", "note": ""}, {"id": 69, "sec": "الإشعارات والتنبيهات", "t": "اختيار قناة تنبيه المتدرب", "type": "إجراء", "sens": "متوسطة", "cap": "مسموح", "ast": "ممنوع", "note": ""}, {"id": 70, "sec": "الإعدادات", "t": "قوالب الـ PDF (لون، لوجو، تذييل، ملحوظة افتراضية)", "type": "بيانات", "sens": "منخفضة", "cap": "كامل", "ast": "عرض فقط", "note": ""}, {"id": 71, "sec": "الإعدادات", "t": "المظهر واللغة والوحدات لحسابه", "type": "إجراء", "sens": "منخفضة", "cap": "مسموح", "ast": "مسموح", "note": ""}, {"id": 72, "sec": "الإعدادات", "t": "تصدير نسخة احتياطية كاملة (JSON)", "type": "إجراء", "sens": "عالية", "cap": "مسموح", "ast": "ممنوع", "note": ""}, {"id": 73, "sec": "الإعدادات", "t": "استيراد نسخة احتياطية (استرجاع)", "type": "إجراء", "sens": "عالية", "cap": "مسموح", "ast": "ممنوع", "note": "ممكن يمسح أو يغيّر كل البيانات."}, {"id": 74, "sec": "الإعدادات", "t": "تصدير CSV للبيانات", "type": "إجراء", "sens": "عالية", "cap": "مسموح", "ast": "ممنوع", "note": ""}, {"id": 75, "sec": "الإعدادات", "t": "المساعدة والدعم", "type": "إجراء", "sens": "منخفضة", "cap": "مسموح", "ast": "مسموح", "note": ""}];
+const L={B:"ممنوع",V:"عرض فقط",E:"عرض وتعديل",F:"كامل",A:"مسموح"};
+const CLS={"ممنوع":"o-block","عرض فقط":"o-view","عرض وتعديل":"o-edit","كامل":"o-full","مسموح":"o-allow"};
+const OPTS={"بيانات":[L.B,L.V,L.E,L.F],"إجراء":[L.B,L.A]};
+const FA={"الحسابات والأمان":"fa-lock","الرئيسية":"fa-house","العملاء":"fa-users","فورم الاشتراك والمتدربين الجدد":"fa-file-pen","التشيك ان الأسبوعي":"fa-calendar-check","بناء التغذية":"fa-bowl-food","بناء التمرين":"fa-dumbbell","التصدير والنشر":"fa-share-nodes","المكتبة":"fa-book-open","الاشتراكات والدفع":"fa-credit-card","التقارير":"fa-chart-column","الإشعارات والتنبيهات":"fa-bell","الإعدادات":"fa-gear"};
+const MI={"الحسابات والأمان":"🔐","الرئيسية":"🏠","العملاء":"👥","فورم الاشتراك والمتدربين الجدد":"📝","التشيك ان الأسبوعي":"📅","بناء التغذية":"🥗","بناء التمرين":"🏋️","التصدير والنشر":"📤","المكتبة":"📚","الاشتراكات والدفع":"💳","التقارير":"📊","الإشعارات والتنبيهات":"🔔","الإعدادات":"⚙️"};
+const SECS=[...new Set(ROWS.map(r=>r.sec))];
+const byId=Object.fromEntries(ROWS.map(r=>[r.id,r]));
+const DEC=[
+ {k:"build",t:"المساعد يبني برامج التغذية والتمرين",d:"يعدّل البرامج بدل ما يشوفها بس",on:{36:L.E,37:L.E,40:L.E},off:{36:L.V,37:L.V,40:L.V}},
+ {k:"fin",t:"المساعد يسجّل دفعات ويشوف الأرقام المالية",d:"الرئيسية والتقارير والاشتراكات والإشعارات المالية",on:{12:L.V,55:L.V,57:L.E,58:L.A,59:L.V,64:L.V},off:{12:L.B,55:L.B,57:L.B,58:L.B,59:L.B,64:L.B}},
+ {k:"priv",t:"المساعد يشوف الصور والبيانات الصحية وإجابات الفورم",d:"قسم العملاء (بيانات حساسة)",on:{17:L.V,19:L.V,21:L.V},off:{17:L.B,19:L.B,21:L.B}},
+ {k:"pub",t:"المساعد ينشر روابط المتدربين ويبعتها",d:"النشر والإيقاف والتاريخ والإرسال واتساب",on:{44:L.A,45:L.A,46:L.A,47:L.A},off:{44:L.B,45:L.B,46:L.B,47:L.B}},
+ {k:"tg",t:"المساعد يستلم إشعارات تليجرام",d:"استلام الإشعارات وربط البوت",on:{65:L.A,66:L.A},off:{65:L.B,66:L.B}},
+ {k:"del",t:"المساعد يقدر يحذف",d:"بيفتح خيار «كامل» في صلاحيات المساعد. لو قفلته أي «كامل» بيتحول لـ«عرض وتعديل»",custom:true}
+];
+const KEY="perm-guide-v1";
+const defaults=a=>Object.fromEntries(ROWS.map(r=>[r.id,a==="cap"?r.cap:r.ast]));
+let S={cap:defaults("cap"),ast:defaults("ast"),rev:{},open:{},delOK:false,notes:"",acct:"ast",high:false};
+try{const j=JSON.parse(localStorage.getItem(KEY)||"null");if(j&&j.ast&&j.cap)S=Object.assign(S,j)}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const $=s=>document.querySelector(s);
+const toast=m=>{const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove("on"),1800)};
+const lvCls=v=>({"ممنوع":"c-block","عرض فقط":"c-view","عرض وتعديل":"c-edit","كامل":"c-full","مسموح":"c-allow"}[v]);
+
+function decOn(d){return d.custom?S.delOK:Object.entries(d.on).every(([i,v])=>S.ast[i]===v)}
+function renderDecs(){
+  $("#decs").innerHTML=DEC.map(d=>`<div class="dec"><div class="t"><b>${d.t}</b><small>${d.d}</small></div><button class="sw" role="switch" aria-checked="${decOn(d)}" aria-label="${d.t}" data-d="${d.k}"></button></div>`).join("");
+}
+function renderSecs(){
+  const a=S.acct,st=S[a];
+  $("#secs").innerHTML=SECS.map((s,si)=>{
+    let rows=ROWS.filter(r=>r.sec===s);
+    const all=rows.length;
+    if(S.high)rows=rows.filter(r=>r.sens==="عالية");
+    if(!rows.length)return"";
+    const cnt={};ROWS.filter(r=>r.sec===s).forEach(r=>{const v=st[r.id];cnt[v]=(cnt[v]||0)+1});
+    const sum=Object.entries(cnt).map(([k,n])=>`${n} ${k}`).join(" · ");
+    const open=S.open[s]?" open":"",rev=S.rev[s]?" rev":"";
+    return `<div class="card sec${open}${rev}" data-s="${s}">
+      <button class="sec-h" data-t="${s}"><span class="ico"><i class="fa-solid ${FA[s]||"fa-folder"}"></i></span><span class="n">${s}<small>${all} صلاحية · ${sum}</small></span><span class="done"><i class="fa-solid fa-check"></i></span><span class="arrow"><i class="fa-solid fa-chevron-down"></i></span></button>
+      <div class="sec-b">${rows.map(r=>{
+        const o=OPTS[r.type].filter(x=>true);
+        return `<div class="row"><div class="q"><span class="num">${r.id}</span><b>${r.t}</b></div>
+        <div class="meta"><span class="tag">${r.type==="إجراء"?"إجراء":"بيانات"}</span><span class="tag ${r.sens==="عالية"?"s-high":r.sens==="متوسطة"?"s-mid":""}">${r.sens==="عالية"?'<i class="fa-solid fa-triangle-exclamation"></i> ':""}حساسية ${r.sens}</span></div>
+        ${r.note?`<div class="note">${r.note}</div>`:""}
+        <div class="opts">${o.map(v=>`<button class="${CLS[v]}" data-i="${r.id}" data-v="${v}" aria-pressed="${st[r.id]===v}" ${v===L.F&&a==="ast"&&!S.delOK?"disabled":""}>${v}</button>`).join("")}</div></div>`}).join("")}
+      <div class="sec-f"><button class="btn btn-p" data-ok="${s}"><i class="fa-solid fa-check"></i> تمام، القسم ده خلص</button><button class="btn btn-s" data-blk="${s}"><i class="fa-solid fa-ban"></i> الكل ممنوع</button><button class="btn btn-s" data-rst="${s}"><i class="fa-solid fa-rotate-left"></i> المقترح</button></div></div></div>`}).join("");
+  const n=SECS.filter(s=>S.rev[s]).length;
+  $("#stA").textContent=`${n} / ${SECS.length} قسم تمت مراجعته`;
+  $("#prog").style.width=(n/SECS.length*100)+"%";
+  const m=metrics();$("#stB").textContent=`حساس مفتوح للمساعد: ${m.hi} · حذف: ${m.full}`;
+}
+function metrics(){
+  const hi=ROWS.filter(r=>r.sens==="عالية"&&S.ast[r.id]!==L.B).length;
+  const full=ROWS.filter(r=>S.ast[r.id]===L.F).length;
+  return{hi,full};
+}
+function rerender(){renderDecs();renderSecs();save()}
+
+document.addEventListener("click",e=>{
+  const t=e.target.closest("button");if(!t)return;
+  if(t.dataset.i){S[S.acct][t.dataset.i]=t.dataset.v;rerender();return}
+  if(t.dataset.t){S.open[t.dataset.t]=!S.open[t.dataset.t];renderSecs();save();return}
+  if(t.dataset.ok){const s=t.dataset.ok;S.rev[s]=true;S.open[s]=false;const nx=SECS.find(x=>!S.rev[x]);if(nx){S.open[nx]=true}rerender();if(nx)document.querySelector(`[data-s="${nx}"]`)?.scrollIntoView({behavior:"smooth",block:"start"});else toast("كل الأقسام اتراجعت");return}
+  if(t.dataset.blk){ROWS.filter(r=>r.sec===t.dataset.blk).forEach(r=>S[S.acct][r.id]=L.B);rerender();toast("اتحوّل كله لممنوع");return}
+  if(t.dataset.rst){ROWS.filter(r=>r.sec===t.dataset.rst).forEach(r=>S[S.acct][r.id]=S.acct==="cap"?r.cap:r.ast);rerender();toast("رجعت للمقترح");return}
+  if(t.dataset.d){
+    const d=DEC.find(x=>x.k===t.dataset.d);
+    if(d.custom){S.delOK=!S.delOK;if(!S.delOK)ROWS.forEach(r=>{if(S.ast[r.id]===L.F)S.ast[r.id]=L.E})}
+    else{const on=!decOn(d);Object.entries(on?d.on:d.off).forEach(([i,v])=>S.ast[i]=v)}
+    rerender();return}
+  if(t.dataset.a){S.acct=t.dataset.a;document.querySelectorAll("#acct button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.a===S.acct));$("#decs").parentNode;rerender();return}
+});
+$("#onlyHigh").onclick=e=>{S.high=!S.high;e.currentTarget.setAttribute("aria-pressed",S.high);if(S.high)SECS.forEach(s=>S.open[s]=true);rerender()};
+$("#openAll").onclick=()=>{const any=SECS.some(s=>S.open[s]);SECS.forEach(s=>S.open[s]=!any);$("#openAll").textContent=any?"فتح الكل":"قفل الكل";renderSecs();save()};
+$("#resetAcct").onclick=()=>{if(!confirm("ترجّع كل اختيارات "+(S.acct==="cap"?"الكابتن":"المساعد")+" للمقترح؟"))return;S[S.acct]=defaults(S.acct);if(S.acct==="ast")S.delOK=false;rerender()};
+$("#notes").value=S.notes||"";$("#notes").oninput=e=>{S.notes=e.target.value;save()};
+$("#theme").onclick=()=>{const h=document.documentElement;const dark=h.dataset.theme?h.dataset.theme==="dark":matchMedia("(prefers-color-scheme:dark)").matches;h.dataset.theme=dark?"light":"dark"};
+
+/* ---------- الرسالة ---------- */
+function buildMessages(){
+  const m=metrics(),n=SECS.filter(s=>S.rev[s]).length;
+  const now=new Date().toLocaleString("ar-EG",{dateStyle:"medium",timeStyle:"short"});
+  const blocks=[];
+  blocks.push(`📋 *تقرير صلاحيات الكابتن والمساعد*\n👨‍💻 إلى: المطور عامر\n🗓 ${now}\n✅ الأقسام اللي اتراجعت: ${n}/${SECS.length}\n⚠️ صلاحيات حساسة مفتوحة للمساعد: *${m.hi}*\n🗑 صلاحيات حذف للمساعد: *${m.full}*`);
+  const order=[[L.B,"🚫"],[L.V,"👁"],[L.E,"✏️"],[L.F,"🗑"],[L.A,"✅"]];
+  blocks.push("━━━━━━━━━━\n👤 *صلاحيات المساعد*");
+  SECS.forEach(s=>{
+    const rs=ROWS.filter(r=>r.sec===s);let o=`${MI[s]||"📁"} *${s}*`;
+    order.forEach(([lv,ic])=>{const x=rs.filter(r=>S.ast[r.id]===lv);if(x.length)o+=`\n${ic} _${lv}_\n`+x.map(r=>`• ${r.id}. ${r.t}`).join("\n")});
+    blocks.push(o)});
+  blocks.push("━━━━━━━━━━\n🏋️ *صلاحيات الكابتن*");
+  const diffs=ROWS.filter(r=>S.cap[r.id]!==r.cap);
+  if(!diffs.length)blocks.push("كل اختيارات الكابتن زي المقترح (بدون تغيير).");
+  else SECS.forEach(s=>{const x=diffs.filter(r=>r.sec===s);if(x.length)blocks.push(`${MI[s]||"📁"} *${s}*\n`+x.map(r=>`• ${r.id}. ${r.t} ← *${S.cap[r.id]}* (المقترح: ${r.cap})`).join("\n"))});
+  if(diffs.length)blocks.splice(blocks.indexOf("━━━━━━━━━━\n🏋️ *صلاحيات الكابتن*")+1,0,"التعديلات على المقترح فقط:");
+  if(S.notes.trim())blocks.push("📝 *ملاحظات:*\n"+S.notes.trim());
+  const msgs=[];let cur="";
+  blocks.forEach(b=>{if(cur&&(cur+"\n\n"+b).length>1300){msgs.push(cur);cur=b}else cur=cur?cur+"\n\n"+b:b});
+  if(cur)msgs.push(cur);
+  return msgs.map((x,i)=>msgs.length>1?`(${i+1}/${msgs.length})\n${x}`:x);
+}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+function open(html){$("#sheet").innerHTML=html;$("#ov").classList.add("on")}
+function close(){$("#ov").classList.remove("on")}
+$("#ov").addEventListener("click",e=>{if(e.target.id==="ov"&&!window.__sending)close()});
+$("#send").onclick=()=>{
+  const m=metrics(),n=SECS.filter(s=>S.rev[s]).length,msgs=buildMessages();
+  open(`<h2>اعتماد الصلاحيات وإرسالها للمطور</h2>
+  <div class="stats"><div class="stat"><b>${n}/${SECS.length}</b><span>أقسام تمت مراجعتها</span></div><div class="stat"><b>${msgs.length}</b><span>أجزاء التقرير</span></div><div class="stat"><b>${m.hi}</b><span>حساس مفتوح للمساعد</span></div><div class="stat"><b>${m.full}</b><span>حذف للمساعد</span></div></div>
+  ${n<SECS.length?`<div class="warn">لسه ${SECS.length-n} قسم ما اتراجعوش. تقدر تبعت دلوقتي أو ترجع تكمّل.</div>`:""}
+  ${(m.hi||m.full)?`<div class="warn">المساعد عنده صلاحيات حساسة مفتوحة. تأكد إنها مقصودة.</div>`:""}
+  <div id="sp"></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-p" id="go" style="flex:1"><i class="fa-solid fa-paper-plane"></i> اعتماد وإرسال إلى المطور عامر</button><button class="btn btn-s" id="cp"><i class="fa-regular fa-copy"></i> نسخ التقرير</button><button class="btn btn-s" id="cl">رجوع</button></div>`);
+  $("#cl").onclick=close;
+  $("#cp").onclick=async()=>{const t=msgs.join("\n\n");try{await navigator.clipboard.writeText(t);toast("اتنسخ ✓")}catch(e){const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();document.execCommand("copy");a.remove();toast("اتنسخ ✓")}};
+  $("#go").onclick=async()=>{
+    window.__sending=true;$("#go").disabled=true;$("#cl").disabled=true;
+    $("#sp").innerHTML=`<div class="sendprog"><i id="bar"></i></div><p id="sm" style="color:var(--text-muted);font-size:var(--fs-small)">جاري إرسال التقرير...</p>`;
+    let fail=0;
+    for(let i=0;i<msgs.length;i++){
+      $("#sm").textContent=`جاري إرسال الجزء ${i+1} من ${msgs.length}...`;
+      const url=`https://api.callmebot.com/whatsapp.php?phone=%2B${PHONE}&text=${encodeURIComponent(msgs[i])}&apikey=${APIKEY}`;
+      try{await fetch(url,{mode:"no-cors",cache:"no-store"})}catch(e){fail++}
+      $("#bar").style.width=((i+1)/msgs.length*100)+"%";
+      if(i<msgs.length-1)await sleep(1200);
+    }
+    window.__sending=false;
+    $("#sp").innerHTML=fail?`<div class="warn">تعذّر إرسال ${fail} جزء (غالبًا مشكلة نت). جرّب تاني أو استخدم «نسخ التقرير».</div>`:`<div class="ok"><i class="fa-solid fa-circle-check"></i> تم اعتماد الصلاحيات وإرسال التقرير للمطور عامر.</div>`;
+    $("#go").innerHTML='<i class="fa-solid fa-rotate-right"></i> إعادة الإرسال';$("#go").disabled=false;$("#cl").disabled=false;
+  };
+};
+rerender();
+</script>
+</body>
+</html>
