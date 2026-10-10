@@ -162,6 +162,9 @@ h1,h2,h3{font-family:var(--font-display);line-height:var(--lh-heading)}
 .top .wrap{display:flex;align-items:center;gap:var(--s-3);height:var(--topbar-h)}
 .top h1{font-size:var(--fs-h3);font-weight:var(--fw-bold);flex:1}
 .top h1 small{display:block;font-family:var(--font-ui);font-weight:400;font-size:var(--fs-min);color:var(--sidebar-text);line-height:1.2}
+.theme-btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 14px;border-radius:var(--r-full);border:1.5px solid rgba(255,255,255,.55);background:rgba(255,255,255,.12);color:#fff;font-weight:var(--fw-semibold);font-size:var(--fs-small);transition:all var(--t-fast) var(--ease)}
+.theme-btn:hover{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.theme-btn i{font-size:16px}
 .icon-btn{width:var(--tap-min);height:var(--tap-min);border-radius:var(--r-full);display:grid;place-items:center;color:var(--sidebar-text);font-size:18px}
 .icon-btn:hover{background:rgba(255,255,255,.08)}
 .prog{height:4px;background:rgba(255,255,255,.12)}
@@ -266,7 +269,7 @@ textarea{width:100%;min-height:90px;border-radius:var(--r-md);border:1px solid v
 <header class="top">
   <div class="wrap">
     <h1>صلاحيات الكابتن والمساعد<small>سيستم الكابتن أحمد إيهاب</small></h1>
-    <button class="icon-btn" id="theme" aria-label="تبديل الوضع الداكن"><i class="fa-solid fa-circle-half-stroke"></i></button>
+    <button class="theme-btn" id="theme" aria-label="تبديل الثيم"><i class="fa-solid fa-moon"></i><span>داكن</span></button>
   </div>
   <div class="prog"><i id="prog"></i></div>
 </header>
@@ -392,7 +395,11 @@ $("#onlyHigh").onclick=e=>{S.high=!S.high;e.currentTarget.setAttribute("aria-pre
 $("#openAll").onclick=()=>{const any=SECS.some(s=>S.open[s]);SECS.forEach(s=>S.open[s]=!any);$("#openAll").textContent=any?"فتح الكل":"قفل الكل";renderSecs();save()};
 $("#resetAcct").onclick=()=>{if(!confirm("ترجّع كل اختيارات "+(S.acct==="cap"?"الكابتن":"المساعد")+" للمقترح؟"))return;S[S.acct]=defaults(S.acct);if(S.acct==="ast")S.delOK=false;rerender()};
 $("#notes").value=S.notes||"";$("#notes").oninput=e=>{S.notes=e.target.value;save()};
-$("#theme").onclick=()=>{const h=document.documentElement;const dark=h.dataset.theme?h.dataset.theme==="dark":matchMedia("(prefers-color-scheme:dark)").matches;h.dataset.theme=dark?"light":"dark"};
+const isDark=()=>{const h=document.documentElement.dataset.theme;return h?h==="dark":matchMedia("(prefers-color-scheme:dark)").matches};
+function paintTheme(){const d=isDark();$("#theme").innerHTML=d?'<i class="fa-solid fa-sun"></i><span>فاتح</span>':'<i class="fa-solid fa-moon"></i><span>داكن</span>';$("#theme").setAttribute("aria-label",d?"التحويل للوضع الفاتح":"التحويل للوضع الداكن")}
+$("#theme").onclick=()=>{document.documentElement.dataset.theme=isDark()?"light":"dark";try{localStorage.setItem(KEY+"-theme",document.documentElement.dataset.theme)}catch(e){}paintTheme()};
+try{const th=localStorage.getItem(KEY+"-theme");if(th)document.documentElement.dataset.theme=th}catch(e){}
+paintTheme();
 
 /* ---------- الرسالة ---------- */
 function buildMessages(){
