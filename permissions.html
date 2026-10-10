@@ -339,7 +339,7 @@ const ROWS=[{"id": 11, "sec": "الرئيسية", "t": "أرقام الرئيس�
 const L={B:"ممنوع",V:"عرض فقط",E:"عرض وتعديل",F:"كامل",A:"مسموح"};
 const CLS={"ممنوع":"o-block","عرض فقط":"o-view","عرض وتعديل":"o-edit","كامل":"o-full","مسموح":"o-allow"};
 const FA={"الحسابات والأمان":"fa-lock","الرئيسية":"fa-house","العملاء":"fa-users","فورم الاشتراك والمتدربين الجدد":"fa-file-pen","التشيك ان الأسبوعي":"fa-calendar-check","بناء التغذية":"fa-bowl-food","بناء التمرين":"fa-dumbbell","التصدير والنشر":"fa-share-nodes","المكتبة":"fa-book-open","الاشتراكات والدفع":"fa-credit-card","التقارير":"fa-chart-column","الإشعارات والتنبيهات":"fa-bell","الإعدادات":"fa-gear"};
-const MI={"الحسابات والأمان":"🔐","الرئيسية":"🏠","العملاء":"👥","فورم الاشتراك والمتدربين الجدد":"📝","التشيك ان الأسبوعي":"📅","بناء التغذية":"🥗","بناء التمرين":"🏋️","التصدير والنشر":"📤","المكتبة":"📚","الاشتراكات والدفع":"💳","التقارير":"📊","الإشعارات والتنبيهات":"🔔","الإعدادات":"⚙️"};
+const MI={"الحسابات والأمان":"🔐","الرئيسية":"🏠","العملاء":"👥","فورم الاشتراك والمتدربين الجدد":"📝","التشيك ان الأسبوعي":"📅","بناء التغذية":"🥗","بناء التمرين":"💪","التصدير والنشر":"📤","المكتبة":"📚","الاشتراكات والدفع":"💳","التقارير":"📊","الإشعارات والتنبيهات":"🔔","الإعدادات":"🔧"};
 const SECS=[...new Set(ROWS.map(r=>r.sec))];
 const DEC=[
  {k:"build",t:"المساعد يبني برامج التغذية والتمرين",d:"يعدّل البرامج بدل ما يشوفها بس",on:{36:L.E,37:L.E,40:L.E},off:{36:L.V,37:L.V,40:L.V}},
@@ -430,32 +430,61 @@ try{const th=localStorage.getItem(KEY+"-theme");if(th)document.documentElement.d
 paintTheme();
 
 /* ---------- الرسالة ---------- */
+const MAX_ENC=3800; /* أقصى طول للنص بعد الترميز في الرابط الواحد */
+const enc=t=>encodeURIComponent(t).length;
+function pack(blocks,max){
+  const out=[];let cur="";const push=()=>{if(cur){out.push(cur);cur=""}};
+  blocks.forEach(b=>{
+    const nx=cur?cur+"\n\n"+b:b;
+    if(enc(nx)<=max){cur=nx;return}
+    push();
+    if(enc(b)<=max){cur=b;return}
+    b.split("\n").forEach(l=>{const n2=cur?cur+"\n"+l:l;if(enc(n2)<=max)cur=n2;else{push();cur=l}});
+  });
+  push();return out;
+}
 function buildMessages(){
   const m=metrics(),n=SECS.filter(s=>S.rev[s]).length;
-  const now=new Date().toLocaleString("ar-EG",{dateStyle:"medium",timeStyle:"short"});
+  const now=new Date().toLocaleString("ar-EG-u-nu-latn",{dateStyle:"medium",timeStyle:"short"}).replace(/[\u200e\u200f\u061c]/g,"");
   const blocks=[];
-  blocks.push(`📋 *تقرير صلاحيات الكابتن والمساعد*\n👨‍💻 إلى: المطور عامر\n🗓 ${now}\n✅ الأقسام اللي اتراجعت: ${n}/${SECS.length}\n⚠️ صلاحيات حساسة مفتوحة للمساعد: *${m.hi}*\n🗑 صلاحيات حذف للمساعد: *${m.full}*`);
-  const order=[[L.B,"🚫"],[L.V,"👁"],[L.E,"✏️"],[L.F,"🗑"],[L.A,"✅"]];
+  blocks.push(`📋 *تقرير صلاحيات الكابتن والمساعد*\n👤 إلى: المطور عامر\n📆 ${now}\n✅ الأقسام اللي اتراجعت: ${n}/${SECS.length}\n❗ صلاحيات حساسة مفتوحة للمساعد: *${m.hi}*\n❌ صلاحيات حذف للمساعد: *${m.full}*`);
+  const order=[[L.B,"🚫"],[L.V,"🔍"],[L.E,"📝"],[L.F,"❌"],[L.A,"✅"]];
   blocks.push("━━━━━━━━━━\n👤 *صلاحيات المساعد*");
   SECS.forEach(s=>{
     const rs=ROWS.filter(r=>r.sec===s&&r.ast);let o=`${MI[s]||"📁"} *${s}*`;
     order.forEach(([lv,ic])=>{const x=rs.filter(r=>S.ast[r.id]===lv);if(x.length)o+=`\n${ic} _${lv}_\n`+x.map(r=>`• ${r.id}. ${r.t}`).join("\n")});
     if(o.includes("\n"))blocks.push(o)});
-  blocks.push("━━━━━━━━━━\n🏋️ *صلاحيات الكابتن*");
+  blocks.push("━━━━━━━━━━\n💪 *صلاحيات الكابتن*");
   const diffs=ROWS.filter(r=>r.cap&&S.cap[r.id]!==r.cap);
   if(!diffs.length)blocks.push("كل اختيارات الكابتن زي المقترح (بدون تغيير).");
   else SECS.forEach(s=>{const x=diffs.filter(r=>r.sec===s);if(x.length)blocks.push(`${MI[s]||"📁"} *${s}*\n`+x.map(r=>`• ${r.id}. ${r.t} ← *${S.cap[r.id]}* (المقترح: ${r.cap})`).join("\n"))});
-  if(diffs.length)blocks.splice(blocks.indexOf("━━━━━━━━━━\n🏋️ *صلاحيات الكابتن*")+1,0,"التعديلات على المقترح فقط:");
+  if(diffs.length)blocks.splice(blocks.indexOf("━━━━━━━━━━\n💪 *صلاحيات الكابتن*")+1,0,"التعديلات على المقترح فقط:");
   if(S.notes.trim())blocks.push("📝 *ملاحظات:*\n"+S.notes.trim());
-  const msgs=[];let cur="";
-  blocks.forEach(b=>{if(cur&&(cur+"\n\n"+b).length>1000){msgs.push(cur);cur=b}else cur=cur?cur+"\n\n"+b:b});
-  if(cur)msgs.push(cur);
+  const msgs=pack(blocks,MAX_ENC-80);
   return msgs.map((x,i)=>msgs.length>1?`(${i+1}/${msgs.length})\n${x}`:x);
 }
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 function open(html){$("#sheet").innerHTML=html;$("#ov").classList.add("on")}
 function close(){$("#ov").classList.remove("on")}
 $("#ov").addEventListener("click",e=>{if(e.target.id==="ov"&&!window.__sending)close()});
+
+/* ---------- الإرسال عبر CallMeBot ---------- */
+const CMB="https://api.callmebot.com/whatsapp.php";
+const APIKEY="9915359";
+const GAP_MS=3500;   /* فاصل بين الأجزاء علشان الخدمة ما ترفضش ولا الترتيب يتلخبط */
+async function sendCMB(text){
+  /* ترميز واحد فقط (encodeURIComponent) زي ما الخدمة بتطلب: متكررش الترميز في أي مكان تاني */
+  const url=`${CMB}?phone=${encodeURIComponent("+"+PHONE)}&text=${encodeURIComponent(text)}&apikey=${encodeURIComponent(APIKEY)}`;
+  for(let k=0;k<2;k++){
+    const c=new AbortController(),t=setTimeout(()=>c.abort(),15000);
+    try{await fetch(url,{mode:"no-cors",cache:"no-store",referrerPolicy:"no-referrer",signal:c.signal});clearTimeout(t);return true}
+    catch(e){clearTimeout(t);if(k===0)await sleep(1500)}
+  }
+  return false;
+}
+const waUrl=t=>`https://wa.me/${PHONE}?text=${encodeURIComponent(t)}`;
+const prog=(p,msg,cls="")=>{$("#sp").innerHTML=`<div class="sendprog"><i style="width:${p}%"></i></div><p ${cls?`class="${cls}"`:'style="color:var(--text-muted);font-size:var(--fs-small)"'}>${msg}</p>`};
+
 $("#send").onclick=()=>{
   const m=metrics(),n=SECS.filter(s=>S.rev[s]).length,msgs=buildMessages();
   open(`<h2>إرسال الصلاحيات للمطور</h2>
@@ -463,30 +492,47 @@ $("#send").onclick=()=>{
   ${n<SECS.length?`<div class="warn">لسه ${SECS.length-n} قسم ما اتراجعوش. تقدر تبعت دلوقتي أو ترجع تكمّل.</div>`:""}
   ${(m.hi||m.full)?`<div class="warn">المساعد عنده صلاحيات حساسة مفتوحة. تأكد إنها مقصودة.</div>`:""}
   <div id="sp"></div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-p" id="go" style="flex:1"><i class="fa-solid fa-paper-plane"></i> إرسال إلى المطور</button><button class="btn btn-s" id="cp"><i class="fa-regular fa-copy"></i> نسخ التقرير</button><button class="btn btn-s" id="cl">رجوع</button></div>`);
+  <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-p" id="go" style="flex:1"><i class="fa-solid fa-paper-plane"></i> إرسال إلى المطور</button><button class="btn btn-s" id="cl">رجوع</button></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="btn btn-s" id="cp"><i class="fa-regular fa-copy"></i> نسخ التقرير</button><button class="btn btn-s" id="wa"><i class="fa-brands fa-whatsapp"></i> بديل: عبر واتساب</button><button class="btn btn-s" id="ts"><i class="fa-solid fa-vial"></i> رسالة اختبار</button></div>`);
+  const lock=v=>{window.__sending=v;["go","cl","wa","ts"].forEach(i=>$("#"+i).disabled=v)};
   $("#cl").onclick=close;
   $("#cp").onclick=async()=>{const t=msgs.join("\n\n");try{await navigator.clipboard.writeText(t);toast("اتنسخ ✓")}catch(e){const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();document.execCommand("copy");a.remove();toast("اتنسخ ✓")}};
-  /* واتساب نفسه بيتعامل مع العربي والإيموجي صح، فمفيش ترميز بيتبوّظ في الطريق */
-  let part=0;
-  const waUrl=i=>`https://wa.me/${PHONE}?text=${encodeURIComponent(msgs[i])}`;
-  const paint=()=>{
-    $("#bar")&&($("#bar").style.width=(part/msgs.length*100)+"%");
-    if(part>=msgs.length){
-      $("#sp").innerHTML=`<div class="sendprog"><i style="width:100%"></i></div><div class="ok"><i class="fa-solid fa-circle-check"></i> فتحنا كل أجزاء التقرير في واتساب. اتأكد إنك ضغطت «إرسال» في كل جزء.</div>`;
-      $("#go").innerHTML='<i class="fa-solid fa-rotate-right"></i> إعادة الإرسال من الأول';
+
+  /* الإرسال الأساسي: كل الأجزاء بالترتيب */
+  $("#go").onclick=async()=>{
+    lock(true);let fail=[];
+    for(let i=0;i<msgs.length;i++){
+      prog(i/msgs.length*100,`جاري إرسال الجزء ${i+1} من ${msgs.length}...`);
+      if(!await sendCMB(msgs[i]))fail.push(i);
+      if(i<msgs.length-1)await sleep(GAP_MS);
+    }
+    lock(false);
+    if(fail.length){
+      prog(100,`تعذّر إرسال ${fail.length} جزء (غالبًا مشكلة نت). دوس «إرسال إلى المطور» تاني، أو استخدم «بديل: عبر واتساب» أو «نسخ التقرير».`,"warn");
     }else{
-      $("#go").innerHTML=`<i class="fa-solid fa-paper-plane"></i> ${part?`إرسال الجزء ${part+1} من ${msgs.length}`:(msgs.length>1?`إرسال إلى المطور (${msgs.length} أجزاء)`:"إرسال إلى المطور")}`;
+      $("#sp").innerHTML=`<div class="sendprog"><i style="width:100%"></i></div><div class="ok"><i class="fa-solid fa-circle-check"></i> اتبعت التقرير (${msgs.length} ${msgs.length>1?"أجزاء":"جزء"}) لخدمة الإرسال. المفروض يوصل المطور خلال دقيقة تقريبًا.</div>`;
+      $("#go").innerHTML='<i class="fa-solid fa-rotate-right"></i> إعادة الإرسال';
     }
   };
-  $("#go").onclick=()=>{
-    if(part>=msgs.length)part=0;
-    const w=window.open(waUrl(part),"_blank","noopener");
-    if(!w)location.href=waUrl(part);
-    part++;
-    if(part<msgs.length)$("#sp").innerHTML=`<div class="sendprog"><i style="width:${part/msgs.length*100}%"></i></div><p style="color:var(--text-muted);font-size:var(--fs-small)">اضغط «إرسال» في واتساب، وارجع هنا وكمّل الجزء ${part+1} من ${msgs.length}.</p>`;
-    paint();
+
+  /* رسالة اختبار قصيرة: للتأكد إن العربي بيوصل سليم قبل إرسال التقرير */
+  $("#ts").onclick=async()=>{
+    lock(true);prog(40,"جاري إرسال رسالة اختبار...");
+    const ok=await sendCMB("🔔 رسالة اختبار من صفحة الصلاحيات\nلو شايفها بالعربي سليم يبقى الإرسال تمام ✅");
+    lock(false);
+    prog(100,ok?"اتبعتت رسالة الاختبار. شوفها في واتساب وتأكد إنها واضحة بالعربي.":"تعذّر إرسال رسالة الاختبار. اتأكد من النت وجرّب تاني.",ok?"":"warn");
   };
-  paint();
+
+  /* البديل: يفتح واتساب بالنص جاهز، جزء جزء (واتساب نفسه بيتعامل مع العربي) */
+  let part=0;
+  $("#wa").onclick=()=>{
+    if(part>=msgs.length)part=0;
+    const u=waUrl(msgs[part]);
+    if(!window.open(u,"_blank","noopener"))location.href=u;
+    part++;
+    if(part<msgs.length){prog(part/msgs.length*100,`اضغط «إرسال» في واتساب، وارجع وادوس «بديل: عبر واتساب» تاني للجزء ${part+1} من ${msgs.length}.`);$("#wa").innerHTML=`<i class="fa-brands fa-whatsapp"></i> الجزء ${part+1} من ${msgs.length}`}
+    else{prog(100,"فتحنا كل الأجزاء في واتساب. اتأكد إنك ضغطت «إرسال» في كل جزء.");$("#wa").innerHTML='<i class="fa-brands fa-whatsapp"></i> بديل: عبر واتساب'}
+  };
 };
 renderDecs();renderSecs();rerender();requestAnimationFrame(()=>requestAnimationFrame(()=>document.body.classList.add("ready")));
 </script>
