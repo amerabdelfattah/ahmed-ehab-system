@@ -212,8 +212,22 @@ h1,h2,h3{font-family:var(--font-display);line-height:var(--lh-heading)}
 .sec.rev .done{background:var(--ok-bg);color:var(--ok-text)}
 .arrow{transition:transform var(--t-normal);color:var(--text-muted)}
 .sec.open .arrow{transform:rotate(180deg)}
-.sec-b{display:none;border-top:1px solid var(--border)}
-.sec.open .sec-b{display:block}
+.sec-b{display:grid;grid-template-rows:0fr;transition:grid-template-rows var(--t-slow) var(--ease)}
+.sec.open .sec-b{grid-template-rows:1fr}
+.sec-b>.inner{overflow:hidden;min-height:0;opacity:0;transform:translateY(-6px);visibility:hidden;border-top:1px solid transparent;transition:opacity var(--t-normal) var(--ease),transform var(--t-slow) var(--ease),visibility 0s linear var(--t-slow),border-color var(--t-normal)}
+.sec.open .sec-b>.inner{opacity:1;transform:none;visibility:visible;border-top-color:var(--border);transition:opacity var(--t-slow) var(--ease) 60ms,transform var(--t-slow) var(--ease),visibility 0s,border-color var(--t-normal)}
+#secs{transition:opacity 140ms var(--ease),transform 140ms var(--ease)}
+#secs.fade{opacity:0;transform:translateY(6px)}
+.sec{transition:border-color var(--t-normal)}
+.sec.open{border-color:var(--accent)}
+.sec-h:active{background:var(--bg)}
+.done{transition:background var(--t-normal),color var(--t-normal),transform var(--t-normal) var(--ease)}
+.sec.rev .done{transform:scale(1.1)}
+.arrow{display:inline-block}
+@keyframes pop{0%{transform:scale(.94)}60%{transform:scale(1.04)}100%{transform:scale(1)}}
+.ready .opts button[aria-pressed=true]{animation:pop 240ms var(--ease)}
+@keyframes rowin{from{opacity:0;transform:translateY(-4px)}}
+.row,.sec{animation:rowin var(--t-normal) var(--ease)}
 .row{padding:var(--s-4);display:grid;gap:var(--s-3)}
 .row+.row{border-top:1px solid var(--border)}
 .row .q{display:flex;gap:var(--s-2);align-items:flex-start}
@@ -246,10 +260,10 @@ textarea{width:100%;min-height:90px;border-radius:var(--r-md);border:1px solid v
 .bar .st{flex:1;font-size:var(--fs-small);color:var(--text-muted);line-height:1.3}
 .bar .st b{color:var(--text);display:block;font-size:var(--fs-body)}
 /* modal */
-.ov{position:fixed;inset:0;background:var(--overlay);z-index:var(--z-modal);display:none;align-items:flex-end;justify-content:center}
-.ov.on{display:flex}
-.sheet{background:var(--surface);width:100%;max-width:var(--modal-w-lg);max-height:92vh;overflow:auto;border-radius:var(--r-xl) var(--r-xl) 0 0;padding:var(--s-6) var(--s-4) calc(var(--s-6) + env(safe-area-inset-bottom));animation:up var(--t-slow) var(--ease)}
-@keyframes up{from{transform:translateY(40px);opacity:0}}
+.ov{position:fixed;inset:0;background:var(--overlay);z-index:var(--z-modal);display:flex;align-items:flex-end;justify-content:center;opacity:0;visibility:hidden;transition:opacity var(--t-normal) var(--ease),visibility 0s linear var(--t-slow)}
+.ov.on{opacity:1;visibility:visible;transition:opacity var(--t-normal) var(--ease),visibility 0s}
+.sheet{background:var(--surface);width:100%;max-width:var(--modal-w-lg);max-height:92vh;overflow:auto;border-radius:var(--r-xl) var(--r-xl) 0 0;padding:var(--s-6) var(--s-4) calc(var(--s-6) + env(safe-area-inset-bottom));transform:translateY(40px) scale(.98);opacity:0;transition:transform var(--t-slow) var(--ease),opacity var(--t-normal) var(--ease)}
+.ov.on .sheet{transform:none;opacity:1}
 @media(min-width:768px){.ov{align-items:center}.sheet{border-radius:var(--r-xl)}}
 .sheet h2{font-size:var(--fs-h1);margin-bottom:var(--s-4)}
 .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--s-2);margin-bottom:var(--s-4)}
@@ -351,20 +365,25 @@ function renderSecs(){
   $("#secs").innerHTML=SECS.map((s,si)=>{
     let rows=ROWS.filter(r=>r.sec===s);
     const all=rows.length;
-    if(S.high)rows=rows.filter(r=>r.sens==="عالية");
-    if(!rows.length)return"";
     const cnt={};ROWS.filter(r=>r.sec===s).forEach(r=>{const v=st[r.id];cnt[v]=(cnt[v]||0)+1});
     const sum=Object.entries(cnt).map(([k,n])=>`${n} ${k}`).join(" · ");
     const open=S.open[s]?" open":"",rev=S.rev[s]?" rev":"";
     return `<div class="card sec${open}${rev}" data-s="${s}">
-      <button class="sec-h" data-t="${s}"><span class="ico"><i class="fa-solid ${FA[s]||"fa-folder"}"></i></span><span class="n">${s}<small>${all} صلاحية · ${sum}</small></span><span class="done"><i class="fa-solid fa-check"></i></span><span class="arrow"><i class="fa-solid fa-chevron-down"></i></span></button>
-      <div class="sec-b">${rows.map(r=>{
+      <button class="sec-h" data-t="${s}"><span class="ico"><i class="fa-solid ${FA[s]||"fa-folder"}"></i></span><span class="n">${s}<small class="sm">${all} صلاحية · ${sum}</small></span><span class="done"><i class="fa-solid fa-check"></i></span><span class="arrow"><i class="fa-solid fa-chevron-down"></i></span></button>
+      <div class="sec-b"><div class="inner">${rows.map(r=>{
         const o=OPTS[r.type].filter(x=>true);
-        return `<div class="row"><div class="q"><span class="num">${r.id}</span><b>${r.t}</b></div>
+        return `<div class="row" data-sens="${r.sens}"><div class="q"><span class="num">${r.id}</span><b>${r.t}</b></div>
         <div class="meta"><span class="tag">${r.type==="إجراء"?"إجراء":"بيانات"}</span><span class="tag ${r.sens==="عالية"?"s-high":r.sens==="متوسطة"?"s-mid":""}">${r.sens==="عالية"?'<i class="fa-solid fa-triangle-exclamation"></i> ':""}حساسية ${r.sens}</span></div>
         ${r.note?`<div class="note">${r.note}</div>`:""}
         <div class="opts">${o.map(v=>`<button class="${CLS[v]}" data-i="${r.id}" data-v="${v}" aria-pressed="${st[r.id]===v}" ${v===L.F&&a==="ast"&&!S.delOK?"disabled":""}>${v}</button>`).join("")}</div></div>`}).join("")}
-      <div class="sec-f"><button class="btn btn-p" data-ok="${s}"><i class="fa-solid fa-check"></i> تمام، القسم ده خلص</button><button class="btn btn-s" data-blk="${s}"><i class="fa-solid fa-ban"></i> الكل ممنوع</button><button class="btn btn-s" data-rst="${s}"><i class="fa-solid fa-rotate-left"></i> المقترح</button></div></div></div>`}).join("");
+      <div class="sec-f"><button class="btn btn-p" data-ok="${s}"><i class="fa-solid fa-check"></i> تمام، القسم ده خلص</button><button class="btn btn-s" data-blk="${s}"><i class="fa-solid fa-ban"></i> الكل ممنوع</button><button class="btn btn-s" data-rst="${s}"><i class="fa-solid fa-rotate-left"></i> المقترح</button></div></div></div></div>`}).join("");
+}
+function sync(){
+  const a=S.acct,st=S[a];
+  document.querySelectorAll(".opts button").forEach(b=>{const on=st[b.dataset.i]===b.dataset.v;if(b.getAttribute("aria-pressed")!==String(on))b.setAttribute("aria-pressed",on);b.disabled=b.dataset.v===L.F&&a==="ast"&&!S.delOK});
+  document.querySelectorAll(".sec").forEach(el=>{const s=el.dataset.s,rs=ROWS.filter(r=>r.sec===s),cnt={};rs.forEach(r=>{const v=st[r.id];cnt[v]=(cnt[v]||0)+1});el.querySelector(".sm").textContent=`${rs.length} صلاحية · `+Object.entries(cnt).map(([k,n])=>`${n} ${k}`).join(" · ");el.classList.toggle("rev",!!S.rev[s]);el.classList.toggle("open",!!S.open[s]);el.classList.toggle("hide",S.high&&!rs.some(r=>r.sens==="عالية"))});
+  document.querySelectorAll(".row").forEach(el=>el.classList.toggle("hide",S.high&&el.dataset.sens!=="عالية"));
+  document.querySelectorAll(".sw").forEach(el=>el.setAttribute("aria-checked",decOn(DEC.find(d=>d.k===el.dataset.d))));
   const n=SECS.filter(s=>S.rev[s]).length;
   $("#stA").textContent=`${n} / ${SECS.length} قسم تمت مراجعته`;
   $("#prog").style.width=(n/SECS.length*100)+"%";
@@ -375,13 +394,13 @@ function metrics(){
   const full=ROWS.filter(r=>S.ast[r.id]===L.F).length;
   return{hi,full};
 }
-function rerender(){renderDecs();renderSecs();save()}
+function rerender(){sync();save()}
 
 document.addEventListener("click",e=>{
   const t=e.target.closest("button");if(!t)return;
   if(t.dataset.i){S[S.acct][t.dataset.i]=t.dataset.v;rerender();return}
-  if(t.dataset.t){S.open[t.dataset.t]=!S.open[t.dataset.t];renderSecs();save();return}
-  if(t.dataset.ok){const s=t.dataset.ok;S.rev[s]=true;S.open[s]=false;const nx=SECS.find(x=>!S.rev[x]);if(nx){S.open[nx]=true}rerender();if(nx)document.querySelector(`[data-s="${nx}"]`)?.scrollIntoView({behavior:"smooth",block:"start"});else toast("كل الأقسام اتراجعت");return}
+  if(t.dataset.t){S.open[t.dataset.t]=!S.open[t.dataset.t];rerender();return}
+  if(t.dataset.ok){const s=t.dataset.ok;S.rev[s]=true;S.open[s]=false;const nx=SECS.find(x=>!S.rev[x]);if(nx){S.open[nx]=true}rerender();if(nx)setTimeout(()=>document.querySelector(`[data-s="${nx}"]`)?.scrollIntoView({behavior:"smooth",block:"start"}),220);else toast("كل الأقسام اتراجعت");return}
   if(t.dataset.blk){ROWS.filter(r=>r.sec===t.dataset.blk).forEach(r=>S[S.acct][r.id]=L.B);rerender();toast("اتحوّل كله لممنوع");return}
   if(t.dataset.rst){ROWS.filter(r=>r.sec===t.dataset.rst).forEach(r=>S[S.acct][r.id]=S.acct==="cap"?r.cap:r.ast);rerender();toast("رجعت للمقترح");return}
   if(t.dataset.d){
@@ -389,10 +408,10 @@ document.addEventListener("click",e=>{
     if(d.custom){S.delOK=!S.delOK;if(!S.delOK)ROWS.forEach(r=>{if(S.ast[r.id]===L.F)S.ast[r.id]=L.E})}
     else{const on=!decOn(d);Object.entries(on?d.on:d.off).forEach(([i,v])=>S.ast[i]=v)}
     rerender();return}
-  if(t.dataset.a){S.acct=t.dataset.a;document.querySelectorAll("#acct button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.a===S.acct));$("#decs").parentNode;rerender();return}
+  if(t.dataset.a){S.acct=t.dataset.a;document.querySelectorAll("#acct button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.a===S.acct));const el=$("#secs");el.classList.add("fade");setTimeout(()=>{rerender();el.classList.remove("fade")},140);return}
 });
 $("#onlyHigh").onclick=e=>{S.high=!S.high;e.currentTarget.setAttribute("aria-pressed",S.high);if(S.high)SECS.forEach(s=>S.open[s]=true);rerender()};
-$("#openAll").onclick=()=>{const any=SECS.some(s=>S.open[s]);SECS.forEach(s=>S.open[s]=!any);$("#openAll").textContent=any?"فتح الكل":"قفل الكل";renderSecs();save()};
+$("#openAll").onclick=()=>{const any=SECS.some(s=>S.open[s]);SECS.forEach(s=>S.open[s]=!any);$("#openAll").innerHTML=any?'<i class="fa-solid fa-angles-down"></i> فتح الكل':'<i class="fa-solid fa-angles-up"></i> قفل الكل';rerender()};
 $("#resetAcct").onclick=()=>{if(!confirm("ترجّع كل اختيارات "+(S.acct==="cap"?"الكابتن":"المساعد")+" للمقترح؟"))return;S[S.acct]=defaults(S.acct);if(S.acct==="ast")S.delOK=false;rerender()};
 $("#notes").value=S.notes||"";$("#notes").oninput=e=>{S.notes=e.target.value;save()};
 const isDark=()=>{const h=document.documentElement.dataset.theme;return h?h==="dark":matchMedia("(prefers-color-scheme:dark)").matches};
@@ -454,7 +473,7 @@ $("#send").onclick=()=>{
     $("#go").innerHTML='<i class="fa-solid fa-rotate-right"></i> إعادة الإرسال';$("#go").disabled=false;$("#cl").disabled=false;
   };
 };
-rerender();
+renderDecs();renderSecs();rerender();requestAnimationFrame(()=>requestAnimationFrame(()=>document.body.classList.add("ready")));
 </script>
 </body>
 </html>
