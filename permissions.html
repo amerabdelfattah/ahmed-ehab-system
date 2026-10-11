@@ -436,7 +436,7 @@ try{const th=localStorage.getItem(KEY+"-theme");if(th)document.documentElement.d
 paintTheme();
 
 /* ---------- الرسالة ---------- */
-const MAX_ENC=5000; /* أقصى طول للنص بعد الترميز في الرابط الواحد */
+const MAX_ENC=7000; /* أقصى طول للنص بعد الترميز في الرابط الواحد */
 const enc=t=>encodeURIComponent(t).length;
 function pack(blocks,max){
   const out=[];let cur="";const push=()=>{if(cur){out.push(cur);cur=""}};
@@ -451,29 +451,30 @@ function pack(blocks,max){
   });
   push();return out;
 }
-/* التقرير الكامل: كل الأقسام وكل الأسئلة، والكابتن والمساعد جنب بعض في سطر واحد */
+/* التقرير الكامل في رسالة واحدة: كل الأقسام وكل الأسئلة (بالأرقام)، مجمّعة حسب الاختيار */
 function buildMessages(){
   const m=metrics(),n=SECS.filter(s=>S.rev[s]).length;
   const now=new Date().toLocaleString("ar-EG-u-nu-latn",{dateStyle:"medium",timeStyle:"short"}).replace(/[\u200e\u200f\u061c]/g,"");
   const IC={[L.B]:"🚫",[L.V]:"🔍",[L.E]:"📝",[L.F]:"❌",[L.A]:"✅"};
-  const lv=v=>v===undefined?"؟":(IC[v]||"؟")+" "+v;
+  const ORD=[L.B,L.V,L.E,L.F,L.A];
+  const grp=(rs,map)=>{
+    const g={};rs.forEach(r=>{const v=map[r.id];(g[v]=g[v]||[]).push(r.id)});
+    return Object.keys(g).sort((x,y)=>ORD.indexOf(x)-ORD.indexOf(y)).map(v=>`${IC[v]||"؟"} ${g[v].join(",")}`).join("  ·  ");
+  };
   const blocks=[];
-  blocks.push(`📋 *تقرير صلاحيات الكابتن والمساعد*\n👤 إلى: المطور عامر\n📆 ${now}\n✅ الأقسام اللي اتراجعت: ${n}/${SECS.length}\n❗ صلاحيات حساسة مفتوحة للمساعد: *${m.hi}*\n❌ صلاحيات حذف للمساعد: *${m.full}*\n📊 إجمالي الأسئلة: ${ROWS.length}`);
-  blocks.push(`🔑 *المفتاح:* ك = الكابتن، م = المساعد\n🚫 ممنوع · 🔍 عرض فقط · 📝 عرض وتعديل · ❌ كامل (يحذف) · ✅ مسموح`);
+  blocks.push(`📋 *تقرير صلاحيات الكابتن والمساعد*\n👤 إلى: المطور عامر\n📆 ${now}\n✅ الأقسام اللي اتراجعت: ${n}/${SECS.length}  |  إجمالي الأسئلة: ${ROWS.length}\n❗ صلاحيات حساسة مفتوحة للمساعد: *${m.hi}*\n❌ صلاحيات حذف للمساعد: *${m.full}*`);
+  blocks.push(`🔑 *المفتاح* (الأرقام هي أرقام الأسئلة في الصفحة)\nك = الكابتن · م = المساعد\n🚫 ممنوع · 🔍 عرض فقط · 📝 عرض وتعديل · ❌ كامل (يحذف) · ✅ مسموح`);
   SECS.forEach(s=>{
-    const rs=ROWS.filter(r=>r.sec===s);
-    let o=`${MI[s]||"📁"} *${s}* (${rs.length}) ${S.rev[s]?"✔ تمت المراجعة":"⏳ لم تتم المراجعة"}`;
-    rs.forEach(r=>{
-      const p=[];
-      if(r.capOpts)p.push("ك: "+lv(S.cap[r.id]));
-      if(r.astOpts)p.push("م: "+lv(S.ast[r.id]));
-      o+=`\n• ${r.id}. ${r.t}\n   ${p.join("  |  ")}`;
-    });
+    const rs=ROWS.filter(r=>r.sec===s),ids=rs.map(r=>r.id);
+    let o=`${MI[s]||"📁"} *${s}* (${ids.length>1?ids[0]+"–"+ids[ids.length-1]:ids[0]}) ${S.rev[s]?"✔":"⏳ لم تُراجع"}`;
+    const c=rs.filter(r=>r.capOpts),a=rs.filter(r=>r.astOpts);
+    if(c.length)o+=`\nك: ${grp(c,S.cap)}`;
+    if(a.length)o+=`\nم: ${grp(a,S.ast)}`;
     blocks.push(o);
   });
   blocks.push(S.notes.trim()?"📝 *ملاحظات:*\n"+S.notes.trim():"📝 *ملاحظات:* مفيش");
   const msgs=pack(blocks,MAX_ENC-120);
-  return msgs.map((x,i)=>`(${i+1}/${msgs.length})\n${x}`+(i===msgs.length-1?"\n\n— نهاية التقرير —":""));
+  return msgs.map((x,i)=>(msgs.length>1?`(${i+1}/${msgs.length})\n`:"")+x+(i===msgs.length-1?"\n\n— نهاية التقرير —":""));
 }
 function openSheet(html){$("#sheet").innerHTML=html;$("#ov").classList.add("on")}
 function closeSheet(){$("#ov").classList.remove("on")}
@@ -496,13 +497,14 @@ $("#send").onclick=()=>{
   $("#go").onclick=()=>{
     if(part>=msgs.length)part=0;
     const u=waUrl(msgs[part]);
+    try{navigator.clipboard&&navigator.clipboard.writeText(msgs[part]).catch(()=>{})}catch(e){}
     let w=null;try{w=window.open(u,"_blank");if(w)w.opener=null}catch(e){}
     if(!w){const a=document.createElement("a");a.href=u;a.target="_blank";a.rel="noopener";document.body.appendChild(a);a.click();a.remove()}
     const lk=`<a href="${u}" target="_blank" rel="noopener" style="color:var(--accent-text);text-decoration:underline">لو واتساب ما اتفتحش دوس هنا</a>`;
     part++;
     $("#go").innerHTML=`<svg class="i" aria-hidden="true"><use href="#i-paper-plane"/></svg> ${part<msgs.length?`إرسال (الجزء ${part+1} من ${msgs.length})`:"إعادة الإرسال"}`;
     if(part<msgs.length)prog(part/msgs.length*100,`اتفتح واتساب بالجزء ${part} من ${msgs.length}. اضغط «إرسال» هناك، وارجع هنا وادوس «إرسال» للجزء ${part+1}.<br>${lk}`);
-    else prog(100,(msgs.length>1?`اتفتحت كل الأجزاء (${msgs.length}). اتأكد إنك ضغطت «إرسال» في واتساب لكل جزء.`:"اتفتح واتساب بالتقرير. اضغط «إرسال» هناك.")+`<br>${lk}`,"ok");
+    else prog(100,(msgs.length>1?`اتفتحت كل الأجزاء (${msgs.length}). اتأكد إنك ضغطت «إرسال» في واتساب لكل جزء.`:"اتفتح واتساب بالتقرير كامل في رسالة واحدة. اضغط «إرسال» هناك. (واتنسخت نسخة منه تلقائي احتياطي).")+`<br>${lk}`,"ok");
   };
 };
 renderDecs();renderSecs();rerender();requestAnimationFrame(()=>requestAnimationFrame(()=>document.body.classList.add("ready")));
