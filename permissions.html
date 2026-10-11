@@ -436,7 +436,7 @@ try{const th=localStorage.getItem(KEY+"-theme");if(th)document.documentElement.d
 paintTheme();
 
 /* ---------- الرسالة ---------- */
-const MAX_ENC=3800; /* أقصى طول للنص بعد الترميز في الرابط الواحد */
+const MAX_ENC=5000; /* أقصى طول للنص بعد الترميز في الرابط الواحد */
 const enc=t=>encodeURIComponent(t).length;
 function pack(blocks,max){
   const out=[];let cur="";const push=()=>{if(cur){out.push(cur);cur=""}};
@@ -445,29 +445,35 @@ function pack(blocks,max){
     if(enc(nx)<=max){cur=nx;return}
     push();
     if(enc(b)<=max){cur=b;return}
-    b.split("\n").forEach(l=>{const n2=cur?cur+"\n"+l:l;if(enc(n2)<=max)cur=n2;else{push();cur=l}});
+    /* قسم أطول من الحد: نقسمه على سطور ونكرر عنوانه في كل جزء */
+    const ls=b.split("\n"),head=ls[0];
+    ls.slice(1).forEach(l=>{const n2=cur?cur+"\n"+l:head+"\n"+l;if(enc(n2)<=max)cur=n2;else{push();cur=head+" (تابع)\n"+l}});
   });
   push();return out;
 }
+/* التقرير الكامل: كل الأقسام وكل الأسئلة، والكابتن والمساعد جنب بعض في سطر واحد */
 function buildMessages(){
   const m=metrics(),n=SECS.filter(s=>S.rev[s]).length;
   const now=new Date().toLocaleString("ar-EG-u-nu-latn",{dateStyle:"medium",timeStyle:"short"}).replace(/[\u200e\u200f\u061c]/g,"");
+  const IC={[L.B]:"🚫",[L.V]:"🔍",[L.E]:"📝",[L.F]:"❌",[L.A]:"✅"};
+  const lv=v=>v===undefined?"؟":(IC[v]||"؟")+" "+v;
   const blocks=[];
-  blocks.push(`📋 *تقرير صلاحيات الكابتن والمساعد*\n👤 إلى: المطور عامر\n📆 ${now}\n✅ الأقسام اللي اتراجعت: ${n}/${SECS.length}\n❗ صلاحيات حساسة مفتوحة للمساعد: *${m.hi}*\n❌ صلاحيات حذف للمساعد: *${m.full}*`);
-  const order=[[L.B,"🚫"],[L.V,"🔍"],[L.E,"📝"],[L.F,"❌"],[L.A,"✅"]];
-  blocks.push("━━━━━━━━━━\n👤 *صلاحيات المساعد*");
+  blocks.push(`📋 *تقرير صلاحيات الكابتن والمساعد*\n👤 إلى: المطور عامر\n📆 ${now}\n✅ الأقسام اللي اتراجعت: ${n}/${SECS.length}\n❗ صلاحيات حساسة مفتوحة للمساعد: *${m.hi}*\n❌ صلاحيات حذف للمساعد: *${m.full}*\n📊 إجمالي الأسئلة: ${ROWS.length}`);
+  blocks.push(`🔑 *المفتاح:* ك = الكابتن، م = المساعد\n🚫 ممنوع · 🔍 عرض فقط · 📝 عرض وتعديل · ❌ كامل (يحذف) · ✅ مسموح`);
   SECS.forEach(s=>{
-    const rs=ROWS.filter(r=>r.sec===s&&r.ast);let o=`${MI[s]||"📁"} *${s}*`;
-    order.forEach(([lv,ic])=>{const x=rs.filter(r=>S.ast[r.id]===lv);if(x.length)o+=`\n${ic} _${lv}_\n`+x.map(r=>`• ${r.id}. ${r.t}`).join("\n")});
-    if(o.includes("\n"))blocks.push(o)});
-  blocks.push("━━━━━━━━━━\n💪 *صلاحيات الكابتن*");
-  const diffs=ROWS.filter(r=>r.cap&&S.cap[r.id]!==r.cap);
-  if(!diffs.length)blocks.push("كل اختيارات الكابتن زي المقترح (بدون تغيير).");
-  else SECS.forEach(s=>{const x=diffs.filter(r=>r.sec===s);if(x.length)blocks.push(`${MI[s]||"📁"} *${s}*\n`+x.map(r=>`• ${r.id}. ${r.t} ← *${S.cap[r.id]}* (المقترح: ${r.cap})`).join("\n"))});
-  if(diffs.length)blocks.splice(blocks.indexOf("━━━━━━━━━━\n💪 *صلاحيات الكابتن*")+1,0,"التعديلات على المقترح فقط:");
-  if(S.notes.trim())blocks.push("📝 *ملاحظات:*\n"+S.notes.trim());
-  const msgs=pack(blocks,MAX_ENC-80);
-  return msgs.map((x,i)=>msgs.length>1?`(${i+1}/${msgs.length})\n${x}`:x);
+    const rs=ROWS.filter(r=>r.sec===s);
+    let o=`${MI[s]||"📁"} *${s}* (${rs.length}) ${S.rev[s]?"✔ تمت المراجعة":"⏳ لم تتم المراجعة"}`;
+    rs.forEach(r=>{
+      const p=[];
+      if(r.capOpts)p.push("ك: "+lv(S.cap[r.id]));
+      if(r.astOpts)p.push("م: "+lv(S.ast[r.id]));
+      o+=`\n• ${r.id}. ${r.t}\n   ${p.join("  |  ")}`;
+    });
+    blocks.push(o);
+  });
+  blocks.push(S.notes.trim()?"📝 *ملاحظات:*\n"+S.notes.trim():"📝 *ملاحظات:* مفيش");
+  const msgs=pack(blocks,MAX_ENC-120);
+  return msgs.map((x,i)=>`(${i+1}/${msgs.length})\n${x}`+(i===msgs.length-1?"\n\n— نهاية التقرير —":""));
 }
 function openSheet(html){$("#sheet").innerHTML=html;$("#ov").classList.add("on")}
 function closeSheet(){$("#ov").classList.remove("on")}
@@ -484,7 +490,7 @@ $("#send").onclick=()=>{
   ${n<SECS.length?`<div class="warn">لسه ${SECS.length-n} قسم ما اتراجعوش. تقدر تبعت دلوقتي أو ترجع تكمّل.</div>`:""}
   ${(m.hi||m.full)?`<div class="warn">المساعد عنده صلاحيات حساسة مفتوحة. تأكد إنها مقصودة.</div>`:""}
   <div id="sp"></div>
-  <div style="display:flex;gap:8px"><button class="btn btn-p" id="go" style="flex:1"><svg class="i" aria-hidden="true"><use href="#i-paper-plane"/></svg> إرسال</button><button class="btn btn-s" id="cl">رجوع</button></div>`);
+  <div style="display:flex;gap:8px"><button class="btn btn-p" id="go" style="flex:1"><svg class="i" aria-hidden="true"><use href="#i-paper-plane"/></svg> إرسال${msgs.length>1?` (الجزء 1 من ${msgs.length})`:""}</button><button class="btn btn-s" id="cl">رجوع</button></div>`);
   $("#cl").onclick=closeSheet;
   let part=0;
   $("#go").onclick=()=>{
@@ -494,6 +500,7 @@ $("#send").onclick=()=>{
     if(!w){const a=document.createElement("a");a.href=u;a.target="_blank";a.rel="noopener";document.body.appendChild(a);a.click();a.remove()}
     const lk=`<a href="${u}" target="_blank" rel="noopener" style="color:var(--accent-text);text-decoration:underline">لو واتساب ما اتفتحش دوس هنا</a>`;
     part++;
+    $("#go").innerHTML=`<svg class="i" aria-hidden="true"><use href="#i-paper-plane"/></svg> ${part<msgs.length?`إرسال (الجزء ${part+1} من ${msgs.length})`:"إعادة الإرسال"}`;
     if(part<msgs.length)prog(part/msgs.length*100,`اتفتح واتساب بالجزء ${part} من ${msgs.length}. اضغط «إرسال» هناك، وارجع هنا وادوس «إرسال» للجزء ${part+1}.<br>${lk}`);
     else prog(100,(msgs.length>1?`اتفتحت كل الأجزاء (${msgs.length}). اتأكد إنك ضغطت «إرسال» في واتساب لكل جزء.`:"اتفتح واتساب بالتقرير. اضغط «إرسال» هناك.")+`<br>${lk}`,"ok");
   };
